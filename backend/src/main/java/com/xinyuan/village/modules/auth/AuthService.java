@@ -10,6 +10,7 @@ import com.xinyuan.village.modules.user.UserMapper;
 import com.xinyuan.village.modules.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -24,6 +25,9 @@ public class AuthService {
     private final UserAssembler assembler;
     private final JwtUtil jwtUtil;
     private final CacheStore cache;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    private static final int MAX_LOGIN_FAILS = 5;
 
     @Value("${app.jwt.mock-login:true}")
     private boolean mockLoginEnabled;
@@ -41,6 +45,29 @@ public class AuthService {
         User user = userMapper.findByOpenid("seed_openid_u1001");
         if (user == null) user = userMapper.findById("u1001");
         if (user == null) throw new BizException(ErrorCode.SYSTEM_ERROR, "种子用户不存在");
+        return issue(user, false);
+    }
+
+    /** 账号密码登录：account=手机号，密码 BCrypt 校验；连续失败 5 次锁 10 分钟 */
+    public Map<String, Object> passwordLogin(String account, String password) {
+        String acc = account == null ? "" : account.trim();
+        String pwd = password == null ? "" : password;
+        if (acc.isEmpty() || pwd.isEmpty()) {
+            throw new BizException(ErrorCode.PARAM_INVALID, "请输入手机号和密码");
+        }
+        String failKey = "login:fail:" + acc;
+        String fails = cache.get(failKey);
+        if (fails != null && Integer.parseInt(fails) >= MAX_LOGIN_FAILS) {
+            throw new BizException(ErrorCode.TOO_MANY, "密码错误次数过多，请 10 分钟后再试");
+        }
+        User user = userMapper.findByPhone(acc);
+        boolean ok = user != null && user.getPasswordHash() != null
+                && passwordEncoder.matches(pwd, user.getPasswordHash());
+        if (!ok) {
+            cache.increment(failKey, Duration.ofMinutes(10));
+            throw new BizException(ErrorCode.PASSWORD_ERROR);
+        }
+        cache.delete(failKey);
         return issue(user, false);
     }
 

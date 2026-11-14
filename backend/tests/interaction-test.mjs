@@ -99,6 +99,11 @@ appInstance.onLaunch();
 await appInstance.ready;
 await new Promise(r => setTimeout(r, 300));
 
+// 新版前端不再静默登录：先登录演示账号
+const authApi = require(ROOT + "/api/auth.js");
+const loginResp = await authApi.passwordLogin("13843216621", "123456");
+appInstance.setUser(loginResp.user);
+
 function loadPage(rel) {
   pageConfig = null;
   const full = require.resolve(ROOT + "/" + rel);
@@ -135,7 +140,7 @@ const check = (name, ok, note) => { out.push({ name, ok, note }); console.log((o
   p.onLoad({ code: "YB001" });
   await wait(800);
   const fields = p.data.fields.map(f => Object.assign({}, f));
-  fields.forEach(f => { if (f.required) f.value = f.type === "idcard" ? "654025199001010026" : (f.options && f.options.length ? f.options[0] : "测试值"); });
+  fields.forEach(f => { if (f.required) f.value = f.type === "idcard" ? "220221199001010026" : (f.options && f.options.length ? f.options[0] : "测试值"); });
   p.setData({ fields, agree: true });
   const navBefore = nav.length;
   p.submit();

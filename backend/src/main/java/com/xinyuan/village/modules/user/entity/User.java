@@ -23,5 +23,6 @@ public class User {
     private String houseNo;
     private LocalDate joinedAt;
     private Integer isVerified;
+    private String passwordHash;
     private Integer status;
 }

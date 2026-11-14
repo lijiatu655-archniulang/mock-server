@@ -30,6 +30,7 @@ public class UserAssembler {
         m.put("nickname", u.getNickname());
         m.put("roleCode", u.getRoleCode());
         m.put("roleName", u.getRoleName());
+        m.put("phone", u.getPhone());
         m.put("phoneDisplay", u.getPhoneDisplay());
         m.put("avatarText", u.getAvatarText());
         m.put("avatarUrl", u.getAvatarUrl() == null ? "" : u.getAvatarUrl());

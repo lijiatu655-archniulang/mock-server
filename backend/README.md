@@ -93,6 +93,16 @@ curl -X POST http://127.0.0.1:8080/api/v1/auth/mock-login \
 
 数据库连接可用 `DB_USER` / `DB_PASSWORD` 覆盖，JWT 密钥用 `JWT_SECRET`。
 
+演示账号（账号密码登录页已提示）：
+
+| 方式 | 账号 | 密码 |
+|---|---|---|
+| 账号密码 | `13843216621` | `123456` |
+| 微信登录 | 任意（无 appid 时用种子用户兜底） | — |
+
+> 2026-11 起种子数据为**吉林省永吉县 · 口前镇新源村**（`regionId=22022110001`），
+> 热线 `0432-64216888`，备案号 `吉ICP备2026001234号-1`。
+
 ---
 
 ## 2. 前端怎么切过来（两行）
@@ -108,11 +118,11 @@ BASE_URL: 'http://127.0.0.1:8080/api/v1',     // 原来是 :3000
 
 ---
 
-## 3. 已实现接口（52 / 52）
+## 3. 已实现接口（53 / 53）
 
 | 分组 | 数量 | 说明 |
 |---|---:|---|
-| 认证 | 3 | wx-login（无 appid 时用种子用户兜底）、mock-login、logout（JWT 黑名单） |
+| 认证 | 4 | wx-login（无 appid 时用种子用户兜底）、mock-login、**password-login（手机号+密码，BCrypt）**、logout（JWT 黑名单） |
 | 首页与内容 | 8 | home 聚合、columns、articles 列表/详情/点赞、modules、app/config、regions/tree、dicts |
 | 政务只读 | 3 | categories、items（分类/关键词）、items/{code}（条件/材料/步骤/动态表单/FAQ） |
 | 政务申报 | 6 | 提交（必填字段 + 材料缺失校验）、我的办件、详情+时间轴、撤销、评价、pay 返回 40004 |

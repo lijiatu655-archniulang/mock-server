@@ -11,6 +11,7 @@ public enum ErrorCode {
     ITEM_NOT_FOUND(40402, 200, "事项不存在或已下线"),
     NOT_FOUND(40400, 200, "接口不存在"),
     UNAUTHORIZED(20001, 401, "请先登录"),
+    PASSWORD_ERROR(20003, 200, "手机号或密码不正确"),
     FORBIDDEN(20002, 403, "当前身份暂不能办理"),
     TOO_MANY(42901, 429, "请求过于频繁，请稍后再试"),
     SYSTEM_ERROR(50000, 500, "服务暂时不可用，请稍后重试"),

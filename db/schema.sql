@@ -52,6 +52,7 @@ CREATE TABLE sys_user (
   house_no       VARCHAR(64)  DEFAULT NULL,
   joined_at      DATE         DEFAULT NULL,
   is_verified    TINYINT      NOT NULL DEFAULT 0,
+  password_hash  VARCHAR(100) DEFAULT NULL COMMENT '账号密码登录（BCrypt）',
   status         TINYINT      NOT NULL DEFAULT 1,
   created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

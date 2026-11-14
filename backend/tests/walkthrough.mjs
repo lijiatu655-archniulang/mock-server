@@ -7,7 +7,7 @@ const line = (s) => console.log(s);
 line("================ 新源村情通 · 本地联调演示 ================\n");
 
 // 1 登录
-let r = await post("/auth/mock-login", { regionId: "65402510001" });
+let r = await post("/auth/mock-login", { regionId: "22022110001" });
 const token = r.data.token;
 const u = r.data.user;
 line("① 登录（POST /auth/mock-login）");
@@ -49,7 +49,7 @@ line("   表单：" + item.formFields.map(f => f.label + "(" + f.type + ")").joi
 line("   条件：" + item.conditions[0] + "…\n");
 
 // 5 申报
-const formData = { "参保人姓名": "王秀兰", "身份证号": "654025********0026", "参保年度": "2026 年度", "人员类别": "普通居民", "联系电话": "138****6621" };
+const formData = { "参保人姓名": "王秀兰", "身份证号": "220221********0026", "参保年度": "2026 年度", "人员类别": "普通居民", "联系电话": "138****6621" };
 r = await post("/gov/applies", { itemCode: "YB001", formData: { "参保人姓名": "王秀兰" }, materialNames: [] }, token);
 line("⑤ 申报（先故意漏填）");
 line("   → code=" + r.code + " " + r.message);

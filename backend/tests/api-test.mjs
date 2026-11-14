@@ -24,7 +24,7 @@ function check(name, r, fn) {
 const eq = (a, b, label) => { if (a !== b) throw new Error(label + " 期望 " + b + " 实际 " + a); };
 
 // 1 登录
-let r = await call("POST", "/auth/mock-login", { body: { regionId: "65402510001" }, auth: false });
+let r = await call("POST", "/auth/mock-login", { body: { regionId: "22022110001" }, auth: false });
 token = r.json.data.token;
 check("mock-login", r, (x) => { eq(x.json.code, 0, "code"); eq(x.json.data.tokenType, "Bearer", "tokenType"); eq(x.json.data.user.name, "王秀兰", "user.name"); eq(x.json.data.user.stats.applies, 3, "stats.applies"); return "user=" + x.json.data.user.name; });
 
@@ -52,7 +52,7 @@ check("app/config", r, (x) => { const d = x.json.data; eq(d.appName, "新源村�
 r = await call("GET", "/modules", { auth: false });
 check("modules", r, (x) => { eq(x.json.data.list.length, 6, "list"); const gov = x.json.data.list.find(m => m.code === "gov"); eq(gov.status, "online", "政务入口"); return "政务管理 " + gov.status; });
 r = await call("GET", "/regions/tree", { auth: false });
-check("regions/tree", r, (x) => { eq(x.json.data.tree[0].name, "新源县", "根节点"); eq(x.json.data.currentId, "65402510001", "currentId"); return "4 村"; });
+check("regions/tree", r, (x) => { eq(x.json.data.tree[0].name, "永吉县", "根节点"); eq(x.json.data.currentId, "22022110001", "currentId"); return "4 村"; });
 r = await call("GET", "/dicts/applyStatus", { auth: false });
 check("dicts", r, (x) => { eq(x.json.data.type, "applyStatus", "type"); eq(x.json.data.list.length, 9, "list"); return "9 个状态"; });
 
@@ -69,7 +69,7 @@ check("gov item detail", r, (x) => { const d = x.json.data; eq(d.code, "YB001", 
 // 6 申报
 r = await call("POST", "/gov/applies", { body: {
   itemCode: "YB001",
-  formData: { "参保人姓名": "王秀兰", "身份证号": "654025********0026", "参保年度": "2026 年度", "人员类别": "普通居民", "联系电话": "138****6621" },
+  formData: { "参保人姓名": "王秀兰", "身份证号": "220221********0026", "参保年度": "2026 年度", "人员类别": "普通居民", "联系电话": "138****6621" },
   materialNames: ["身份证或户口簿"], fileIds: []
 } });
 let applyId = r.json.data && r.json.data.id;

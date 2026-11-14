@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$DbUser = "root",
   [string]$DbPassword = "123456",
   [int]$Port = 8080,
@@ -15,9 +15,13 @@ $jar = Join-Path $root "target\village-server-2.0.0.jar"
 if ($InitDb) {
     Write-Host "[1/3] 建库并导入种子数据..." -ForegroundColor Cyan
     $env:MYSQL_PWD = $DbPassword
+    $schema = Join-Path $root "..\db\schema.sql"
+    $seed = Join-Path $root "..\db\seed.sql"
     try {
-        Get-Content -Raw -Encoding UTF8 (Join-Path $root "..\db\schema.sql") | mysql -u $DbUser
-        Get-Content -Raw -Encoding UTF8 (Join-Path $root "..\db\seed.sql") | mysql -u $DbUser xinyuan_village
+        cmd /c "mysql -u $DbUser < ""$schema"""
+        if ($LASTEXITCODE -ne 0) { throw "建库脚本执行失败，请检查 MySQL 密码/服务" }
+        cmd /c "mysql -u $DbUser xinyuan_village < ""$seed"""
+        if ($LASTEXITCODE -ne 0) { throw "种子导入失败" }
     } finally {
         Remove-Item Env:MYSQL_PWD -ErrorAction SilentlyContinue
     }

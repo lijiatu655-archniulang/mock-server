@@ -95,6 +95,11 @@ appInstance.globalData = JSON.parse(JSON.stringify(appInstance.globalData));
 appInstance.onLaunch();
 await appInstance.ready;
 await new Promise(r => setTimeout(r, 300));
+
+// 新版前端不再静默登录：用演示账号登录后再跑受保护页面
+const authApi = require(ROOT + "/api/auth.js");
+const loginResp = await authApi.passwordLogin("13843216621", "123456");
+appInstance.setUser(loginResp.user);
 console.log("app.ready user =", appInstance.globalData.user && appInstance.globalData.user.name,
             "| token =", storage.has("xct_token") ? "已写入" : "无");
 

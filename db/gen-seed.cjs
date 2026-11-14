@@ -40,12 +40,14 @@ ins("sys_village",
 // 用户
 head("用户");
 const u = data.user;
+// 演示账号密码 123456 的 BCrypt 哈希（与前端登录页提示一致）
+const DEMO_PASSWORD_HASH = "$2a$10$j7flrxK2h9WHXWbFw3t6/.eoyJDx7cNaWsBHAMIU5S8r7gByh5n8e";
 ins("sys_user",
   ["id", "openid", "name", "nickname", "role_code", "role_name", "phone", "phone_display", "avatar_text",
-   "avatar_url", "region_id", "grid_name", "house_no", "joined_at", "is_verified", "status"],
+   "avatar_url", "region_id", "grid_name", "house_no", "joined_at", "is_verified", "status", "password_hash"],
   [[q(u.id), q("seed_openid_" + u.id), q(u.name), q(u.nickname), q(u.roleCode), q(u.roleName),
-    q("13809996621"), q(u.phoneDisplay), q(u.avatarText), q(""), q(u.regionId), q(u.gridName),
-    q(u.houseNo), q(u.joinedAt), "1", "1"]]);
+    q(u.phone), q(u.phoneDisplay), q(u.avatarText), q(""), q(u.regionId), q(u.gridName),
+    q(u.houseNo), q(u.joinedAt), "1", "1", q(DEMO_PASSWORD_HASH)]]);
 
 // 配置
 head("应用配置");
