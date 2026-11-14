@@ -4,7 +4,7 @@
  * USE_MOCK = false ：走真实 HTTP 接口，地址见 BASE_URL，接口契约见 temp/接口契约-v1.md
  */
 const config = {
-  APP_VERSION: '1.1.0',
+  APP_VERSION: '2.0.0',
   CLIENT: 'wx-miniprogram',
   USE_MOCK: false,
   BASE_URL: 'http://127.0.0.1:8080/api/v1',
