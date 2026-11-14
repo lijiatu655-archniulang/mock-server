@@ -6,6 +6,43 @@
 
 ---
 
+
+---
+
+## 0. 队友首次启动（数据库密码）
+
+仓库里 `application.yml` 的默认值是 **root / 123456**：
+
+```yaml
+username: ${DB_USER:root}
+password: ${DB_PASSWORD:123456}
+```
+
+如果你本机 MySQL 的 root 密码不是 `123456`，**不用改代码**，用环境变量或参数覆盖即可：
+
+```powershell
+cd backend
+
+# 方式一：一键脚本（推荐）
+.\run.ps1 -DbPassword "你的MySQL密码" -InitDb      # 首次：建库 + 导种子 + 启动
+.\run.ps1 -DbPassword "你的MySQL密码"              # 之后：直接启动
+
+# 方式二：手动设环境变量
+$env:DB_USER = "root"
+$env:DB_PASSWORD = "你的MySQL密码"
+java -jar target\village-server-2.0.0.jar --server.port=8080
+```
+
+`-InitDb` 做的事就是：
+
+```powershell
+Get-Content -Raw -Encoding UTF8 ..\db\schema.sql | mysql -uroot -p
+Get-Content -Raw -Encoding UTF8 ..\db\seed.sql   | mysql -uroot -p xinyuan_village
+```
+
+> 密码只在本机环境变量里，不会写进仓库。不要把真实数据库密码提交到 Git。
+> 如果忘了本机 root 密码，可在 MySQL 里执行：`ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';`
+
 ## 1. 三分钟启动
 
 ```powershell

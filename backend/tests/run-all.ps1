@@ -1,4 +1,4 @@
-# 一键回归：复位种子 + 四组测试
+﻿# 一键回归：复位种子 + 四组测试
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $db = Join-Path $root "..\db\seed.sql"
