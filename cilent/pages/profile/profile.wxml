@@ -23,7 +23,6 @@
     <view class="login-seal">★</view>
     <view class="login-name">新源村情通</view>
     <view class="login-slogan">听民意 · 解民忧 · 暖民心</view>
-    <view class="login-organizer">中共永吉县委组织部 · 主办</view>
   </view>
   <view class="login-card card">
     <view class="login-title">欢迎回来</view>
@@ -208,9 +207,6 @@
   <view class="profile-footer">
     <view class="footer-seal">★</view>
     <view class="footer-name">新源村情通</view>
-    <view>中共永吉县委组织部 主办 · 新源村村民委员会 承办</view>
-    <view>服务热线 0432-64216888 · 举报电话 12380</view>
-    <view class="footer-icp">吉ICP备2026001234号-1</view>
     <view class="footer-version">V{{version}} · 村级政务服务演示版本</view>
   </view>
 
@@ -220,13 +216,6 @@
       <view class="sheet-seal">★</view>
       <view class="sheet-title">新源村情通</view>
       <view class="sheet-version">V{{version}} · 村级事务服务平台</view>
-      <view class="sheet-info">
-        <view class="sheet-row"><text class="sheet-label">主办单位</text><text class="sheet-value">中共永吉县委组织部</text></view>
-        <view class="sheet-row"><text class="sheet-label">承办单位</text><text class="sheet-value">新源村村民委员会</text></view>
-        <view class="sheet-row"><text class="sheet-label">服务热线</text><text class="sheet-value">0432-64216888</text></view>
-        <view class="sheet-row"><text class="sheet-label">举报电话</text><text class="sheet-value">12380</text></view>
-        <view class="sheet-row"><text class="sheet-label">备案号</text><text class="sheet-value">吉ICP备2026001234号-1</text></view>
-      </view>
       <view class="sheet-desc">当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘和线上奶茶会。网格员工作台与家庭成员将在 V3 陆续开放。</view>
       <view class="sheet-btn" bindtap="closeAbout" hover-class="press">知道了</view>
     </view>

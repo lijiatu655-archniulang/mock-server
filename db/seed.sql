@@ -53,7 +53,7 @@ INSERT INTO sys_config (config_key, config_value, config_group) VALUES
 ('hotline', '0432-64216888', 'APP'),
 ('aiDisclaimer', 'AI 生成内容仅供参考，具体政策以官方发布为准。', 'AI'),
 ('aiWelcome', '您好，我是新源村 AI 网格员“小贾”。医保缴费、养老参保、独生子女证、高龄补贴……村里的事都可以问我，我会尽量给出政策依据；查不到的我也会直说。', 'AI'),
-('footer', '{"organizer":"中共永吉县委组织部","coOrganizer":"新源村村民委员会","reportPhone":"12380","hotline":"0432-64216888","icp":"吉ICP备2026001234号-1","serviceTime":"周一至周五 10:00—19:30","disclaimer":"本平台内容由新源村党群服务中心提供，AI 回答仅供参考，具体以官方发布为准。","version":"V1.1.0"}', 'APP'),
+('footer', '{"hotline":"0432-64216888","serviceTime":"周一至周五 10:00—19:30","version":"V2.1.0"}', 'APP'),
 ('features', '{"onlineApply":true,"aiStream":true,"voiceInput":false,"familyMembers":false}', 'APP'),
 ('fileBaseUrl', 'http://127.0.0.1:8080/static/upload', 'APP');
 

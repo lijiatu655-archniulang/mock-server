@@ -153,7 +153,7 @@ results.push(await runPage("pages/index/index", {}, (d, issues) => {
   if (!d.columns || d.columns.length !== 4) issues.push("columns=" + (d.columns || []).length);
   if (!d.modules || d.modules.length !== 6) issues.push("modules=" + (d.modules || []).length);
   if (!d.region || d.region.households !== 486) issues.push("region.households=" + (d.region && d.region.households));
-  if (!d.footer || !d.footer.icp) issues.push("footer.icp 缺失");
+  if (!d.footer) issues.push("footer 缺失");
   if (d.loading) issues.push("loading 未结束");
 }));
 results.push(await runPage("pages/article/list", { columnId: "c1" }, (d, issues) => {

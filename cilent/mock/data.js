@@ -993,14 +993,9 @@ const suggestions = [{
 }]
 
 const footer = {
-  organizer: '中共永吉县委组织部',
-  coOrganizer: '新源村村民委员会',
-  reportPhone: '12380',
   hotline: '0432-64216888',
-  icp: '吉ICP备2026001234号-1',
   serviceTime: '周一至周五 10:00—19:30',
-  disclaimer: '本平台内容由新源村党群服务中心提供，AI 回答仅供参考，具体以官方发布为准。',
-  version: 'V1.1.0'
+  version: 'V2.1.0'
 }
 
 const appConfig = {

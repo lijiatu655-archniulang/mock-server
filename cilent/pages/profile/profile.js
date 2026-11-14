@@ -147,7 +147,7 @@ Page({
       }, {
         code: 'about',
         name: '关于平台',
-        desc: '主办单位、服务热线与备案信息',
+        desc: '版本与功能说明',
         icon: '关',
         tint: '#F1F3F6',
         color: '#5D6B80',

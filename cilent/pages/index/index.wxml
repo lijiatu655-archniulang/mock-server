@@ -31,7 +31,7 @@
       <view class="hero-slogan">{{slogan}}</view>
       <view class="hero-trust">
         <view class="trust-dot"></view>
-        <text>{{footer.organizer}} · 主办</text>
+        <text>村务公开 · 在线办事</text>
         <text class="hero-sep">/</text>
         <text>{{region.households}} 户 {{region.population}} 人</text>
       </view>
@@ -220,19 +220,5 @@
       </block>
     </block>
 
-    <!-- 合规页脚 -->
-    <view class="compliance">
-      <view class="compliance-seal">★</view>
-      <view class="compliance-name">新源村情通</view>
-      <view class="compliance-line">{{footer.organizer}} 主办</view>
-      <view class="compliance-line">{{footer.coOrganizer}}</view>
-      <view class="compliance-links">
-        <text>举报电话 {{footer.reportPhone}}</text>
-        <text class="compliance-divider">|</text>
-        <text>服务热线 {{footer.hotline}}</text>
-      </view>
-      <view class="compliance-line compliance-icp">{{footer.icp}}</view>
-      <view class="compliance-disclaimer">{{footer.disclaimer}}</view>
-    </view>
   </view>
 </view>
