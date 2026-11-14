@@ -108,6 +108,7 @@ public class AiService {
         }
 
         List<Map<String, Object>> refs = llmOk ? rag.refs() : rule.refs();
+        if (llmOk && refusal(text)) refs = List.of();
         List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
         String messageId = saveMessage(conv.getId(), userId, "assistant", text,
                 Json.write(refs), Json.write(followUps));
@@ -191,6 +192,7 @@ public class AiService {
             refs = rule.refs();
         }
 
+        if (usedLlm && refusal(buffer.toString())) refs = List.of();
         List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
         finishMessage(messageId, buffer.toString(), refs, followUps);
         touch(conv.getId());
@@ -295,6 +297,12 @@ public class AiService {
         m.put("messageId", messageId);
         m.put("feedback", value);
         return m;
+    }
+
+    private static boolean refusal(String s) {
+        if (s == null) return false;
+        return s.contains("没查到") || s.contains("没有查到") || s.contains("查不到")
+                || s.contains("不掌握") || s.contains("无法回答") || s.contains("不在村务");
     }
 
     private String titleOf(String question) {

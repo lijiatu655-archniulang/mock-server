@@ -2,7 +2,10 @@
   [string]$DbUser = "root",
   [string]$DbPassword = "123456",
   [int]$Port = 8080,
-  [switch]$InitDb
+  [switch]$InitDb,
+  [string]$AiKey = "",
+  [string]$AiModel = "deepseek-chat",
+  [string]$AiBaseUrl = "https://api.deepseek.com/v1"
 )
 
 # 一键启动后端：.\run.ps1 -DbPassword "你的MySQL密码"
@@ -45,6 +48,13 @@ Write-Host "      数据库账号：$DbUser（密码通过环境变量注入）"
 
 $env:DB_USER = $DbUser
 $env:DB_PASSWORD = $DbPassword
+if ($AiKey) {
+    Write-Host "      已启用大模型：$AiModel" -ForegroundColor Cyan
+    $env:AI_ENABLED = "true"
+    $env:AI_API_KEY = $AiKey
+    $env:AI_MODEL = $AiModel
+    $env:AI_BASE_URL = $AiBaseUrl
+}
 Push-Location $root
 try {
     java -jar $jar --server.port=$Port

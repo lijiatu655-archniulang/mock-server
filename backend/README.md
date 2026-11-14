@@ -233,6 +233,24 @@ AI_ENABLED=true AI_API_KEY=sk-xxx AI_MODEL=qwen-plus \
 
 **流式**：先插入空 assistant 消息拿真实 `messageId` → `meta` → `delta` → 结束后回填内容/引用/追问 → `refs` → `done`。协议与契约完全一致。
 
+**真实模型实测（DeepSeek / deepseek-chat，2026-11-15）**：
+
+| 问题 | 耗时 | 结果 |
+|---|---|---|
+| 医保怎么缴 | ~1.9s | 380 元、集中缴费期、3 种缴费方式，带 2 条引用 |
+| 高龄补贴怎么申请 | ~1.1–1.7s | 条件/材料/流程/时限完整，带 2 条引用 |
+| 独生子女证需要什么材料 | ~1.2–1.4s | 5 项材料 + 5 个工作日，带 2 条引用 |
+| 想开小卖部要办什么手续 | ~1.0–1.5s | 正确拒答，0 引用 |
+| 今天天气怎么样 | ~1.1–1.5s | 正确拒答，0 引用 |
+| 流式「养老保险交多少年」 | 首字 0.8–1.1s / 总 1.4–1.6s | 15 年 + 引用 |
+
+启动时直接带 key（不落盘，只进进程环境变量）：
+
+```powershell
+.\run.ps1 -DbPassword "你的MySQL密码" -AiKey "sk-你的key" -AiModel deepseek-chat
+# 或手动：$env:AI_ENABLED="true"; $env:AI_API_KEY="sk-..."; $env:AI_MODEL="deepseek-chat"
+```
+
 **实测（echo 假模型）**：
 
 | 问题 | 召回 |

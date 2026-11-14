@@ -52,14 +52,14 @@ public class RagService {
 
         StringBuilder ctx = new StringBuilder();
         List<Map<String, Object>> refs = new ArrayList<>();
-        Set<String> seen = new HashSet<>();
+        Set<String> seenRef = new HashSet<>();
         int idx = 1;
         for (Retriever.Scored h : kept) {
             Chunk c = h.chunk();
-            if (!seen.add(c.id())) continue;
+            // 同一篇文章的不同段落都放进上下文（15 年缴费这类细节常在后半段），引用只保留一条
             ctx.append("[").append(idx++).append("] ").append(c.title()).append("：")
-                    .append(abbreviate(c.text(), 320)).append("\n");
-            refs.add(ref(c, h.score()));
+                    .append(abbreviate(c.text(), 600)).append("\n");
+            if (seenRef.add(c.id())) refs.add(ref(c, h.score()));
         }
         return new RagResult(ctx.toString(), refs, refs.size());
     }

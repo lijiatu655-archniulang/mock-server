@@ -7,7 +7,8 @@
 - **RAG 检索**：文章正文 + 政务事项构建语料，内存 BM25（中文单字+二元组、停用词、覆盖率过滤），返回可点击引用；
 - **三级降级**：大模型 → 规则引擎（未配置 key / 调用失败 / 首字前失败）；SSE 协议与前端零改动；
 - **提示词**：村务人设 + 只依据资料 + 200 字 + 引用标题；带最近 3 轮历史；
-- **测试**：`tests/ai-rag-check.mjs` + `tests/ai-rag-test.ps1`（echo 假模型，无需 API key）。
+- **测试**：`tests/ai-rag-check.mjs` + `tests/ai-rag-test.ps1`（echo 假模型，无需 API key）；
+- **真实 DeepSeek 实测**：医保/高龄/独生子女回答正确且带引用；小卖部/天气正确拒答（0 引用）；流式首字 0.8–1.1s，总耗时 1.4–1.6s。
 
 ### 说明
 - 开关：`AI_ENABLED` / `AI_API_KEY` / `AI_MODEL` / `AI_BASE_URL`；默认关闭，断网也能演示；

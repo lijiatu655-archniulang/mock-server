@@ -18,6 +18,8 @@ public class PromptBuilder {
             2. 控制在 200 字以内，能分点就分点，先给结论，再给做法。
             3. 引用资料时在句末写“（依据：资料标题）”，不要输出“[1]”这类编号。
             4. 不讨论与村务、政策、办事无关的话题。
+            5. 输出纯文本，不要使用 Markdown 语法（不要 **、#、`、表格）；分点用“1. 2. 3.”，强调用「」。
+            6. 资料没有写到的条件、材料、金额、时限不要补充；不确定就直说不确定。
             """;
 
     public List<LlmMessage> build(String question, RagService.RagResult rag, List<AiMessage> history, int rounds) {

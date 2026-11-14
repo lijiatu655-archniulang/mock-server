@@ -143,3 +143,4 @@ node tests\reserved-test.mjs
 | 落库 | assistant 消息回填内容、refs、followUps；反馈可用真实 messageId |
 | 降级 | `AI_ENABLED=false` 时全部回归通过：接口 50/50、页面 16/16、交互 17/17、预留 10/10 |
 | 脚本 | `tests/ai-rag-test.ps1`（自动起 echo 实例，无需 API key） |
+| 真实 DeepSeek | 医保/高龄/独生子女回答正确且带引用；小卖部/天气 0 引用拒答；流式首字 0.8–1.1s |
