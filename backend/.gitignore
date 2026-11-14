@@ -1,0 +1,7 @@
+# 构建产物与本地运行数据
+target/
+data/
+*.log
+
+# 联调产物
+tests/api-test.json
