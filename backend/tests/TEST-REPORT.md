@@ -131,3 +131,15 @@ node tests\reserved-test.mjs
 | 回归 | 接口 50/50、页面 16/16、交互 17/17、预留 10/10、密码登录 3/3 |
 
 本轮同时修复：AI 回答中的 9 处新疆地名/电话；办件详情 WXML 的 `.join()` 不支持（改为 `missingText`）；`run-all.ps1` 在 Windows PowerShell 下按 GBK 传 SQL 导致中文损坏。
+
+---
+
+## 7. V2.1.0（2026-11-15）大模型 + RAG
+
+| 项 | 结果 |
+|---|---|
+| 检索（echo 假模型） | 医保/高龄/独生子女各召回 2 条相关引用；天气类 0 条（正确拒答） |
+| 流式 | `meta→delta→refs→done`，35 个 delta，约 630ms |
+| 落库 | assistant 消息回填内容、refs、followUps；反馈可用真实 messageId |
+| 降级 | `AI_ENABLED=false` 时全部回归通过：接口 50/50、页面 16/16、交互 17/17、预留 10/10 |
+| 脚本 | `tests/ai-rag-test.ps1`（自动起 echo 实例，无需 API key） |

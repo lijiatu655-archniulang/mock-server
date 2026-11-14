@@ -3,7 +3,6 @@ package com.xinyuan.village.modules.ai;
 import com.xinyuan.village.common.api.Result;
 import com.xinyuan.village.common.web.LoginRequired;
 import com.xinyuan.village.common.web.UserContext;
-import com.xinyuan.village.modules.ai.entity.AiConversation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -21,7 +19,6 @@ import java.util.concurrent.Executor;
 public class AiController {
 
     private final AiService aiService;
-    private final AnswerGenerator answerGenerator;
     private final Executor aiExecutor;
 
     public record ChatReq(String question, String conversationId) {
@@ -55,40 +52,8 @@ public class AiController {
         SseEmitter emitter = new SseEmitter(120_000L);
         aiExecutor.execute(() -> {
             try {
-                long start = System.currentTimeMillis();
-                AiConversation conv = aiService.resolveConversation(userId, req.conversationId(), req.question());
-                aiService.saveUserMessage(conv.getId(), userId, req.question());
-                AnswerGenerator.Answer answer = answerGenerator.answerFor(req.question());
-                // 先落库拿到真实 messageId，再做 meta —— 否则前端反馈会打到 "pending"
-                String messageId = aiService.saveAssistant(conv.getId(), userId, answer);
-
-                Map<String, Object> meta = new LinkedHashMap<>();
-                meta.put("conversationId", conv.getId());
-                meta.put("messageId", messageId);
-                meta.put("intent", answer.intent());
-                meta.put("needRefs", !answer.refs().isEmpty());
-                send(emitter, "meta", meta);
-
-                String text = answer.text();
-                int step = 8;
-                for (int i = 0; i < text.length(); i += step) {
-                    String chunk = text.substring(i, Math.min(text.length(), i + step));
-                    send(emitter, "delta", Map.of("text", chunk));
-                    Thread.sleep(18);
-                }
-
-                if (!answer.refs().isEmpty()) {
-                    send(emitter, "refs", Map.of("refs", answer.refs()));
-                }
-
-                aiService.touch(conv.getId());
-
-                Map<String, Object> done = new LinkedHashMap<>();
-                done.put("conversationId", conv.getId());
-                done.put("messageId", messageId);
-                done.put("latencyMs", (int) (System.currentTimeMillis() - start));
-                done.put("followUps", answer.followUps());
-                send(emitter, "done", done);
+                aiService.streamChat(userId, req.question(), req.conversationId(),
+                        (event, data) -> send(emitter, event, data));
                 emitter.complete();
             } catch (Exception e) {
                 try {

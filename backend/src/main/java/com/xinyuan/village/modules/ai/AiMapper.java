@@ -43,6 +43,10 @@ public interface AiMapper {
     @Select("SELECT * FROM ai_message WHERE id = #{id}")
     AiMessage message(String id);
 
+    @Update("UPDATE ai_message SET content = #{content}, refs = #{refs}, follow_ups = #{followUps} WHERE id = #{id}")
+    int finishMessage(@Param("id") String id, @Param("content") String content,
+                      @Param("refs") String refs, @Param("followUps") String followUps);
+
     @Update("UPDATE ai_message SET feedback = #{feedback} WHERE id = #{id} AND user_id = #{userId} AND role = 'assistant'")
     int updateFeedback(@Param("id") String id, @Param("userId") String userId, @Param("feedback") String feedback);
 }

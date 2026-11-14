@@ -35,10 +35,19 @@ app:
     base-dir: ./data/upload
     url-prefix: /static/upload
   ai:
-    enabled: false
+    # 总开关：false 时走本地规则引擎（断网可演示）；true 且配置 key 后走大模型 + RAG
+    enabled: ${AI_ENABLED:false}
+    provider: ${AI_PROVIDER:openai}   # openai（兼容）｜echo（本地假模型，仅联调）
     base-url: ${AI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}
     api-key: ${AI_API_KEY:}
     model: ${AI_MODEL:qwen-plus}
+    temperature: 0.3
+    max-tokens: 800
+    timeout-ms: 60000
+    rag:
+      top-k: 3
+      min-score: 0.2
+      history-rounds: 3
   wechat:
     app-id: ${WX_APP_ID:}
     app-secret: ${WX_APP_SECRET:}

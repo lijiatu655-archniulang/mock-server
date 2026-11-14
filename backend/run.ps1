@@ -10,7 +10,7 @@
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$jar = Join-Path $root "target\village-server-2.0.0.jar"
+$jar = Join-Path $root "target\village-server-2.1.0.jar"
 
 if ($InitDb) {
     Write-Host "[1/3] 建库并导入种子数据..." -ForegroundColor Cyan

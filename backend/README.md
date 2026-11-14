@@ -2,7 +2,7 @@
 
 > Spring Boot 3.2.12 / JDK 17 / MyBatis / MySQL 8 ｜ 无管理端（按你的要求）
 > 数据源唯一真相：`cilent/mock/data.js`；接口唯一真相：`temp/接口契约-v1.md`
-> 当前版本：**V2.0.0**（2026-11，吉林数据 + 双登录）
+> 当前版本：**V2.1.0**（2026-11，吉林数据 + 双登录）
 > 本机实测：**53 条契约路由全部实现，50 条主用例 + 10 条预留接口 + 密码登录 3 条全部通过**
 
 ---
@@ -60,7 +60,7 @@ BASE_URL: 'http://127.0.0.1:8080/api/v1',   // 真机换成电脑局域网 IP
 
 ```powershell
 .\mvnw.cmd -DskipTests package
-java -jar target\village-server-2.0.0.jar --server.port=8080
+java -jar target\village-server-2.1.0.jar --server.port=8080
 ```
 
 ### 常见报错
@@ -82,7 +82,7 @@ Get-Content -Raw -Encoding UTF8 ..\db\seed.sql   | mysql -uroot -p123456 xinyuan
 
 # ② 打包并启动（端口 8080，绑定 0.0.0.0 便于真机）
 mvn -DskipTests package
-java -jar target\village-server-2.0.0.jar
+java -jar target\village-server-2.1.0.jar
 ```
 
 健康检查：
@@ -204,6 +204,43 @@ backend/src/main/java/com/xinyuan/village/
 | 缓存 | 内存 `CacheStore`（token 黑名单、配额可扩展） | 演示环境不依赖 Redis |
 
 ---
+
+## 6.1 AI：大模型 + RAG（2026-11-15）
+
+**链路**：问题 → RAG 召回（文章 + 政务事项）→ Prompt（资料 + 最近 3 轮历史）→ 大模型 → SSE 逐字 → 结束回填引用/追问。
+未配置 key、调用失败或在首字前失败时，**自动回退规则引擎**，保证任何环境都有回答。
+
+```bash
+# 启用真实模型（示例：通义兼容模式）
+AI_ENABLED=true AI_API_KEY=sk-xxx AI_MODEL=qwen-plus \
+  java -jar target\village-server-2.1.0.jar
+```
+
+| 配置 | 默认 | 说明 |
+|---|---|---|
+| `AI_ENABLED` | false | 总开关；false 时纯规则引擎 |
+| `AI_PROVIDER` | openai | `openai` 兼容协议；`echo` 本地假模型（仅联调） |
+| `AI_API_KEY` | 空 | 为空时视为未启用 |
+| `AI_MODEL` | qwen-plus | 模型名 |
+| `AI_BASE_URL` | DashScope 兼容地址 | 可换 DeepSeek/自建网关 |
+
+**RAG 实现**（`modules/ai/rag`）：
+
+- 语料：`cms_article` 正文（去 HTML、按句切 260 字）+ `gov_item` 事项（条件/材料/流程/FAQ 拍平）；
+- 索引：首次检索时在内存构建，几十个 chunk，无向量库依赖；
+- 检索：BM25（中文单字 + 二元组、停用词、覆盖率 ≥ 0.3、与 Top1 相对分 ≥ 0.65）；
+- 引用：`refs` 带 `route`，前端点击直达文章/事项详情。
+
+**流式**：先插入空 assistant 消息拿真实 `messageId` → `meta` → `delta` → 结束后回填内容/引用/追问 → `refs` → `done`。协议与契约完全一致。
+
+**实测（echo 假模型）**：
+
+| 问题 | 召回 |
+|---|---|
+| 医保怎么缴 | 缴费通知 + 医保参保缴费事项 |
+| 高龄补贴怎么申请 | 高龄津贴事项 + 11 月值班（含高龄年审） |
+| 独生子女证要什么材料 | 光荣证核发 + 办理须知 |
+| 今天天气怎么样 | 0 条（正确拒答） |
 
 ## 7. 边界（与契约一致）
 

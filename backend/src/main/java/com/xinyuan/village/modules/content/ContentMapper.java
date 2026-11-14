@@ -38,6 +38,10 @@ public interface ContentMapper {
     @Select(CARD_SELECT + " AND a.id = #{id}")
     CmsArticle detail(String id);
 
+    @Select("SELECT id, column_id, title, summary, content, source, author, published_at "
+            + "FROM cms_article WHERE status = 'PUBLISHED' ORDER BY published_at DESC")
+    List<CmsArticle> allArticles();
+
     @Select("SELECT a.*, c.name AS column_name, c.code AS column_code, c.color AS column_color "
             + "FROM cms_article a LEFT JOIN cms_column c ON c.id = a.column_id "
             + "WHERE a.column_id = #{columnId} AND a.id = #{id}")

@@ -5,16 +5,22 @@ import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.common.util.Times;
+import com.xinyuan.village.config.AiProperties;
 import com.xinyuan.village.modules.ai.entity.AiConversation;
 import com.xinyuan.village.modules.ai.entity.AiMessage;
 import com.xinyuan.village.modules.ai.entity.AiSuggestion;
+import com.xinyuan.village.modules.ai.llm.LlmClient;
+import com.xinyuan.village.modules.ai.llm.LlmMessage;
+import com.xinyuan.village.modules.ai.rag.RagService;
 import com.xinyuan.village.modules.system.SystemMapper;
 import com.xinyuan.village.modules.system.SystemService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AiService {
@@ -23,6 +29,14 @@ public class AiService {
     private final SystemMapper systemMapper;
     private final SystemService systemService;
     private final AnswerGenerator answerGenerator;
+    private final LlmClient llmClient;
+    private final RagService ragService;
+    private final PromptBuilder promptBuilder;
+    private final AiProperties aiProperties;
+
+    public interface Sink {
+        void send(String event, Object data) throws Exception;
+    }
 
     public Map<String, Object> suggestions() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -60,13 +74,139 @@ public class AiService {
         return saveMessage(conversationId, userId, "user", question, null, null);
     }
 
-    public String saveAssistant(String conversationId, String userId, AnswerGenerator.Answer answer) {
-        return saveMessage(conversationId, userId, "assistant", answer.text(),
-                Json.write(answer.refs()), Json.write(answer.followUps()));
-    }
-
     public void touch(String conversationId) {
         aiMapper.touchConversation(conversationId);
+    }
+
+    /** 同步问答：大模型优先，失败/未启用时回退规则引擎 */
+    public Map<String, Object> chat(String userId, String question, String conversationId) {
+        if (question == null || question.isBlank()) {
+            throw new BizException(ErrorCode.PARAM_INVALID, "请输入您的问题");
+        }
+        long start = System.currentTimeMillis();
+        AiConversation conv = resolveConversation(userId, conversationId, question);
+        List<AiMessage> history = aiMapper.messages(conv.getId());
+        saveUserMessage(conv.getId(), userId, question);
+
+        AnswerGenerator.Answer rule = answerGenerator.answerFor(question);
+        RagService.RagResult rag = aiProperties.usable()
+                ? ragService.retrieve(question) : RagService.RagResult.empty();
+
+        String text = rule.text();
+        boolean llmOk = false;
+        if (aiProperties.usable()) {
+            try {
+                String answer = llmClient.chat(promptBuilder.build(question, rag, history,
+                        aiProperties.getRag().getHistoryRounds()));
+                if (answer != null && !answer.isBlank()) {
+                    text = answer.trim();
+                    llmOk = true;
+                }
+            } catch (Exception e) {
+                log.warn("llm chat fallback to rules: {}", e.getMessage());
+            }
+        }
+
+        List<Map<String, Object>> refs = llmOk ? rag.refs() : rule.refs();
+        List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
+        String messageId = saveMessage(conv.getId(), userId, "assistant", text,
+                Json.write(refs), Json.write(followUps));
+        touch(conv.getId());
+
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("conversationId", conv.getId());
+        m.put("messageId", messageId);
+        m.put("question", question);
+        m.put("answer", text);
+        m.put("refs", refs);
+        m.put("followUps", followUps);
+        m.put("latencyMs", (int) (System.currentTimeMillis() - start));
+        return m;
+    }
+
+    /**
+     * 流式问答。事件顺序与契约一致：meta → delta×N → refs → done。
+     * 大模型不可用或首字前失败时，自动回退到规则引擎，保证演示永远有回答。
+     */
+    public void streamChat(String userId, String question, String conversationId, Sink sink) throws Exception {
+        if (question == null || question.isBlank()) {
+            throw new BizException(ErrorCode.PARAM_INVALID, "请输入您的问题");
+        }
+        long start = System.currentTimeMillis();
+        AiConversation conv = resolveConversation(userId, conversationId, question);
+        List<AiMessage> history = aiMapper.messages(conv.getId());
+        saveUserMessage(conv.getId(), userId, question);
+
+        AnswerGenerator.Answer rule = answerGenerator.answerFor(question);
+        RagService.RagResult rag = aiProperties.usable()
+                ? ragService.retrieve(question) : RagService.RagResult.empty();
+        List<Map<String, Object>> refs = aiProperties.usable() ? rag.refs() : rule.refs();
+
+        // 先落一条空消息拿到真实 messageId，再发 meta（否则前端反馈会打到 pending）
+        String messageId = saveMessage(conv.getId(), userId, "assistant", "", null, null);
+
+        Map<String, Object> meta = new LinkedHashMap<>();
+        meta.put("conversationId", conv.getId());
+        meta.put("messageId", messageId);
+        meta.put("intent", rule.intent());
+        meta.put("needRefs", !refs.isEmpty());
+        sink.send("meta", meta);
+
+        StringBuilder buffer = new StringBuilder();
+        boolean usedLlm = false;
+        if (aiProperties.usable()) {
+            boolean[] sent = {false};
+            try {
+                List<LlmMessage> messages = promptBuilder.build(question, rag, history,
+                        aiProperties.getRag().getHistoryRounds());
+                llmClient.chatStream(messages, delta -> {
+                    buffer.append(delta);
+                    sent[0] = true;
+                    try {
+                        sink.send("delta", Map.of("text", delta));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                usedLlm = true;
+            } catch (Exception e) {
+                log.warn("llm stream failed (sentAny={}): {}", sent[0], e.getMessage());
+                if (sent[0]) {
+                    finishMessage(messageId, buffer.toString(), refs, rule.followUps());
+                    throw e;
+                }
+                buffer.setLength(0);
+            }
+        }
+
+        if (!usedLlm) {
+            String text = rule.text();
+            int step = 8;
+            for (int i = 0; i < text.length(); i += step) {
+                String chunk = text.substring(i, Math.min(text.length(), i + step));
+                buffer.append(chunk);
+                sink.send("delta", Map.of("text", chunk));
+                Thread.sleep(18);
+            }
+            refs = rule.refs();
+        }
+
+        List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
+        finishMessage(messageId, buffer.toString(), refs, followUps);
+        touch(conv.getId());
+
+        if (!refs.isEmpty()) sink.send("refs", Map.of("refs", refs));
+
+        Map<String, Object> done = new LinkedHashMap<>();
+        done.put("conversationId", conv.getId());
+        done.put("messageId", messageId);
+        done.put("latencyMs", (int) (System.currentTimeMillis() - start));
+        done.put("followUps", followUps);
+        sink.send("done", done);
+    }
+
+    private void finishMessage(String id, String content, List<Map<String, Object>> refs, List<String> followUps) {
+        aiMapper.finishMessage(id, content, Json.write(refs), Json.write(followUps));
     }
 
     private String saveMessage(String conversationId, String userId, String role, String content,
@@ -81,28 +221,6 @@ public class AiService {
         m.setFollowUps(followUps);
         aiMapper.insertMessage(m);
         return m.getId();
-    }
-
-    public Map<String, Object> chat(String userId, String question, String conversationId) {
-        if (question == null || question.isBlank()) {
-            throw new BizException(ErrorCode.PARAM_INVALID, "请输入您的问题");
-        }
-        long start = System.currentTimeMillis();
-        AiConversation conv = resolveConversation(userId, conversationId, question);
-        saveUserMessage(conv.getId(), userId, question);
-        AnswerGenerator.Answer answer = answerGenerator.answerFor(question);
-        String messageId = saveAssistant(conv.getId(), userId, answer);
-        touch(conv.getId());
-
-        Map<String, Object> m = new LinkedHashMap<>();
-        m.put("conversationId", conv.getId());
-        m.put("messageId", messageId);
-        m.put("question", question);
-        m.put("answer", answer.text());
-        m.put("refs", answer.refs());
-        m.put("followUps", answer.followUps());
-        m.put("latencyMs", (int) (System.currentTimeMillis() - start));
-        return m;
     }
 
     public Map<String, Object> conversations(String userId, int page, int pageSize) {
