@@ -9,39 +9,68 @@
 
 ---
 
-## 0. 队友首次启动（数据库密码）
+---
 
-仓库里 `application.yml` 的默认值是 **root / 123456**：
+## 0. 队友怎么跑（只需 JDK 17 + MySQL 8，不用装 Maven）
 
-```yaml
-username: ${DB_USER:root}
-password: ${DB_PASSWORD:123456}
-```
+> 仓库自带 Maven Wrapper（`mvnw`），首次会自动下载 Maven 3.9.9。
 
-如果你本机 MySQL 的 root 密码不是 `123456`，**不用改代码**，用环境变量或参数覆盖即可：
+**1. 环境检查**
 
 ```powershell
+java -version        # 需要 17.x
+Get-Service MySQL80  # 需要 Running
+```
+
+**2. 拉代码**
+
+```powershell
+git pull
 cd backend
+```
 
-# 方式一：一键脚本（推荐）
-.\run.ps1 -DbPassword "你的MySQL密码" -InitDb      # 首次：建库 + 导种子 + 启动
-.\run.ps1 -DbPassword "你的MySQL密码"              # 之后：直接启动
+**3. 建库 + 导数据 + 启动（用自己的 MySQL 密码）**
 
-# 方式二：手动设环境变量
-$env:DB_USER = "root"
-$env:DB_PASSWORD = "你的MySQL密码"
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run.ps1 -DbPassword "你的MySQL密码" -InitDb
+```
+
+它会依次：建 `xinyuan_village` 库 → 导入 `schema.sql` / `seed.sql` → 没 jar 就打包 → 启动 8080。
+
+**4. 验证**
+
+浏览器打开：
+
+- `http://127.0.0.1:8080/api/v1/home` → 首页 JSON
+- `http://127.0.0.1:8080/api/v1/gov/items/YB001` → 事项详情
+
+**5. 小程序指过来**
+
+`cilent/utils/config.js`：
+
+```js
+USE_MOCK: false,
+BASE_URL: 'http://127.0.0.1:8080/api/v1',   // 真机换成电脑局域网 IP
+```
+
+开发者工具「详情 → 本地设置」勾选 **不校验合法域名**。
+
+### 不用脚本的手动版
+
+```powershell
+.\mvnw.cmd -DskipTests package
 java -jar target\village-server-2.0.0.jar --server.port=8080
 ```
 
-`-InitDb` 做的事就是：
+### 常见报错
 
-```powershell
-Get-Content -Raw -Encoding UTF8 ..\db\schema.sql | mysql -uroot -p
-Get-Content -Raw -Encoding UTF8 ..\db\seed.sql   | mysql -uroot -p xinyuan_village
-```
-
-> 密码只在本机环境变量里，不会写进仓库。不要把真实数据库密码提交到 Git。
-> 如果忘了本机 root 密码，可在 MySQL 里执行：`ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';`
+| 报错 | 原因 | 处理 |
+|---|---|---|
+| `Access denied for user 'root'` | 密码不对 | `-DbPassword` 换成自己的 |
+| `Communications link failure` | MySQL 没启动 / 端口不是 3306 | 启动服务，或加 `--spring.datasource.url=...` |
+| `Port 8080 was already in use` | 端口被占 | `-Port 8081` 或 `--server.port=8081` |
+| `'java' 不是内部或外部命令` | 没装 JDK / 没配 PATH | 装 JDK 17 并设 `JAVA_HOME` |
+| `禁止运行脚本` | PowerShell 执行策略 | 用 `powershell -ExecutionPolicy Bypass -File .\run.ps1 ...` |
 
 ## 1. 三分钟启动
 

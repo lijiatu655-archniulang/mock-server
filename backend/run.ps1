@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$DbUser = "root",
   [string]$DbPassword = "123456",
   [int]$Port = 8080,
@@ -26,7 +26,14 @@ if ($InitDb) {
 if (-not (Test-Path $jar)) {
     Write-Host "[2/3] 首次运行，打包中..." -ForegroundColor Cyan
     Push-Location $root
-    try { mvn -q -DskipTests package } finally { Pop-Location }
+    try {
+        if (Get-Command mvn -ErrorAction SilentlyContinue) {
+            mvn -q -DskipTests package
+        } else {
+            # 没装 Maven 时用仓库自带的 wrapper
+            & ".\mvnw.cmd" -q -DskipTests package
+        }
+    } finally { Pop-Location }
 }
 
 Write-Host "[3/3] 启动 http://127.0.0.1:$Port/api/v1/home" -ForegroundColor Green
