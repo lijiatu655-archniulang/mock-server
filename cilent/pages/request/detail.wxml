@@ -1,0 +1,154 @@
+<view class="page request-detail-page" wx:if="{{request}}">
+  <view class="detail-head">
+    <view class="status-row">
+      <view class="status-pill theme-{{request.statusTheme}}">{{request.statusLabel}}</view>
+      <text class="type-text">{{request.typeLabel}}</text>
+    </view>
+    <view class="detail-title">{{request.title}}</view>
+    <view class="detail-no">{{request.requestNo}} · {{request.createdAt}}</view>
+  </view>
+
+  <view class="alert-card" wx:if="{{request.status === 'PENDING'}}">
+    <view class="alert-icon">···</view>
+    <view class="alert-main">
+      <view class="alert-title">已提交，等待受理</view>
+      <view class="alert-desc">网格员一般会在 1 个工作日内联系您；紧急情况请直接拨打村党群服务中心电话。</view>
+    </view>
+  </view>
+
+  <view class="alert-card processing" wx:if="{{request.status === 'PROCESSING' || request.status === 'ACCEPTED'}}">
+    <view class="alert-icon">✓</view>
+    <view class="alert-main">
+      <view class="alert-title">正在办理</view>
+      <view class="alert-desc">已转交相关人员处理，您可以随时查看进度或催办。</view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">办理进度</view>
+      <view class="section-sub">共 {{request.logs.length}} 条</view>
+    </view>
+    <view class="timeline">
+      <view class="timeline-item" wx:for="{{request.logs}}" wx:key="time" wx:for-item="log" wx:for-index="logIndex">
+        <view class="timeline-left">
+          <view class="timeline-dot {{logIndex === request.logs.length - 1 ? 'active' : ''}}"></view>
+          <view class="timeline-line" wx:if="{{logIndex < request.logs.length - 1}}"></view>
+        </view>
+        <view class="timeline-main">
+          <view class="timeline-title {{logIndex === request.logs.length - 1 ? 'active' : ''}}">{{log.label}}</view>
+          <view class="timeline-note">{{log.note}}</view>
+          <view class="timeline-meta">{{log.time}} · {{log.operator}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">诉求内容</view>
+    </view>
+    <view class="content-text">{{request.content}}</view>
+    <view class="content-meta" wx:if="{{request.location}}">
+      <text class="meta-label">地点</text>
+      <text>{{request.location}}</text>
+    </view>
+    <view class="photo-row" wx:if="{{request.photos.length}}">
+      <image
+        class="photo-item"
+        wx:for="{{request.photos}}"
+        wx:key="*this"
+        src="{{item}}"
+        mode="aspectFill"
+        data-index="{{index}}"
+        bindtap="onPreviewPhoto"
+      ></image>
+    </view>
+  </view>
+
+  <view class="section card" wx:if="{{request.replies.length}}">
+    <view class="section-head">
+      <view class="section-title">办理回复</view>
+    </view>
+    <view class="reply" wx:for="{{request.replies}}" wx:key="time">
+      <view class="reply-head">
+        <view class="reply-avatar">{{item.avatarText}}</view>
+        <view class="reply-main">
+          <view class="reply-name">{{item.operator}}</view>
+          <view class="reply-time">{{item.time}}</view>
+        </view>
+      </view>
+      <view class="reply-content">{{item.content}}</view>
+    </view>
+  </view>
+
+  <view class="rated-card" wx:if="{{request.hasRated}}">
+    <view class="rated-stars">
+      <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{request.rating.score >= item ? 'on' : ''}}">★</text>
+    </view>
+    <view class="rated-text">您已评价 {{request.rating.score}} 星，感谢您的反馈</view>
+  </view>
+
+  <view class="detail-footer">
+    <text>新源村党群服务中心 · 0999-5021688</text>
+    <text>诉求信息仅用于本次办理</text>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bar-ghost" bindtap="onCall">电话咨询</view>
+    <view class="bar-primary" wx:if="{{request.canUrge}}" bindtap="onUrge" hover-class="press">催办一下</view>
+    <view class="bar-primary" wx:elif="{{request.canRate}}" bindtap="openRating" hover-class="press">评价办理</view>
+    <view class="bar-primary muted" wx:else bindtap="onAgain" hover-class="press">再提一个</view>
+  </view>
+
+  <view class="sheet-mask" wx:if="{{ratingOpen}}" bindtap="closeRating">
+    <view class="rating-sheet" catchtap="noop">
+      <view class="sheet-bar"></view>
+      <view class="sheet-title">评价办理</view>
+      <view class="sheet-sub">{{request.typeLabel}} · {{request.requestNo}}</view>
+      <view class="star-row">
+        <text
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:key="*this"
+          class="star {{ratingScore >= item ? 'on' : ''}}"
+          data-score="{{item}}"
+          bindtap="onStar"
+        >★</text>
+      </view>
+      <view class="star-tip">{{ratingScore}} 星</view>
+      <textarea
+        class="rating-input"
+        value="{{ratingComment}}"
+        placeholder="说说哪里满意，或还有什么建议（选填）"
+        placeholder-class="rating-placeholder"
+        maxlength="200"
+        bindinput="onCommentInput"
+      ></textarea>
+      <view class="sheet-submit {{submitting ? 'loading' : ''}}" bindtap="submitRating">
+        {{submitting ? '提交中…' : '提交评价'}}
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="page" wx:elif="{{loading}}">
+  <view class="detail-head">
+    <view class="sk-block" style="width:110rpx;height:36rpx;"></view>
+    <view class="sk-block" style="width:80%;height:40rpx;margin-top:20rpx;"></view>
+    <view class="sk-block" style="width:50%;height:24rpx;margin-top:16rpx;"></view>
+  </view>
+  <view class="section card" style="height:260rpx;">
+    <view class="sk-block" style="width:40%;height:30rpx;"></view>
+    <view class="sk-block" style="width:90%;height:24rpx;margin-top:24rpx;"></view>
+    <view class="sk-block" style="width:80%;height:24rpx;margin-top:14rpx;"></view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="state-box card" style="margin:40rpx 24rpx;">
+    <view class="state-emoji">!</view>
+    <view class="state-title">诉求没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+</view>

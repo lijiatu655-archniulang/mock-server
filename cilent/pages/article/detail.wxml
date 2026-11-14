@@ -1,0 +1,103 @@
+<view class="page detail-page" wx:if="{{article}}">
+  <view class="detail-head">
+    <view class="head-tags">
+      <view class="column-chip" style="color:{{article.columnColor}};background:#FBEBEB;">
+        <view class="chip-dot" style="background:{{article.columnColor}}"></view>
+        <text>{{article.columnName}}</text>
+      </view>
+      <view class="top-chip" wx:if="{{article.isTop}}">置顶</view>
+    </view>
+    <view class="detail-title">{{article.title}}</view>
+    <view class="detail-meta">
+      <text>{{article.displayDate}}</text>
+      <text class="meta-sep">·</text>
+      <text>{{article.source}}</text>
+      <text class="meta-sep">·</text>
+      <text>{{views}} 阅读</text>
+    </view>
+  </view>
+
+  <view class="content-card card">
+    <rich-text class="rich-text" nodes="{{article.content}}" space="nbsp"></rich-text>
+    <view class="content-end">
+      <view class="end-line"></view>
+      <text>完</text>
+      <view class="end-line"></view>
+    </view>
+    <view class="content-source">
+      <text>来源：{{article.source}}</text>
+      <text wx:if="{{article.author}}">作者：{{article.author}}</text>
+    </view>
+    <view class="content-note">如对内容有疑问，请拨打村党群服务中心电话 0999-5021688。</view>
+  </view>
+
+  <view class="like-card card">
+    <view class="like-copy">
+      <text class="like-title">这篇内容对您有帮助吗？</text>
+      <text class="like-sub">点个赞，让更多村民看到</text>
+    </view>
+    <view class="like-btn {{liked ? 'on' : ''}}" bindtap="onLike" hover-class="press">
+      <text class="like-heart">{{liked ? '♥' : '♡'}}</text>
+      <text class="like-count">{{likes}}</text>
+    </view>
+  </view>
+
+  <view class="neighbor card" wx:if="{{article.prev || article.next}}">
+    <view class="neighbor-row" wx:if="{{article.prev}}" bindtap="onPrev" hover-class="press">
+      <view class="neighbor-label">上一篇</view>
+      <view class="neighbor-title line-1">{{article.prev.title}}</view>
+      <view class="neighbor-arrow up"></view>
+    </view>
+    <view class="neighbor-row" wx:if="{{article.next}}" bindtap="onNext" hover-class="press">
+      <view class="neighbor-label">下一篇</view>
+      <view class="neighbor-title line-1">{{article.next.title}}</view>
+      <view class="neighbor-arrow"></view>
+    </view>
+  </view>
+
+  <view class="detail-footer">
+    <view class="footer-seal">★</view>
+    <view>{{article.source}} · 新源村情通</view>
+    <view>内容以官方发布为准，转载请注明来源</view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bar-like {{liked ? 'on' : ''}}" bindtap="onLike" hover-class="press">
+      <text class="bar-heart">{{liked ? '♥' : '♡'}}</text>
+      <text>{{likes}}</text>
+    </view>
+    <button class="bar-share" open-type="share" hover-class="press">转发</button>
+    <view class="bar-call" bindtap="onCall" hover-class="press">
+      <image class="bar-call-icon" src="/assets/icons/icon-phone-white.png" mode="aspectFit"></image>
+      <text>电话咨询</text>
+    </view>
+  </view>
+</view>
+
+<view class="page" wx:elif="{{loading}}">
+  <view class="detail-head">
+    <view class="sk-block" style="width:30%;height:32rpx;"></view>
+    <view class="sk-block" style="width:94%;height:44rpx;margin-top:24rpx;"></view>
+    <view class="sk-block" style="width:68%;height:44rpx;margin-top:12rpx;"></view>
+    <view class="sk-block" style="width:52%;height:24rpx;margin-top:24rpx;"></view>
+  </view>
+  <view class="content-card card">
+    <view class="sk-block" style="width:100%;height:26rpx;"></view>
+    <view class="sk-block" style="width:92%;height:26rpx;margin-top:18rpx;"></view>
+    <view class="sk-block" style="width:96%;height:26rpx;margin-top:18rpx;"></view>
+    <view class="sk-block" style="width:72%;height:26rpx;margin-top:18rpx;"></view>
+    <view class="sk-block" style="width:100%;height:26rpx;margin-top:40rpx;"></view>
+    <view class="sk-block" style="width:88%;height:26rpx;margin-top:18rpx;"></view>
+    <view class="sk-block" style="width:94%;height:26rpx;margin-top:18rpx;"></view>
+    <view class="sk-block" style="width:64%;height:26rpx;margin-top:18rpx;"></view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="state-box card" style="margin:40rpx 24rpx;">
+    <view class="state-emoji">!</view>
+    <view class="state-title">文章没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+</view>

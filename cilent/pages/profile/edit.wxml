@@ -1,0 +1,76 @@
+<view class="page edit-page">
+  <view class="edit-head">
+    <view class="head-title">修改资料</view>
+    <view class="head-sub">头像和昵称只用于平台内展示，实名信息由村委核验。</view>
+  </view>
+
+  <view class="avatar-card card">
+    <view class="avatar-label">头像</view>
+    <view class="avatar-row">
+      <button class="avatar-btn" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar" hover-class="press">
+        <image
+          wx:if="{{avatarPreview && !avatarFailed}}"
+          class="avatar-img"
+          src="{{avatarPreview}}"
+          mode="aspectFill"
+          binderror="onAvatarError"
+        ></image>
+        <view wx:else class="avatar-fallback">{{user.avatarText || '村'}}</view>
+        <view class="avatar-camera">拍照</view>
+      </button>
+      <view class="avatar-tip">
+        <view>点击左侧头像可直接用微信头像</view>
+        <view class="avatar-link" bindtap="onChooseFromAlbum">或从相册选择 ›</view>
+        <view class="avatar-link reset" wx:if="{{avatarPreview}}" bindtap="onRestoreAvatar">恢复默认头像</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-card card">
+    <view class="field">
+      <view class="field-label">
+        <text>昵称</text>
+        <text class="field-count">{{nickname.length}}/12</text>
+      </view>
+      <input
+        class="field-input"
+        value="{{nickname}}"
+        maxlength="12"
+        bindinput="onNicknameInput"
+        placeholder="请输入 2—12 个字的昵称"
+        placeholder-class="field-placeholder"
+      />
+    </view>
+
+    <view class="readonly-title">实名信息（不可修改）</view>
+    <view class="readonly-row">
+      <text class="readonly-label">姓名</text>
+      <text class="readonly-value">{{user.name}}</text>
+      <text class="readonly-tag">已核验</text>
+    </view>
+    <view class="readonly-row">
+      <text class="readonly-label">手机号</text>
+      <text class="readonly-value">{{user.phoneDisplay}}</text>
+    </view>
+    <view class="readonly-row">
+      <text class="readonly-label">所属区域</text>
+      <text class="readonly-value">{{regionText}}</text>
+    </view>
+    <view class="readonly-row">
+      <text class="readonly-label">网格</text>
+      <text class="readonly-value">{{user.gridName}}</text>
+    </view>
+    <view class="readonly-row readonly-last">
+      <text class="readonly-label">门牌</text>
+      <text class="readonly-value">{{user.houseNo}}</text>
+    </view>
+    <view class="readonly-note">实名信息如需修改，请携带身份证到村党群服务中心办理。</view>
+
+    <view class="form-error" wx:if="{{error}}">{{error}}</view>
+  </view>
+
+  <view class="save-btn {{saving ? 'loading' : ''}} {{dirty ? '' : 'disabled'}}" bindtap="onSave" hover-class="press">
+    {{saving ? '保存中…' : '保存'}}
+  </view>
+  <view class="save-tip">头像和昵称保存后立即生效</view>
+</view>

@@ -1,0 +1,106 @@
+<view class="page list-page">
+  <view class="list-head">
+    <view class="head-kicker">
+      <view class="kicker-dot"></view>
+      <text>新源村 · 信息公开</text>
+    </view>
+    <view class="head-title">村情资讯</view>
+    <view class="head-desc">村里的事、上面的政策，一个屏看完</view>
+    <view class="head-meta" wx:if="{{!loading}}">
+      <text>共 {{total}} 条</text>
+      <text class="head-meta-sep">·</text>
+      <text>{{activeName}}</text>
+    </view>
+  </view>
+
+  <view class="filter-wrap">
+    <scroll-view class="filter-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view class="filter-inner">
+        <view
+          class="filter-chip {{activeColumn === '' ? 'on' : ''}}"
+          data-id=""
+          bindtap="onColumnTap"
+          hover-class="press"
+        >
+          全部
+        </view>
+        <view
+          wx:for="{{columns}}"
+          wx:key="id"
+          class="filter-chip {{activeColumn === item.id ? 'on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onColumnTap"
+          hover-class="press"
+        >
+          <view class="chip-dot" style="background:{{activeColumn === item.id ? '#FFFFFF' : item.color}}"></view>
+          {{item.name}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="list-body">
+    <block wx:if="{{loading}}">
+      <view class="article-card card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="sk-block" style="width:36%;height:24rpx;"></view>
+        <view class="sk-block" style="width:92%;height:36rpx;margin-top:22rpx;"></view>
+        <view class="sk-block" style="width:100%;height:24rpx;margin-top:16rpx;"></view>
+        <view class="sk-block" style="width:64%;height:24rpx;margin-top:10rpx;"></view>
+        <view class="sk-block" style="width:44%;height:20rpx;margin-top:22rpx;"></view>
+      </view>
+    </block>
+
+    <view class="state-box card" wx:elif="{{error}}">
+      <view class="state-emoji">!</view>
+      <view class="state-title">资讯没有加载出来</view>
+      <view class="state-desc">{{error}}</view>
+      <view class="state-action" bindtap="retry">重新加载</view>
+    </view>
+
+    <view class="state-box card" wx:elif="{{!articles.length}}">
+      <view class="state-emoji">空</view>
+      <view class="state-title">这个栏目暂时没有内容</view>
+      <view class="state-desc">村里有新通知、新政策会第一时间发布，先去其他栏目看看。</view>
+    </view>
+
+    <block wx:else>
+      <view
+        class="article-card card {{item.isTop ? 'featured' : ''}}"
+        wx:for="{{articles}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onArticle"
+        hover-class="press"
+      >
+        <view class="article-head">
+          <view class="column-label" style="color:{{item.columnColor}}">
+            <view class="column-dot" style="background:{{item.columnColor}}"></view>
+            <text>{{item.columnName}}</text>
+          </view>
+          <view class="top-flag" wx:if="{{item.isTop}}">置顶</view>
+          <text class="article-date">{{item.displayDate}}</text>
+        </view>
+        <view class="article-title line-2">{{item.title}}</view>
+        <view class="article-summary line-2">{{item.summary}}</view>
+        <view class="article-foot">
+          <view class="foot-left">
+            <text>{{item.source}}</text>
+            <text class="foot-dot">·</text>
+            <text>{{item.views}} 阅读</text>
+          </view>
+          <view class="foot-arrow"></view>
+        </view>
+      </view>
+
+      <view class="list-more" wx:if="{{loadingMore}}">
+        <view class="loading-dot"></view>
+        <text>正在加载…</text>
+      </view>
+      <view class="list-more" wx:elif="{{!hasMore}}">
+        <view class="more-line"></view>
+        <text>已经到底啦</text>
+        <view class="more-line"></view>
+      </view>
+    </block>
+  </view>
+</view>

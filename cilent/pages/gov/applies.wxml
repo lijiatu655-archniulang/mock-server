@@ -1,0 +1,76 @@
+<view class="page applies-page">
+  <view class="list-head">
+    <view class="head-left">
+      <view class="head-title">我的办件</view>
+      <view class="head-sub">申报记录、进度、评价都在这里</view>
+    </view>
+    <view class="head-create" bindtap="onCreate" hover-class="press">
+      <text>去办事</text>
+      <view class="arrow arrow-red"></view>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <view class="filter-chip {{filter === 'all' ? 'on' : ''}}" data-filter="all" bindtap="onFilterTap">
+      全部 <text class="chip-count">{{counts.all}}</text>
+    </view>
+    <view class="filter-chip {{filter === 'processing' ? 'on' : ''}}" data-filter="processing" bindtap="onFilterTap">
+      办理中 <text class="chip-count">{{counts.processing}}</text>
+    </view>
+    <view class="filter-chip {{filter === 'done' ? 'on' : ''}}" data-filter="done" bindtap="onFilterTap">
+      已办结 <text class="chip-count">{{counts.done}}</text>
+    </view>
+  </view>
+
+  <block wx:if="{{loading}}">
+    <view class="apply-card card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="sk-block" style="width:50%;height:32rpx;"></view>
+      <view class="sk-block" style="width:90%;height:26rpx;margin-top:18rpx;"></view>
+      <view class="sk-block" style="width:60%;height:22rpx;margin-top:16rpx;"></view>
+    </view>
+  </block>
+
+  <view class="state-box card" wx:elif="{{error}}">
+    <view class="state-emoji">!</view>
+    <view class="state-title">办件没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+
+  <view class="state-box card" wx:elif="{{!applies.length}}">
+    <view class="state-emoji">办</view>
+    <view class="state-title">{{counts.all ? '这个分类暂无办件' : '还没有办件'}}</view>
+    <view class="state-desc">{{counts.all ? '切换上方筛选，看看其他办件。' : '医保缴费、高龄补贴、独生子女证等事项，都可以在线申报。'}}</view>
+    <view class="state-action" wx:if="{{!counts.all}}" bindtap="onCreate">去办事</view>
+    <view class="state-action" wx:else data-filter="all" bindtap="onFilterTap">查看全部</view>
+  </view>
+
+  <block wx:else>
+    <view
+      class="apply-card card"
+      wx:for="{{applies}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onItemTap"
+      hover-class="press"
+    >
+      <view class="card-top">
+        <view class="apply-name line-1">{{item.itemName}}</view>
+        <view class="status-tag {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="apply-no">办件号：{{item.applyNo}}</view>
+      <view class="apply-meta">
+        <text class="apply-amount" wx:if="{{item.amount > 0}}">{{item.amountText}}</text>
+        <text class="apply-amount free" wx:else>免费</text>
+        <text class="meta-dot">·</text>
+        <text>提交于 {{item.createdDate}}</text>
+        <text class="meta-dot">·</text>
+        <text>承诺 {{item.promiseAt}}</text>
+      </view>
+      <view class="card-foot">
+        <text>{{item.status === 'SUPPLEMENT' ? '需要补材料，点开查看' : item.status === 'COMPLETED' ? '已办结，可查看结果' : '查看办理进度'}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+  </block>
+</view>

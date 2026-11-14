@@ -1,0 +1,202 @@
+<view class="ai-page">
+  <view class="ai-head">
+    <view class="head-row">
+      <view class="ai-avatar">
+        <image class="ai-avatar-img" src="/assets/icons/ai-xiaojia.png" mode="aspectFill"></image>
+        <view class="avatar-dot"></view>
+      </view>
+      <view class="head-main">
+        <view class="head-name">
+          新源小贾
+          <view class="online-dot"></view>
+          <text class="online-text">在线</text>
+        </view>
+        <view class="head-desc">AI 网格员 · 已学习 128 条本地政策</view>
+      </view>
+      <view class="head-actions">
+        <view class="history-btn" bindtap="onHistory" hover-class="press">历史</view>
+        <view class="new-chat" bindtap="onNewChat" hover-class="press">＋ 新对话</view>
+      </view>
+    </view>
+    <view class="head-promise">
+      <view class="promise-dot"></view>
+      <text>回答附政策依据 · 查不到会直说</text>
+    </view>
+  </view>
+
+  <scroll-view
+    class="chat-scroll"
+    scroll-y
+    scroll-with-animation
+    scroll-into-view="{{scrollInto}}"
+    enhanced
+    show-scrollbar="{{false}}"
+    bindscroll="onChatScroll"
+  >
+    <view class="chat-inner">
+      <view class="date-line">
+        <view class="date-text">今天 · 新源村</view>
+      </view>
+
+      <block wx:for="{{messages}}" wx:key="id">
+        <view class="msg-row user-row" wx:if="{{item.role === 'user'}}">
+          <view class="bubble user-bubble">
+            <text class="msg-text">{{item.content}}</text>
+          </view>
+          <view class="msg-avatar user-avatar">{{userAvatar}}</view>
+        </view>
+
+        <view class="msg-row ai-row" wx:else>
+          <view class="msg-avatar">
+            <image class="msg-avatar-img" src="/assets/icons/ai-xiaojia.png" mode="aspectFill"></image>
+          </view>
+          <view class="msg-body">
+            <view class="bubble ai-bubble {{item.error ? 'error-bubble' : ''}}">
+              <view class="typing" wx:if="{{item.streaming && !item.content}}">
+                <view class="typing-dots">
+                  <view class="typing-dot"></view>
+                  <view class="typing-dot"></view>
+                  <view class="typing-dot"></view>
+                </view>
+                <text>正在查找本地政策…</text>
+              </view>
+              <block wx:else>
+                <text class="msg-text">{{item.content}}</text>
+                <text class="stream-cursor" wx:if="{{item.streaming}}">▍</text>
+              </block>
+
+              <view class="stopped-note" wx:if="{{item.stopped}}">已停止生成</view>
+              <view class="degraded-note" wx:if="{{item.degraded}}">网络波动，已切换为普通回答</view>
+
+              <view class="refs" wx:if="{{item.refs.length}}">
+                <view class="refs-head">
+                  <view class="refs-line"></view>
+                  <text>依据 · {{item.refs.length}} 条</text>
+                </view>
+                <view
+                  class="ref-card"
+                  wx:for="{{item.refs}}"
+                  wx:key="id"
+                  wx:for-item="ref"
+                  data-route="{{ref.route}}"
+                  bindtap="onRefTap"
+                  hover-class="press"
+                >
+                  <view class="ref-type">{{ref.type === 'item' ? '事项' : '政策'}}</view>
+                  <view class="ref-main">
+                    <view class="ref-title line-1">{{ref.title}}</view>
+                    <view class="ref-source line-1">{{ref.source}}</view>
+                  </view>
+                  <view class="arrow"></view>
+                </view>
+              </view>
+            </view>
+
+            <view class="msg-tools" wx:if="{{!item.streaming && item.question}}">
+              <view
+                class="tool-chip {{item.feedback === 'up' ? 'on' : ''}}"
+                data-index="{{index}}"
+                data-type="up"
+                bindtap="onFeedback"
+              >有帮助</view>
+              <view
+                class="tool-chip {{item.feedback === 'down' ? 'on' : ''}}"
+                data-index="{{index}}"
+                data-type="down"
+                bindtap="onFeedback"
+              >没帮助</view>
+              <view class="tool-chip" data-text="{{item.content}}" bindtap="onCopy">复制</view>
+              <view
+                class="tool-chip"
+                wx:if="{{index === messages.length - 1 && item.question}}"
+                data-index="{{index}}"
+                bindtap="onRegenerate"
+              >重新生成</view>
+              <view class="tool-chip retry" wx:if="{{item.error}}" data-question="{{item.question}}" bindtap="onRetry">重试</view>
+            </view>
+
+            <view class="followups" wx:if="{{!item.streaming && item.followUps.length}}">
+              <view class="followup-label">您可能还想问</view>
+              <view
+                class="followup"
+                wx:for="{{item.followUps}}"
+                wx:key="*this"
+                wx:for-item="q"
+                data-text="{{q}}"
+                bindtap="onFollowUp"
+                hover-class="press"
+              >{{q}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <view class="suggest-card" wx:if="{{messages.length === 1 && suggestions.length}}">
+        <view class="suggest-head">
+          <view class="suggest-title">您可以这样问</view>
+          <view class="suggest-sub">点一下就能问</view>
+        </view>
+        <view class="suggest-grid">
+          <view
+            class="suggest-item"
+            wx:for="{{suggestions}}"
+            wx:key="id"
+            data-text="{{item.text}}"
+            bindtap="onSuggestion"
+            hover-class="press"
+          >
+            <view class="suggest-mark">问</view>
+            <text>{{item.text}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="ai-note">
+        <view class="note-line"></view>
+        <text>小贾会标明依据；没有依据时会直接说“没查到”</text>
+        <view class="note-line"></view>
+      </view>
+
+      <view class="chat-bottom" id="chat-bottom"></view>
+    </view>
+  </scroll-view>
+
+  <view class="scroll-bottom" wx:if="{{showScrollBottom}}" bindtap="onScrollToBottom" hover-class="press">
+    <text>回到最新</text>
+    <text class="scroll-arrow">↓</text>
+  </view>
+
+  <view class="composer">
+    <view class="composer-box">
+      <textarea
+        class="composer-input"
+        value="{{input}}"
+        placeholder="输入您想问的事，如：医保怎么缴"
+        placeholder-class="composer-placeholder"
+        maxlength="200"
+        auto-height
+        show-confirm-bar="{{false}}"
+        confirm-type="send"
+        cursor-spacing="24"
+        bindinput="onInput"
+        bindconfirm="onSend"
+      ></textarea>
+      <view
+        class="send-btn {{streaming ? 'stop-btn' : ''}} {{canSend || streaming ? '' : 'disabled'}}"
+        bindtap="onSendOrStop"
+        hover-class="press"
+      >
+        <image
+          class="send-icon"
+          src="{{streaming ? '/assets/icons/icon-stop.png' : '/assets/icons/icon-send.png'}}"
+          mode="aspectFit"
+        ></image>
+      </view>
+    </view>
+    <view class="composer-foot">
+      <text class="disclaimer">{{disclaimer}}</text>
+      <text class="char-count" wx:if="{{!streaming}}">{{input.length}}/200</text>
+      <text class="stop-hint" wx:else>正在回答 · 点右侧停止</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,193 @@
+<view class="page gov-detail" wx:if="{{item}}">
+  <view class="item-hero">
+    <view class="hero-glow"></view>
+    <view class="hero-top">
+      <view class="hero-icon">{{item.icon}}</view>
+      <view class="hero-main">
+        <view class="hero-cat">{{item.categoryName}} · {{item.code}}</view>
+        <view class="hero-name">{{item.name}}</view>
+      </view>
+    </view>
+    <view class="hero-tags">
+      <text class="hero-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+    </view>
+    <view class="hero-update">指南更新：{{item.updateAt}} · 信息由新源县政务服务平台提供</view>
+  </view>
+
+  <view class="key-card card">
+    <view class="key-item">
+      <view class="key-value">{{item.promiseDays}}<text class="key-unit">个工作日</text></view>
+      <view class="key-label">承诺时限</view>
+    </view>
+    <view class="key-divider"></view>
+    <view class="key-item">
+      <view class="key-value">{{item.materials.length}}<text class="key-unit">项</text></view>
+      <view class="key-label">所需材料</view>
+    </view>
+    <view class="key-divider"></view>
+    <view class="key-item">
+      <view class="key-value key-value-small">{{item.feeShort}}</view>
+      <view class="key-label">收费标准</view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">基本信息</view>
+    </view>
+    <view class="info-row">
+      <text class="info-label">办理对象</text>
+      <text class="info-value">{{item.target}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">收费标准</text>
+      <text class="info-value">{{item.fee}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">办理地址</text>
+      <text class="info-value">{{item.address}}</text>
+    </view>
+    <view class="info-row info-row-last">
+      <text class="info-label">咨询电话</text>
+      <view class="info-value phone-value" bindtap="onCall">
+        <text>{{item.phone}}</text>
+        <text class="phone-action">拨打</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">办理条件</view>
+      <view class="section-count">请逐条核对</view>
+    </view>
+    <view class="condition" wx:for="{{item.conditions}}" wx:key="*this" wx:for-item="condition">
+      <view class="condition-index">{{index + 1}}</view>
+      <text class="condition-text">{{condition}}</text>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">所需材料</view>
+      <view class="section-count">共 {{item.materials.length}} 项，其中必需 {{item.requiredCount}} 项</view>
+    </view>
+    <view class="material" wx:for="{{item.materials}}" wx:key="name" wx:for-item="material">
+      <view class="material-icon">
+        <image class="material-img" src="/assets/icons/icon-doc.png" mode="aspectFit"></image>
+      </view>
+      <view class="material-main">
+        <view class="material-name">
+          <text>{{material.name}}</text>
+          <text class="material-tag required" wx:if="{{material.required}}">必需</text>
+          <text class="material-tag optional" wx:else>可选</text>
+        </view>
+        <view class="material-note">{{material.note}}</view>
+      </view>
+    </view>
+    <view class="material-tip">材料可到村党群服务中心免费复印；行动不便的老人可联系网格员上门收取。</view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">办理流程</view>
+      <view class="section-count">共 {{item.steps.length}} 步</view>
+    </view>
+    <view class="step" wx:for="{{item.steps}}" wx:key="title" wx:for-item="step" wx:for-index="stepIndex">
+      <view class="step-left">
+        <view class="step-dot {{stepIndex === 0 ? 'step-dot-first' : ''}}">{{stepIndex + 1}}</view>
+        <view class="step-line" wx:if="{{stepIndex < item.steps.length - 1}}"></view>
+      </view>
+      <view class="step-main">
+        <view class="step-title">{{step.title}}</view>
+        <view class="step-desc">{{step.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">申报表单</view>
+      <view class="v2-tag">可在线填写</view>
+    </view>
+    <view class="form-note">
+      <view class="form-note-dot"></view>
+      <text>点击“在线申报”后按以下表单填写，带 * 为必填项。</text>
+    </view>
+    <view class="form-row" wx:for="{{item.formFields}}" wx:key="label" wx:for-item="field">
+      <view class="form-label">
+        <text>{{field.label}}</text>
+        <text class="form-required" wx:if="{{field.required}}">*</text>
+        <text class="form-type">{{field.typeLabel}}</text>
+      </view>
+      <view class="form-control">
+        <text class="form-placeholder">{{field.placeholder}}</text>
+        <text class="form-lock">预览</text>
+      </view>
+      <view class="form-options" wx:if="{{field.options}}">
+        <text class="form-option" wx:for="{{field.options}}" wx:key="*this" wx:for-item="opt">{{opt}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-head">
+      <view class="section-title">政策依据</view>
+    </view>
+    <view class="basis" wx:for="{{item.basis}}" wx:key="*this" wx:for-item="rule">
+      <view class="basis-dot"></view>
+      <text>{{rule}}</text>
+    </view>
+  </view>
+
+  <view class="section card" wx:if="{{item.faqs && item.faqs.length}}">
+    <view class="section-head">
+      <view class="section-title">常见问题</view>
+    </view>
+    <view class="faq" wx:for="{{item.faqs}}" wx:key="q" wx:for-item="faq">
+      <view class="faq-q" data-index="{{index}}" bindtap="toggleFaq" hover-class="press">
+        <text>{{faq.q}}</text>
+        <view class="faq-arrow {{faqOpen === index ? 'open' : ''}}"></view>
+      </view>
+      <view class="faq-a" wx:if="{{faqOpen === index}}">{{faq.a}}</view>
+    </view>
+  </view>
+
+  <view class="readonly-note">
+    <view class="readonly-icon">i</view>
+    <text>在线申报已开放；提交后可在「我的办件」查看进度、补正提醒和评价。</text>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bar-ghost" bindtap="onCall" hover-class="press">电话咨询</view>
+    <view class="bar-primary" bindtap="onApply" hover-class="press">在线申报</view>
+  </view>
+</view>
+
+<view class="page" wx:elif="{{loading}}">
+  <view class="item-hero">
+    <view class="sk-hero-icon"></view>
+    <view class="sk-block light" style="width:70%;height:44rpx;margin-top:24rpx;"></view>
+    <view class="sk-block light" style="width:48%;height:24rpx;margin-top:18rpx;"></view>
+  </view>
+  <view class="key-card card">
+    <view class="sk-block" style="width:80%;height:44rpx;margin:10rpx auto;"></view>
+    <view class="sk-block" style="width:60%;height:44rpx;margin:10rpx auto;"></view>
+    <view class="sk-block" style="width:70%;height:44rpx;margin:10rpx auto;"></view>
+  </view>
+  <view class="section card" style="height:260rpx;">
+    <view class="sk-block" style="width:40%;height:30rpx;"></view>
+    <view class="sk-block" style="width:96%;height:24rpx;margin-top:22rpx;"></view>
+    <view class="sk-block" style="width:88%;height:24rpx;margin-top:14rpx;"></view>
+    <view class="sk-block" style="width:72%;height:24rpx;margin-top:14rpx;"></view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="state-box card" style="margin:40rpx 24rpx;">
+    <view class="state-emoji">!</view>
+    <view class="state-title">事项没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+</view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "村情资讯",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F6F2F0",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {}
+}

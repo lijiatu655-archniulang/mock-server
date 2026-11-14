@@ -1,0 +1,146 @@
+.history-page {
+  background: #F6F2F0;
+}
+
+.history-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 34rpx 30rpx 24rpx;
+  background: linear-gradient(180deg, #FFF8F3 0%, #F6F2F0 100%);
+}
+
+.head-title {
+  color: #24262A;
+  font-size: 44rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+}
+
+.head-sub {
+  margin-top: 6rpx;
+  color: #9A938E;
+  font-size: 21rpx;
+}
+
+.clear-btn {
+  height: 54rpx;
+  padding: 0 18rpx;
+  border: 1rpx solid #EDE2DC;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #8A6A58;
+  font-size: 20rpx;
+  line-height: 52rpx;
+}
+
+.history-card {
+  margin: 0 24rpx 14rpx;
+  padding: 22rpx 24rpx 18rpx;
+}
+
+.session-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-avatar {
+  flex: none;
+  width: 44rpx;
+  height: 44rpx;
+  margin-right: 10rpx;
+  border-radius: 50%;
+  background: #FBEBEB;
+}
+
+.session-title {
+  flex: 1;
+  min-width: 0;
+  padding-right: 12rpx;
+  color: #292B2F;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.session-count {
+  flex: none;
+  height: 32rpx;
+  padding: 0 10rpx;
+  border-radius: 999rpx;
+  background: #F6F2F0;
+  color: #A19A95;
+  font-size: 17rpx;
+  line-height: 32rpx;
+}
+
+.session-preview {
+  margin-top: 12rpx;
+  padding: 12rpx 14rpx;
+  border-radius: 10rpx;
+  background: #FAF7F5;
+  color: #6E7278;
+  font-size: 21rpx;
+  line-height: 1.7;
+}
+
+.role-tag {
+  display: inline-block;
+  height: 30rpx;
+  margin-right: 8rpx;
+  padding: 0 7rpx;
+  border-radius: 4rpx;
+  background: #FBEBEB;
+  color: #C4161C;
+  font-size: 16rpx;
+  line-height: 30rpx;
+  vertical-align: 2rpx;
+}
+
+.session-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+}
+
+.session-time {
+  color: #B0A9A4;
+  font-size: 18rpx;
+}
+
+.session-actions {
+  display: flex;
+}
+
+.action-btn {
+  height: 48rpx;
+  margin-left: 10rpx;
+  padding: 0 14rpx;
+  border: 1rpx solid #EFE4DE;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #8A6A58;
+  font-size: 19rpx;
+  line-height: 46rpx;
+}
+
+.action-btn.delete {
+  color: #C4161C;
+  border-color: #F2D8CE;
+}
+
+.action-btn.continue {
+  border-color: transparent;
+  background: #FBEBEB;
+  color: #C4161C;
+}
+
+.history-note {
+  padding: 24rpx 30rpx 30rpx;
+  color: #B0A9A4;
+  font-size: 18rpx;
+  line-height: 1.7;
+  text-align: center;
+}

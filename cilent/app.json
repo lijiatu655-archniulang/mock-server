@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/article/list",
+    "pages/article/detail",
+    "pages/gov/index",
+    "pages/gov/detail",
+    "pages/gov/apply",
+    "pages/gov/applies",
+    "pages/gov/apply-detail",
+    "pages/request/create",
+    "pages/request/list",
+    "pages/request/detail",
+    "pages/service/index",
+    "pages/ai/ai",
+    "pages/ai/history",
+    "pages/profile/profile",
+    "pages/profile/edit"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#C4161C",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "新源村情通",
+    "backgroundColor": "#F6F2F0",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#8A8D93",
+    "selectedColor": "#C4161C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/tab-home.png",
+        "selectedIconPath": "assets/icons/tab-home-on.png"
+      },
+      {
+        "pagePath": "pages/ai/ai",
+        "text": "AI 网格员",
+        "iconPath": "assets/icons/tab-ai.png",
+        "selectedIconPath": "assets/icons/tab-ai-on.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "个人中心",
+        "iconPath": "assets/icons/tab-me.png",
+        "selectedIconPath": "assets/icons/tab-me-on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,139 @@
+<view class="page service-page">
+  <view class="service-head">
+    <view class="head-kicker">新源村 · 生活服务</view>
+    <view class="head-title">便民服务</view>
+    <view class="head-sub">水电气暖、家门口的工作、村里的事，都能找到人</view>
+  </view>
+
+  <view class="tab-bar">
+    <view
+      class="tab-item {{tab === item.key ? 'on' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-tab="{{item.key}}"
+      bindtap="onTabTap"
+      hover-class="press"
+    >{{item.name}}</view>
+  </view>
+
+  <block wx:if="{{loading}}">
+    <view class="service-card card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="sk-block" style="width:40%;height:28rpx;"></view>
+      <view class="sk-block" style="width:80%;height:24rpx;margin-top:16rpx;"></view>
+    </view>
+  </block>
+
+  <view class="state-box card" wx:elif="{{error}}">
+    <view class="state-emoji">!</view>
+    <view class="state-title">便民服务没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <view class="state-box card" wx:if="{{tab === 'directory' && !directoryGroups.length}}">
+      <view class="state-emoji">空</view>
+      <view class="state-title">暂时没有服务电话</view>
+      <view class="state-desc">可以拨打村党群服务中心电话 0999-5021688 咨询。</view>
+    </view>
+    <view class="state-box card" wx:elif="{{tab === 'jobs' && !jobs.length}}">
+      <view class="state-emoji">空</view>
+      <view class="state-title">暂时没有招聘岗位</view>
+      <view class="state-desc">有新岗位会第一时间发布，也可以到村党群服务中心登记求职意向。</view>
+    </view>
+    <view class="state-box card" wx:elif="{{tab === 'tea' && !teas.length}}">
+      <view class="state-emoji">空</view>
+      <view class="state-title">暂时没有议题</view>
+      <view class="state-desc">下一场奶茶会正在筹备，欢迎到村里提议题。</view>
+    </view>
+
+    <!-- 服务黄页 -->
+    <block wx:if="{{tab === 'directory'}}">
+      <view class="group" wx:for="{{directoryGroups}}" wx:key="name" wx:for-item="group">
+        <view class="group-title">{{group.name}}</view>
+        <view class="service-card card" wx:for="{{group.list}}" wx:key="id" wx:for-item="item">
+          <view class="service-row">
+            <view class="service-icon" style="background:{{item.tint}};color:{{item.color}};">{{item.icon}}</view>
+            <view class="service-main">
+              <view class="service-name">{{item.name}}</view>
+              <view class="service-desc">{{item.desc}}</view>
+              <view class="service-hours">{{item.hours}}</view>
+            </view>
+            <view class="call-btn" data-phone="{{item.phone}}" bindtap="onCall" hover-class="press">
+              <image class="call-icon" src="/assets/icons/icon-phone.png" mode="aspectFit"></image>
+              <text>拨打</text>
+            </view>
+          </view>
+          <view class="service-phone">{{item.phoneDisplay}}</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 就业招聘 -->
+    <block wx:elif="{{tab === 'jobs'}}">
+      <view class="job-card card" wx:for="{{jobs}}" wx:key="id">
+        <view class="job-top">
+          <view class="job-main">
+            <view class="job-title">{{item.title}}</view>
+            <view class="job-company">{{item.company}}</view>
+          </view>
+          <view class="job-salary">{{item.salary}}</view>
+        </view>
+        <view class="job-tags">
+          <text class="job-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+        <view class="job-desc">{{item.desc}}</view>
+        <view class="job-meta">
+          <text>招聘 {{item.count}} 人</text>
+          <text class="meta-dot">·</text>
+          <text>{{item.location}}</text>
+          <text class="meta-dot">·</text>
+          <text>截止 {{item.deadline}}</text>
+        </view>
+        <view class="job-foot">
+          <text class="job-contact">联系人电话 {{item.contactDisplay}}</text>
+          <view class="call-btn small" data-phone="{{item.contact}}" bindtap="onCall" hover-class="press">打电话</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 线上奶茶会 -->
+    <block wx:else>
+      <view class="tea-card card" wx:for="{{teas}}" wx:key="id">
+        <view class="tea-top">
+          <view class="tea-status {{item.status === '报名中' ? 'open' : 'end'}}">{{item.status}}</view>
+          <view class="tea-date">{{item.date}}</view>
+        </view>
+        <view class="tea-title">{{item.title}}</view>
+        <view class="tea-location">地点：{{item.location}}</view>
+        <view class="tea-progress">
+          <view class="progress-track">
+            <view class="progress-fill" style="width:{{item.percent}}%;"></view>
+          </view>
+          <text class="progress-text">已报名 {{item.joined}}/{{item.total}}</text>
+        </view>
+        <view class="tea-summary">{{item.summary}}</view>
+        <view class="tea-agenda">
+          <view class="agenda-item" wx:for="{{item.agenda}}" wx:key="*this" wx:for-item="topic" wx:for-index="topicIndex">
+            <text class="agenda-index">{{topicIndex + 1}}</text>
+            <text>{{topic}}</text>
+          </view>
+        </view>
+        <view class="tea-foot">
+          <text class="tea-host">{{item.host}}</text>
+          <view
+            class="signup-btn {{item.signed ? 'signed' : ''}} {{item.status !== '报名中' ? 'disabled' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onSignup"
+            hover-class="press"
+          >{{item.status !== '报名中' ? '已结束' : item.signed ? '已报名' : '我要报名'}}</view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view class="service-footer">
+    <text>信息由新源村党群服务中心整理</text>
+    <text>如需新增服务电话，请联系 0999-5021688</text>
+  </view>
+</view>

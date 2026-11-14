@@ -1,0 +1,154 @@
+.request-list-page {
+  background: #F6F2F0;
+}
+
+.list-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 34rpx 30rpx 22rpx;
+  background: linear-gradient(180deg, #FFF8F3 0%, #F6F2F0 100%);
+}
+
+.head-title {
+  color: #24262A;
+  font-size: 46rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+}
+
+.head-sub {
+  margin-top: 6rpx;
+  color: #9A938E;
+  font-size: 23rpx;
+}
+
+.head-create {
+  height: 58rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #D21F24, #A8111A);
+  box-shadow: 0 6rpx 16rpx rgba(196, 22, 28, 0.2);
+  color: #FFFFFF;
+  font-size: 21rpx;
+  font-weight: 500;
+  line-height: 58rpx;
+}
+
+.filter-bar {
+  display: flex;
+  padding: 0 24rpx 18rpx;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  height: 68rpx;
+  margin-right: 12rpx;
+  padding: 0 22rpx;
+  border: 1rpx solid #EDE5E1;
+  border-radius: 999rpx;
+  background: #FFFFFF;
+  color: #666A70;
+  font-size: 23rpx;
+}
+
+.filter-chip.on {
+  border-color: transparent;
+  background: linear-gradient(135deg, #D21F24, #A8111A);
+  box-shadow: 0 8rpx 18rpx rgba(196, 22, 28, 0.18);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.chip-count {
+  margin-left: 6rpx;
+  font-size: 19rpx;
+  opacity: 0.75;
+}
+
+.request-card {
+  margin: 0 24rpx 14rpx;
+  padding: 22rpx 26rpx 18rpx;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.type-tag {
+  height: 36rpx;
+  padding: 0 12rpx;
+  border-radius: 6rpx;
+  background: #FAF3E3;
+  color: #9A6C1F;
+  font-size: 18rpx;
+  line-height: 36rpx;
+}
+
+.status-tag {
+  height: 36rpx;
+  padding: 0 12rpx;
+  border-radius: 6rpx;
+  font-size: 18rpx;
+  line-height: 36rpx;
+}
+
+.status-tag.processing {
+  background: #FDF1E8;
+  color: #C2571A;
+}
+
+.status-tag.done {
+  background: #EAF4EE;
+  color: #2F8A59;
+}
+
+.status-tag.muted {
+  background: #F3EFED;
+  color: #948D88;
+}
+
+.request-title {
+  margin-top: 12rpx;
+  color: #292B2F;
+  font-size: 29rpx;
+  font-weight: 600;
+  line-height: 1.55;
+  word-break: break-all;
+}
+
+.request-content {
+  margin-top: 8rpx;
+  color: #8C8F94;
+  font-size: 22rpx;
+  line-height: 1.65;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #F4EFEC;
+  color: #A19A95;
+  font-size: 19rpx;
+}
+
+.card-foot .arrow {
+  margin-left: auto;
+}
+
+.meta-dot {
+  margin: 0 8rpx;
+  color: #D5CFCA;
+}
+
+.sk-block {
+  background: linear-gradient(90deg, #EFEAE7 25%, #FAF7F5 37%, #EFEAE7 63%);
+  background-size: 400% 100%;
+  border-radius: 8rpx;
+  animation: shimmer 1.4s ease infinite;
+}

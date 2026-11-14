@@ -1,0 +1,70 @@
+<view class="page request-list-page">
+  <view class="list-head">
+    <view class="head-left">
+      <view class="head-title">我的诉求</view>
+      <view class="head-sub">咨询、诉求、建议，件件有回音</view>
+    </view>
+    <view class="head-create" bindtap="onCreate" hover-class="press">
+      <text>＋ 新建</text>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <view class="filter-chip {{filter === 'all' ? 'on' : ''}}" data-filter="all" bindtap="onFilterTap">
+      全部 <text class="chip-count">{{counts.all}}</text>
+    </view>
+    <view class="filter-chip {{filter === 'processing' ? 'on' : ''}}" data-filter="processing" bindtap="onFilterTap">
+      办理中 <text class="chip-count">{{counts.processing}}</text>
+    </view>
+    <view class="filter-chip {{filter === 'done' ? 'on' : ''}}" data-filter="done" bindtap="onFilterTap">
+      已办结 <text class="chip-count">{{counts.done}}</text>
+    </view>
+  </view>
+
+  <block wx:if="{{loading}}">
+    <view class="request-card card" wx:for="{{[1,2,3]}}" wx:key="*this">
+      <view class="sk-block" style="width:36%;height:26rpx;"></view>
+      <view class="sk-block" style="width:88%;height:30rpx;margin-top:18rpx;"></view>
+      <view class="sk-block" style="width:96%;height:24rpx;margin-top:14rpx;"></view>
+    </view>
+  </block>
+
+  <view class="state-box card" wx:elif="{{error}}">
+    <view class="state-emoji">!</view>
+    <view class="state-title">诉求没有加载出来</view>
+    <view class="state-desc">{{error}}</view>
+    <view class="state-action" bindtap="retry">重新加载</view>
+  </view>
+
+  <view class="state-box card" wx:elif="{{!list.length}}">
+    <view class="state-emoji">诉</view>
+    <view class="state-title">{{counts.all ? '这个分类暂无诉求' : '还没有诉求记录'}}</view>
+    <view class="state-desc">{{counts.all ? '切换上方筛选，看看其他诉求。' : '路灯、垃圾、邻里事，或者政策咨询，都可以在这里提交。'}}</view>
+    <view class="state-action" wx:if="{{!counts.all}}" bindtap="onCreate">新建诉求</view>
+    <view class="state-action" wx:else data-filter="all" bindtap="onFilterTap">查看全部</view>
+  </view>
+
+  <block wx:else>
+    <view
+      class="request-card card"
+      wx:for="{{list}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onItemTap"
+      hover-class="press"
+    >
+      <view class="card-top">
+        <view class="type-tag">{{item.typeLabel}}</view>
+        <view class="status-tag {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="request-title line-2">{{item.title}}</view>
+      <view class="request-content line-2">{{item.content}}</view>
+      <view class="card-foot">
+        <text>{{item.requestNo}}</text>
+        <text class="meta-dot">·</text>
+        <text>{{item.dateText}}</text>
+        <view class="arrow"></view>
+      </view>
+    </view>
+  </block>
+</view>

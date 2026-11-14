@@ -1,0 +1,138 @@
+<view class="page gov-page">
+  <view class="gov-hero">
+    <view class="hero-glow"></view>
+    <view class="hero-lines"></view>
+    <view class="hero-badge">
+      <view class="badge-shield">✓</view>
+      <text>官方办事指南</text>
+    </view>
+    <view class="hero-title">政务办事指南</view>
+    <view class="hero-sub">四类高频事项 · 一次告知 · 承诺办结</view>
+    <view class="hero-stats">
+      <view class="stat">
+        <text class="stat-num">{{categories.length > 1 ? categories.length - 1 : 4}}</text>
+        <text class="stat-label">事项类别</text>
+      </view>
+      <view class="stat-line"></view>
+      <view class="stat">
+        <text class="stat-num">{{allTotal || 6}}</text>
+        <text class="stat-label">项可办事项</text>
+      </view>
+      <view class="stat-line"></view>
+      <view class="stat">
+        <text class="stat-num">1</text>
+        <text class="stat-label">天起办结</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="search-card card">
+    <image class="search-icon" src="/assets/icons/icon-search.png" mode="aspectFit"></image>
+    <input
+      class="search-input"
+      value="{{searchInput}}"
+      placeholder="搜索事项，如：医保、养老、独生子女"
+      placeholder-class="search-placeholder"
+      confirm-type="search"
+      bindinput="onSearchInput"
+      bindconfirm="onSearchConfirm"
+    />
+    <view class="search-clear" wx:if="{{searchInput}}" bindtap="onClearSearch">×</view>
+    <view class="search-btn" bindtap="onSearchConfirm" hover-class="press">搜索</view>
+  </view>
+
+  <scroll-view class="cate-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view class="cate-inner">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="cate-chip {{activeCategory === item.id ? 'on' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="onCategoryTap"
+        hover-class="press"
+      >
+        <text>{{item.name}}</text>
+        <text class="cate-count">{{item.count}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="v2-tip">
+    <view class="v2-badge">可办</view>
+    <text>支持在线申报，提交后可在「我的办件」查看进度、补正提醒和评价</text>
+  </view>
+
+  <view class="list-head">
+    <view class="list-title">{{activeName}}</view>
+    <view class="list-count" wx:if="{{!loading}}">共 {{total}} 项</view>
+  </view>
+
+  <view class="gov-list">
+    <block wx:if="{{loading}}">
+      <view class="gov-item card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="item-icon sk-block"></view>
+        <view class="item-main">
+          <view class="sk-block" style="width:62%;height:32rpx;"></view>
+          <view class="sk-block" style="width:92%;height:24rpx;margin-top:16rpx;"></view>
+          <view class="sk-block" style="width:70%;height:24rpx;margin-top:10rpx;"></view>
+        </view>
+      </view>
+    </block>
+
+    <view class="state-box card" wx:elif="{{error}}">
+      <view class="state-emoji">!</view>
+      <view class="state-title">事项没有加载出来</view>
+      <view class="state-desc">{{error}}</view>
+      <view class="state-action" bindtap="retry">重新加载</view>
+    </view>
+
+    <view class="state-box card" wx:elif="{{!items.length}}">
+      <view class="state-emoji">空</view>
+      <view class="state-title" wx:if="{{keyword}}">没有找到“{{keyword}}”相关事项</view>
+      <view class="state-title" wx:else>这个分类暂时没有事项</view>
+      <view class="state-desc">试试搜索“医保”“养老”“高龄补贴”，或切换分类查看。</view>
+      <view class="state-action" wx:if="{{keyword}}" bindtap="onClearSearch">清除搜索</view>
+    </view>
+
+    <block wx:else>
+      <view
+        class="gov-item card"
+        wx:for="{{items}}"
+        wx:key="code"
+        data-code="{{item.code}}"
+        bindtap="onItemTap"
+        hover-class="press"
+      >
+        <view class="item-icon" style="background:{{item.iconTint}};">
+          <text>{{item.icon}}</text>
+        </view>
+        <view class="item-main">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-desc line-2">{{item.summary}}</view>
+          <view class="item-tags">
+            <text
+              wx:for="{{item.tags}}"
+              wx:for-item="tag"
+              wx:key="*this"
+              class="mini-tag {{index === 0 ? 'primary' : ''}}"
+            >{{tag}}</text>
+          </view>
+        </view>
+        <view class="item-arrow"></view>
+      </view>
+    </block>
+  </view>
+
+    <view class="gov-note">
+    <view class="note-shield">✓</view>
+    <view class="note-copy">
+      <text class="note-title">支持在线申报，信息由新源县政务服务平台提供</text>
+      <text class="note-desc">材料、时限以窗口核定为准；行动不便的老人可联系网格员上门代办。</text>
+    </view>
+  </view>
+
+  <view class="gov-footer">
+    <text>新源村党群服务中心 · 0999-5021688</text>
+    <text>工作日 10:00—13:30 / 15:30—19:30</text>
+  </view>
+</view>

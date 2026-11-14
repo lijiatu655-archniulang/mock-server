@@ -1,0 +1,21 @@
+# 依赖与构建产物
+node_modules/
+unpackage/
+dist/
+miniprogram_npm/
+
+# 日志与临时文件
+*.log
+npm-debug.log*
+.tmp/
+tmp/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# 微信开发者工具缓存
+.wechatide/

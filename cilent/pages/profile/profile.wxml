@@ -1,0 +1,180 @@
+<view class="page profile-page" wx:if="{{loading && !user}}">
+  <view class="profile-hero">
+    <view class="hero-glow"></view>
+    <view class="profile-top">
+      <view class="sk-avatar"></view>
+      <view class="identity">
+        <view class="sk-block light" style="width:180rpx;height:40rpx;"></view>
+        <view class="sk-block light" style="width:300rpx;height:24rpx;margin-top:16rpx;"></view>
+        <view class="sk-block light" style="width:240rpx;height:24rpx;margin-top:12rpx;"></view>
+      </view>
+    </view>
+  </view>
+  <view class="grid-card card">
+    <view class="sk-block" style="width:150rpx;height:32rpx;"></view>
+    <view class="sk-block" style="width:70%;height:26rpx;margin-top:22rpx;"></view>
+    <view class="sk-block" style="width:90%;height:80rpx;margin-top:22rpx;"></view>
+  </view>
+</view>
+
+<view class="page profile-page" wx:elif="{{!loggedIn}}">
+  <view class="login-hero">
+    <view class="login-glow"></view>
+    <view class="login-seal">★</view>
+    <view class="login-name">新源村情通</view>
+    <view class="login-slogan">听民意 · 解民忧 · 暖民心</view>
+    <view class="login-organizer">中共新源县委组织部 · 主办</view>
+  </view>
+  <view class="login-card card">
+    <view class="login-title">欢迎回来</view>
+    <view class="login-desc">登录后可使用我的办件、诉求建议、家庭成员等便民服务。</view>
+    <view class="login-btn" bindtap="onLogin" hover-class="press">微信一键登录</view>
+    <view class="login-note">登录即代表同意《用户协议》与《隐私政策》</view>
+    <view class="login-help" bindtap="onCallHotline">登录遇到问题？拨打 0999-5021688</view>
+  </view>
+  <view class="login-footer">
+    <view>新源村党群服务中心</view>
+    <view>本平台为村级政务服务演示版本</view>
+  </view>
+</view>
+
+<view class="page profile-page" wx:else>
+  <view class="profile-hero">
+    <view class="hero-glow"></view>
+    <view class="hero-lines"></view>
+    <view class="profile-top">
+      <view class="avatar-wrap">
+        <image
+          wx:if="{{user.avatarUrl && !avatarFailed}}"
+          class="avatar avatar-img"
+          src="{{user.avatarUrl}}"
+          mode="aspectFill"
+          binderror="onAvatarError"
+        ></image>
+        <view wx:else class="avatar">{{user.avatarText}}</view>
+        <view class="avatar-badge">✓</view>
+      </view>
+      <view class="identity">
+        <view class="name-row">
+          <text class="name">{{user.displayName}}</text>
+          <view class="role-badge">{{user.roleName}}</view>
+        </view>
+        <view class="phone-line">{{user.phoneDisplay}} · {{user.houseNo}}</view>
+        <view class="verify-line">
+          <view class="verify-dot"></view>
+          <text>已实名认证 · 由村委核验</text>
+        </view>
+      </view>
+      <view class="edit-btn" bindtap="onEditProfile" hover-class="press">修改</view>
+    </view>
+    <view class="hero-foot">
+      <text>{{user.joinedText}}</text>
+      <text class="hero-sep">·</text>
+      <text>新源村情通 V{{version}}</text>
+    </view>
+  </view>
+
+  <view class="grid-card card">
+    <view class="grid-head">
+      <view class="grid-title">
+        <image class="pin-icon" src="/assets/icons/icon-pin.png" mode="aspectFit"></image>
+        <text>我的网格</text>
+      </view>
+      <view class="grid-verified">
+        <view class="dot"></view>
+        <text>已认证</text>
+      </view>
+    </view>
+
+    <view class="path-row" wx:if="{{user.regionPath.length}}">
+      <block wx:for="{{user.regionPath}}" wx:key="*this" wx:for-item="path" wx:for-index="pi">
+        <text class="path-item">{{path}}</text>
+        <text class="path-sep" wx:if="{{pi < user.regionPath.length - 1}}">›</text>
+      </block>
+    </view>
+
+    <view class="worker-row" wx:if="{{user.gridWorker}}">
+      <view class="worker-avatar">李</view>
+      <view class="worker-main">
+        <view class="worker-name">网格员 {{user.gridWorker.name}}</view>
+        <view class="worker-desc">{{user.gridWorker.phoneDisplay}} · {{user.gridWorker.duty}}</view>
+      </view>
+      <view class="worker-call" bindtap="onCallWorker" hover-class="press">
+        <image class="phone-icon" src="/assets/icons/icon-phone.png" mode="aspectFit"></image>
+        <text>拨打</text>
+      </view>
+    </view>
+
+    <view class="grid-foot">有困难找网格员，行动不便可预约上门代办</view>
+  </view>
+
+  <view class="stats-card card">
+    <view
+      class="stat-item"
+      wx:for="{{user.statList}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onStatsTap"
+      hover-class="press"
+    >
+      <view class="stat-value">{{item.value}}</view>
+      <view class="stat-label">{{item.label}}</view>
+      <view class="stat-tag" wx:if="{{item.badge}}">{{item.badge}}</view>
+    </view>
+  </view>
+
+  <view class="menu-group card" wx:for="{{menuGroups}}" wx:key="title" wx:for-item="group">
+    <view class="group-title">{{group.title}}</view>
+    <view
+      class="menu-row"
+      wx:for="{{group.items}}"
+      wx:key="code"
+      wx:for-item="row"
+      data-action="{{row.action}}"
+      data-name="{{row.name}}"
+      data-version="{{row.version}}"
+      data-desc-text="{{row.descText}}"
+      bindtap="onMenuTap"
+      hover-class="menu-hover"
+    >
+      <view class="menu-icon" style="background:{{row.tint}};color:{{row.color}};">{{row.icon}}</view>
+      <view class="menu-main">
+        <view class="menu-name">
+          <text>{{row.name}}</text>
+          <text class="menu-badge {{row.badgeType}}" wx:if="{{row.badge}}">{{row.badge}}</text>
+        </view>
+        <view class="menu-desc">{{row.desc}}</view>
+      </view>
+      <view class="arrow"></view>
+    </view>
+  </view>
+
+  <view class="logout-btn" bindtap="onLogout" wx:if="{{loggedIn}}">退出登录</view>
+
+  <view class="profile-footer">
+    <view class="footer-seal">★</view>
+    <view class="footer-name">新源村情通</view>
+    <view>中共新源县委组织部 主办 · 新源村村民委员会 承办</view>
+    <view>服务热线 0999-5021688 · 举报电话 12380</view>
+    <view class="footer-icp">新ICP备2026001234号-1</view>
+    <view class="footer-version">V{{version}} · 村级政务服务演示版本</view>
+  </view>
+
+  <view class="sheet-mask" wx:if="{{showAbout}}" bindtap="closeAbout">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-bar"></view>
+      <view class="sheet-seal">★</view>
+      <view class="sheet-title">新源村情通</view>
+      <view class="sheet-version">V{{version}} · 村级事务服务平台</view>
+      <view class="sheet-info">
+        <view class="sheet-row"><text class="sheet-label">主办单位</text><text class="sheet-value">中共新源县委组织部</text></view>
+        <view class="sheet-row"><text class="sheet-label">承办单位</text><text class="sheet-value">新源村村民委员会</text></view>
+        <view class="sheet-row"><text class="sheet-label">服务热线</text><text class="sheet-value">0999-5021688</text></view>
+        <view class="sheet-row"><text class="sheet-label">举报电话</text><text class="sheet-value">12380</text></view>
+        <view class="sheet-row"><text class="sheet-label">备案号</text><text class="sheet-value">新ICP备2026001234号-1</text></view>
+      </view>
+      <view class="sheet-desc">当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘和线上奶茶会。网格员工作台与家庭成员将在 V3 陆续开放。</view>
+      <view class="sheet-btn" bindtap="closeAbout" hover-class="press">知道了</view>
+    </view>
+  </view>
+</view>

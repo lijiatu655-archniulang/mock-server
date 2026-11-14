@@ -1,0 +1,45 @@
+<view class="page history-page">
+  <view class="history-head">
+    <view class="head-left">
+      <view class="head-title">历史会话</view>
+      <view class="head-sub">本机保存，最多 20 段对话</view>
+    </view>
+    <view class="clear-btn" wx:if="{{sessions.length}}" bindtap="onClear" hover-class="press">清空</view>
+  </view>
+
+  <view class="state-box card" wx:if="{{!sessions.length}}">
+    <view class="state-emoji">智</view>
+    <view class="state-title">还没有历史会话</view>
+    <view class="state-desc">去问小贾医保、养老、独生子女证等村里的事，对话会自动保存在这里。</view>
+    <view class="state-action" bindtap="onAsk">去问小贾</view>
+  </view>
+
+  <block wx:else>
+    <view
+      class="history-card card"
+      wx:for="{{sessions}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="onContinue"
+      hover-class="press"
+    >
+      <view class="session-top">
+        <image class="session-avatar" src="/assets/icons/ai-xiaojia.png" mode="aspectFill"></image>
+        <view class="session-title line-1">{{item.title}}</view>
+        <view class="session-count">{{item.count}} 条</view>
+      </view>
+      <view class="session-preview line-2">
+        <text class="role-tag">{{item.lastRole}}</text>
+        <text>{{item.preview}}</text>
+      </view>
+      <view class="session-foot">
+        <text class="session-time">{{item.timeText}}</text>
+        <view class="session-actions">
+          <view class="action-btn delete" data-id="{{item.id}}" catchtap="onDelete">删除</view>
+          <view class="action-btn continue" data-id="{{item.id}}" catchtap="onContinue">继续对话</view>
+        </view>
+      </view>
+    </view>
+    <view class="history-note">历史会话只保存在当前手机，清理缓存后不可恢复。</view>
+  </block>
+</view>

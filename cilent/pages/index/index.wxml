@@ -1,0 +1,238 @@
+<view class="page home-page">
+  <view class="status-fill" style="height:{{statusBarHeight}}px;"></view>
+  <!-- 政务红头部（信任视觉） -->
+  <view class="hero" style="padding-top:{{statusBarHeight}}px;">
+    <view class="hero-glow glow-a"></view>
+    <view class="hero-glow glow-b"></view>
+    <view class="hero-lines"></view>
+
+    <view class="hero-top">
+      <view class="brand">
+        <view class="brand-seal">★</view>
+        <view class="brand-copy">
+          <text class="brand-name">新源村情通</text>
+          <text class="brand-sub">村级事务服务平台</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="hero-main">
+      <view class="village-row" bindtap="onSwitchVillage" hover-class="press">
+        <view class="village-left">
+          <text class="village-name">{{region.name}}</text>
+          <view class="village-grid">{{region.gridName}}</view>
+        </view>
+        <view class="switch-btn">
+          <text>切换村庄</text>
+          <view class="switch-arrow"></view>
+        </view>
+      </view>
+
+      <view class="hero-slogan">{{slogan}}</view>
+      <view class="hero-trust">
+        <view class="trust-dot"></view>
+        <text>{{footer.organizer}} · 主办</text>
+        <text class="hero-sep">/</text>
+        <text>{{region.households}} 户 {{region.population}} 人</text>
+      </view>
+    </view>
+
+    <view class="notice" wx:if="{{notice}}" bindtap="onNotice" hover-class="press">
+      <view class="notice-label">通知</view>
+      <text class="notice-text line-1">{{notice.text}}</text>
+      <view class="notice-arrow"></view>
+    </view>
+    <view class="notice notice-loading" wx:else>
+      <view class="notice-label">通知</view>
+      <text class="notice-text line-1">正在获取最新通知…</text>
+    </view>
+  </view>
+
+  <view class="home-body">
+    <!-- 栏目胶囊 -->
+    <scroll-view class="column-bar" scroll-x enable-flex show-scrollbar="{{false}}">
+      <view class="column-inner">
+        <view
+          wx:for="{{columns}}"
+          wx:key="id"
+          class="column-pill {{activeColumn === item.id ? 'on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onColumnTap"
+          hover-class="press"
+        >
+          <view class="pill-dot" style="background:{{activeColumn === item.id ? '#FFFFFF' : item.color}}"></view>
+          <text>{{item.name}}</text>
+        </view>
+        <view class="column-pill column-loading" wx:if="{{loading && !columns.length}}">
+          <view class="sk-block" style="width:120rpx;height:28rpx;"></view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <block wx:if="{{loading}}">
+      <view class="banner skeleton"></view>
+      <view class="section-head">
+        <view class="sk-block" style="width:180rpx;height:36rpx;"></view>
+      </view>
+      <view class="news-card card">
+        <view class="news-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="sk-block" style="width:82%;height:32rpx;"></view>
+          <view class="sk-block" style="width:48%;height:24rpx;margin-top:16rpx;"></view>
+        </view>
+      </view>
+      <view class="service-skeleton">
+        <view class="sk-tile" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this"></view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="error-box card" wx:if="{{error}}">
+        <view class="state-box">
+          <view class="state-emoji">!</view>
+          <view class="state-title">首页暂时没有加载出来</view>
+          <view class="state-desc">{{error}}</view>
+          <view class="state-action" bindtap="retry">重新加载</view>
+        </view>
+      </view>
+
+      <block wx:else>
+        <!-- 政策横幅 -->
+        <view class="banner" wx:if="{{banner}}" bindtap="onBanner" hover-class="press">
+          <view class="banner-pattern pattern-1"></view>
+          <view class="banner-pattern pattern-2"></view>
+          <view class="banner-copy">
+            <view class="banner-eyebrow">
+              <view class="eyebrow-line"></view>
+              <text>{{banner.tag}}</text>
+            </view>
+            <view class="banner-title">{{banner.title}}</view>
+            <view class="banner-title banner-title-strong">{{banner.titleHighlight}}</view>
+            <view class="banner-sub">{{banner.subtitle}}</view>
+            <view class="banner-meta">{{banner.meta}}</view>
+            <view class="banner-action">
+              <text>{{banner.actionText}}</text>
+              <view class="banner-arrow"></view>
+            </view>
+          </view>
+          <view class="banner-art">
+            <view class="art-ring ring-1"></view>
+            <view class="art-ring ring-2"></view>
+            <view class="art-price">
+              <text class="art-num">380</text>
+              <text class="art-unit">元/人·年</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 资讯流 -->
+        <view class="news-section">
+          <view class="section-head">
+            <view class="section-title">
+              {{newsTitle}}
+              <text class="section-sub">{{newsSub}}</text>
+            </view>
+            <view class="section-more" bindtap="onMoreArticles" hover-class="press">
+              <text>更多</text>
+              <view class="arrow"></view>
+            </view>
+          </view>
+
+          <view class="news-card card" wx:if="{{!listLoading && articles.length}}">
+            <view
+              class="news-item"
+              wx:for="{{articles}}"
+              wx:key="id"
+              data-id="{{item.id}}"
+              bindtap="onArticle"
+              hover-class="news-hover"
+            >
+              <view class="news-main">
+                <view class="news-title">
+                  <view class="top-tag" wx:if="{{item.isTop}}">置顶</view>
+                  <text class="line-2">{{item.title}}</text>
+                </view>
+                <view class="news-meta">
+                  <text class="news-column" style="color:{{item.columnColor}}">{{item.columnName}}</text>
+                  <text class="meta-dot">·</text>
+                  <text>{{item.displayDate}}</text>
+                  <text class="meta-dot">·</text>
+                  <text>{{item.views}} 阅读</text>
+                </view>
+              </view>
+              <view class="news-arrow"></view>
+            </view>
+          </view>
+
+          <view class="news-card card" wx:if="{{listLoading}}">
+            <view class="news-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+              <view class="sk-block" style="width:82%;height:32rpx;"></view>
+              <view class="sk-block" style="width:48%;height:24rpx;margin-top:16rpx;"></view>
+            </view>
+          </view>
+
+          <view class="news-card card" wx:if="{{!listLoading && !articles.length}}">
+            <view class="state-box">
+              <view class="state-emoji">空</view>
+              <view class="state-title">这个栏目还没有更新</view>
+              <view class="state-desc">村里有新内容会第一时间发布，先看看其他栏目吧。</view>
+              <view class="state-action" bindtap="onEmptyAction">查看全部</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 九宫格 -->
+        <view class="service-section">
+          <view class="section-head">
+            <view class="section-title">
+              便民服务
+              <text class="section-sub">一个入口，办身边事</text>
+            </view>
+          </view>
+          <view class="service-grid">
+            <view
+              class="service-item {{item.highlight ? 'highlight' : ''}}"
+              wx:for="{{modules}}"
+              wx:key="id"
+              data-name="{{item.name}}"
+              data-status="{{item.status}}"
+              data-route="{{item.route}}"
+              data-version="{{item.version}}"
+              bindtap="onModuleTap"
+              hover-class="press"
+            >
+              <view
+                class="service-icon"
+                style="background:{{item.highlight ? 'rgba(255,255,255,0.18)' : item.tint}}"
+              >
+                <image class="service-icon-img" src="{{item.icon}}" mode="aspectFit"></image>
+              </view>
+              <text class="service-name">{{item.name}}</text>
+              <text class="service-desc">{{item.desc}}</text>
+              <view class="service-badge {{item.highlight ? 'badge-light' : ''}}" wx:if="{{item.badge}}">{{item.badge}}</view>
+            </view>
+          </view>
+          <view class="service-tip" bindtap="onModuleTap" data-name="政务管理" data-status="online" data-route="/pages/gov/index">
+            <view class="tip-icon">✓</view>
+            <text>医保、养老、高龄补贴、独生子女证等事项，可直接在线申报</text>
+            <view class="arrow arrow-red"></view>
+          </view>
+        </view>
+      </block>
+    </block>
+
+    <!-- 合规页脚 -->
+    <view class="compliance">
+      <view class="compliance-seal">★</view>
+      <view class="compliance-name">新源村情通</view>
+      <view class="compliance-line">{{footer.organizer}} 主办</view>
+      <view class="compliance-line">{{footer.coOrganizer}}</view>
+      <view class="compliance-links">
+        <text>举报电话 {{footer.reportPhone}}</text>
+        <text class="compliance-divider">|</text>
+        <text>服务热线 {{footer.hotline}}</text>
+      </view>
+      <view class="compliance-line compliance-icp">{{footer.icp}}</view>
+      <view class="compliance-disclaimer">{{footer.disclaimer}}</view>
+    </view>
+  </view>
+</view>
