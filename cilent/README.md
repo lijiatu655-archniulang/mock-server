@@ -5,8 +5,9 @@
 ## 快速开始
 
 1. 微信开发者工具 → 导入项目 → 选择本目录 `cilent`；
-2. 编译。默认 `USE_MOCK = true`，无需后端、无需网络即可演示全部页面；
-3. 若提示域名校验，确认 `project.private.config.json` 中 `urlCheck` 为 `false`（已配置）。
+2. 编译。当前 `USE_MOCK = false`，连本机 Spring Boot 后端 `http://127.0.0.1:8080/api/v1`；
+3. 若后端未启动、想离线演示，把 `utils/config.js` 改回 `USE_MOCK: true` / `BASE_URL: 'http://127.0.0.1:3000/api/v1'`，再启动 `temp/mock-server`；
+4. 若提示域名校验，确认 `project.private.config.json` 中 `urlCheck` 为 `false`（已配置）。
 
 AppID 沿用项目里的 `wx2bfc9ee3e046f12e`，如需换成自己的，改 `project.config.json`。
 
@@ -14,12 +15,14 @@ AppID 沿用项目里的 `wx2bfc9ee3e046f12e`，如需换成自己的，改 `pro
 
 ```js
 // utils/config.js
+USE_MOCK: false  // 走真实 Spring Boot 后端
+BASE_URL: 'http://127.0.0.1:8080/api/v1'
+
 USE_MOCK: true   // 内置 Mock，断网演示
-USE_MOCK: false  // 走真实 HTTP / SSE
 BASE_URL: 'http://127.0.0.1:3000/api/v1'
 ```
 
-真实接口的启动与联调见 `../temp/mock-server/README.md`，字段契约见 `../temp/接口契约-v1.md`，接口总表见 `../temp/接口总表.md`。
+真实后端启动与联调见 `../backend/README.md`，字段契约见 `../temp/接口契约-v1.md`，接口总表见 `../temp/接口总表.md`。
 
 ## 目录
 
@@ -70,7 +73,8 @@ pages/
 - 诉求：咨询/诉求/建议提交、我的诉求、详情、催办、评价；
 - 便民：服务黄页一键拨号、就业招聘、线上奶茶会报名；
 - AI 小贾：推荐问、逐字流式、停止、引用、赞踩、追问、历史会话、继续对话、重新生成；
-- 我的：实名身份、三级网格、网格员电话、头像/昵称修改、我的办件/诉求入口、登录/退出。
+- 我的：实名身份、三级网格、网格员电话、头像/昵称修改、我的办件/诉求入口、登录/退出；
+- 登录：未登录时可游客浏览首页/资讯；AI 小贾强制登录，未登录会显示登录引导；个人中心支持「微信一键登录」和「手机号 + 密码」两种方式；账号密码走 `POST /auth/password-login`（后端按契约实现）。
 
 ## 边界
 

@@ -126,13 +126,13 @@
     <view class="gov-note">
     <view class="note-shield">✓</view>
     <view class="note-copy">
-      <text class="note-title">支持在线申报，信息由新源县政务服务平台提供</text>
+      <text class="note-title">支持在线申报，信息由永吉县政务服务平台提供</text>
       <text class="note-desc">材料、时限以窗口核定为准；行动不便的老人可联系网格员上门代办。</text>
     </view>
   </view>
 
   <view class="gov-footer">
-    <text>新源村党群服务中心 · 0999-5021688</text>
+    <text>新源村党群服务中心 · 0432-64216888</text>
     <text>工作日 10:00—13:30 / 15:30—19:30</text>
   </view>
 </view>

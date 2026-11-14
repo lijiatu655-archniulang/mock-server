@@ -64,7 +64,7 @@ Page({
   },
 
   onCall() {
-    wx.makePhoneCall({ phoneNumber: '09995021688' })
+    wx.makePhoneCall({ phoneNumber: '043264216888' })
   },
 
   onPreviewPhoto(e) {

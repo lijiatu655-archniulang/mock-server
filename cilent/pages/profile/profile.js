@@ -14,11 +14,11 @@ function decorate(user) {
     displayName: displayName,
     avatarText: user.avatarText || displayName.charAt(0),
     joinedText: joinedText,
-    regionPath: user.regionPath || ['新源县', '城关镇', '新源村'],
+    regionPath: user.regionPath || ['永吉县', '口前镇', '新源村'],
     gridWorker: user.gridWorker || {
       name: '李建国',
       phoneDisplay: '138****9072',
-      phone: '13809999072',
+      phone: '13843219072',
       duty: '周一至周五 10:00—19:30'
     },
     statList: [{
@@ -46,6 +46,12 @@ Page({
     loggedIn: false,
     loading: true,
     avatarFailed: false,
+    loginMode: 'wechat',
+    account: '',
+    password: '',
+    showPassword: false,
+    loginError: '',
+    loginLoading: false,
     showAbout: false,
     version: config.APP_VERSION,
     menuGroups: [{
@@ -108,7 +114,7 @@ Page({
       }, {
         code: 'customer',
         name: '在线客服',
-        desc: '村党群服务中心 · 0999-5021688',
+        desc: '村党群服务中心 · 0432-64216888',
         icon: '客',
         tint: '#EAF4EE',
         color: '#2F8A59',
@@ -283,12 +289,12 @@ Page({
   },
 
   onCallHotline() {
-    wx.makePhoneCall({ phoneNumber: '09995021688' })
+    wx.makePhoneCall({ phoneNumber: '043264216888' })
   },
 
   onCallWorker() {
     const user = this.data.user
-    const phone = (user && user.gridWorker && user.gridWorker.phone) || '13809999072'
+    const phone = (user && user.gridWorker && user.gridWorker.phone) || '13843219072'
     wx.makePhoneCall({
       phoneNumber: String(phone).replace(/[^0-9]/g, '')
     })
@@ -296,6 +302,64 @@ Page({
 
   onAvatarError() {
     this.setData({ avatarFailed: true })
+  },
+
+  onLoginMode(e) {
+    const mode = e.currentTarget.dataset.mode === 'password' ? 'password' : 'wechat'
+    if (mode === this.data.loginMode) return
+    this.setData({
+      loginMode: mode,
+      loginError: '',
+      showPassword: false
+    })
+  },
+
+  onAccountInput(e) {
+    this.setData({
+      account: e.detail.value || '',
+      loginError: ''
+    })
+  },
+
+  onPasswordInput(e) {
+    this.setData({
+      password: e.detail.value || '',
+      loginError: ''
+    })
+  },
+
+  onTogglePassword() {
+    this.setData({ showPassword: !this.data.showPassword })
+  },
+
+  onAccountLogin() {
+    const self = this
+    if (this.data.loginLoading) return
+    const account = String(this.data.account || '').trim()
+    const password = String(this.data.password || '')
+    if (!account) {
+      this.setData({ loginError: '请输入手机号或账号' })
+      return
+    }
+    if (password.length < 6) {
+      this.setData({ loginError: '密码至少 6 位' })
+      return
+    }
+    this.setData({ loginLoading: true, loginError: '' })
+    wx.showLoading({ title: '登录中', mask: true })
+    authApi.passwordLogin(account, password).then(function (res) {
+      app.globalData.skipAutoLogin = false
+      app.setUser(res.user)
+      wx.hideLoading()
+      self.setData({ loginLoading: false, loginError: '' })
+      self.loadUser()
+    }).catch(function (err) {
+      wx.hideLoading()
+      self.setData({
+        loginLoading: false,
+        loginError: err.message || '登录失败，请检查账号密码'
+      })
+    })
   },
 
   onLogin() {
@@ -330,7 +394,10 @@ Page({
           app.logout()
           self.setData({
             user: null,
-            loggedIn: false
+            loggedIn: false,
+            loginLoading: false,
+            loginError: '',
+            password: ''
           })
           wx.showToast({ title: '已退出登录', icon: 'none' })
         })

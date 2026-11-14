@@ -65,7 +65,7 @@ Page({
   },
 
   onCall() {
-    const phone = (this.data.item && this.data.item.phone) || '09995021688'
+    const phone = (this.data.item && this.data.item.phone) || '043264216888'
     wx.makePhoneCall({
       phoneNumber: String(phone).replace(/[^0-9]/g, '')
     })

@@ -11,7 +11,7 @@
     <view class="hero-tags">
       <text class="hero-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
     </view>
-    <view class="hero-update">指南更新：{{item.updateAt}} · 信息由新源县政务服务平台提供</view>
+    <view class="hero-update">指南更新：{{item.updateAt}} · 信息由永吉县政务服务平台提供</view>
   </view>
 
   <view class="key-card card">

@@ -36,6 +36,17 @@ function wxLogin() {
   })
 }
 
+/**
+ * 账号密码登录：POST /auth/password-login
+ * 由后端负责校验账号、密码；前端只传 account + password。
+ */
+function passwordLogin(account, password) {
+  return request.post('/auth/password-login', {
+    account: String(account || '').trim(),
+    password: String(password || '')
+  }).then(persist)
+}
+
 /** 退出登录：POST /auth/logout */
 function logout() {
   return request.post('/auth/logout', {}).then(function () {
@@ -50,5 +61,6 @@ function logout() {
 module.exports = {
   mockLogin: mockLogin,
   wxLogin: wxLogin,
+  passwordLogin: passwordLogin,
   logout: logout
 }

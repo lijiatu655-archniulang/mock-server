@@ -6,12 +6,12 @@
 const config = {
   APP_VERSION: '1.1.0',
   CLIENT: 'wx-miniprogram',
-  USE_MOCK: true,
-  BASE_URL: 'http://127.0.0.1:3000/api/v1',
+  USE_MOCK: false,
+  BASE_URL: 'http://127.0.0.1:8080/api/v1',
   TIMEOUT: 15000,
-  REGION_ID: '65402510001',
-  // 演示环境自动以种子用户登录，对应 POST /auth/mock-login
-  AUTO_MOCK_LOGIN: true,
+  REGION_ID: '22022110001',
+  // 关闭静默自动登录：由登录页手动选择微信或账号密码
+  AUTO_MOCK_LOGIN: false,
   STORAGE: {
     TOKEN: 'xct_token',
     USER: 'xct_user',

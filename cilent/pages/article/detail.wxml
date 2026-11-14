@@ -28,7 +28,7 @@
       <text>来源：{{article.source}}</text>
       <text wx:if="{{article.author}}">作者：{{article.author}}</text>
     </view>
-    <view class="content-note">如对内容有疑问，请拨打村党群服务中心电话 0999-5021688。</view>
+    <view class="content-note">如对内容有疑问，请拨打村党群服务中心电话 0432-64216888。</view>
   </view>
 
   <view class="like-card card">

@@ -99,6 +99,21 @@ function handleAuth(path, method, params, body) {
       user: data.user
     }))
   }
+  if (path === '/auth/password-login' && method === 'POST') {
+    const account = String((body && body.account) || '').trim()
+    const password = String((body && body.password) || '')
+    if (account !== data.user.phone || password !== '123456') {
+      return delay(fail(20003, '手机号或密码不正确'))
+    }
+    const token = 'mock.' + data.user.id + '.' + Date.now()
+    return delay(envelope({
+      token: token,
+      tokenType: 'Bearer',
+      expiresIn: 604800,
+      isNewUser: false,
+      user: data.user
+    }))
+  }
   if (path === '/auth/logout' && method === 'POST') {
     return delay(envelope(true))
   }
@@ -217,7 +232,7 @@ function applyDetail(item) {
   const govItem = getGovItem(item.itemCode) || {}
   return Object.assign({}, item, {
     statusLabel: applyStatusLabel(item.status),
-    itemPhone: govItem.phone || '0999-5021688',
+    itemPhone: govItem.phone || '0432-64216888',
     itemAddress: govItem.address || '新源村党群服务中心',
     canCancel: item.status === 'SUBMITTED' || item.status === 'DRAFT',
     canRate: item.status === 'COMPLETED' && !item.rating,

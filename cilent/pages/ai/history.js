@@ -1,13 +1,25 @@
+const app = getApp()
 const storage = require('../../utils/storage')
 const format = require('../../utils/format')
 
 Page({
   data: {
-    sessions: []
+    sessions: [],
+    needLogin: false
   },
 
   onShow() {
+    if (!app.globalData.user) {
+      this.setData({ needLogin: true, sessions: [] })
+      return
+    }
+    this.setData({ needLogin: false })
     this.loadSessions()
+  },
+
+  onGoLogin() {
+    app.globalData.skipAutoLogin = true
+    wx.switchTab({ url: '/pages/profile/profile' })
   },
 
   loadSessions() {

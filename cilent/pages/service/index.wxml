@@ -34,7 +34,7 @@
     <view class="state-box card" wx:if="{{tab === 'directory' && !directoryGroups.length}}">
       <view class="state-emoji">空</view>
       <view class="state-title">暂时没有服务电话</view>
-      <view class="state-desc">可以拨打村党群服务中心电话 0999-5021688 咨询。</view>
+      <view class="state-desc">可以拨打村党群服务中心电话 0432-64216888 咨询。</view>
     </view>
     <view class="state-box card" wx:elif="{{tab === 'jobs' && !jobs.length}}">
       <view class="state-emoji">空</view>
@@ -134,6 +134,6 @@
 
   <view class="service-footer">
     <text>信息由新源村党群服务中心整理</text>
-    <text>如需新增服务电话，请联系 0999-5021688</text>
+    <text>如需新增服务电话，请联系 0432-64216888</text>
   </view>
 </view>

@@ -14,6 +14,7 @@ Page({
     streaming: false,
     scrollInto: '',
     showScrollBottom: false,
+    needLogin: false,
     disclaimer: 'AI 生成内容仅供参考，具体政策以官方发布为准。',
     loadingSuggestions: true
   },
@@ -28,6 +29,7 @@ Page({
     const user = app.globalData.user
     this.setData({
       userAvatar: (user && user.avatarText) || '王',
+      needLogin: !user,
       messages: [{
         id: 'welcome',
         role: 'assistant',
@@ -41,9 +43,13 @@ Page({
       }]
     })
     this.loadSuggestions()
-    app.ensureLogin().then(function () {
-      // 静默完成登录，发送时无需再等待
-    }).catch(function () {})
+    // 不在 AI 页静默登录：未登录必须去个人中心选择登录方式
+    if (app.ready) {
+      const self = this
+      app.ready.then(function () {
+        self.syncLoginState()
+      }).catch(function () {})
+    }
   },
 
   onReady() {
@@ -55,6 +61,8 @@ Page({
   },
 
   onShow() {
+    this.syncLoginState()
+    if (this.data.needLogin) return
     const pendingSession = storage.getPendingSession()
     if (pendingSession) {
       storage.clearPendingSession()
@@ -74,6 +82,32 @@ Page({
     setTimeout(function () {
       self.sendQuestion(pending)
     }, 260)
+  },
+
+  isLoggedIn() {
+    return !!(app.globalData.user)
+  },
+
+  syncLoginState() {
+    const loggedIn = this.isLoggedIn()
+    const needLogin = !loggedIn
+    if (needLogin && this.data.streaming) this.stopStream(true)
+    if (this.data.needLogin === needLogin && this.data.userAvatar) return
+    this.setData({
+      needLogin: needLogin,
+      userAvatar: (app.globalData.user && app.globalData.user.avatarText) || this.data.userAvatar || '王',
+      canSend: !needLogin && !!String(this.data.input || '').trim(),
+      showScrollBottom: needLogin ? false : this.data.showScrollBottom
+    })
+  },
+
+  showLoginGate() {
+    this.setData({ needLogin: true, canSend: false })
+  },
+
+  onGoLogin() {
+    app.globalData.skipAutoLogin = true
+    wx.switchTab({ url: '/pages/profile/profile' })
   },
 
   restoreSession(session) {
@@ -140,6 +174,10 @@ Page({
   },
 
   onHistory() {
+    if (!this.isLoggedIn()) {
+      this.showLoginGate()
+      return
+    }
     this.saveSession()
     wx.navigateTo({ url: '/pages/ai/history' })
   },
@@ -244,6 +282,11 @@ Page({
   sendQuestion(text) {
     const question = String(text || '').trim()
     if (!question) return
+    if (!this.isLoggedIn()) {
+      this.showLoginGate()
+      wx.showToast({ title: '请先登录后使用 AI 小贾', icon: 'none' })
+      return
+    }
     if (this.data.streaming) {
       wx.showToast({ title: '小贾正在回答，请稍候', icon: 'none' })
       return
@@ -351,11 +394,13 @@ Page({
     self.pendingFollowUps = []
     self.pendingServerMessageId = ''
 
-    app.ensureLogin().then(function () {
-      if (session !== self.session) return
-      // 登录等待期间用户可能已经点了“停止”
-      if (!self.data.streaming) return
-      self.currentTask = aiApi.chatStream({
+    if (!self.isLoggedIn()) {
+      finalize({ content: '请先登录后使用 AI 小贾。', error: true })
+      return
+    }
+    if (session !== self.session) return
+    if (!self.data.streaming) return
+    self.currentTask = aiApi.chatStream({
         question: question,
         conversationId: self.conversationId,
         onMeta: function (meta) {
@@ -411,25 +456,18 @@ Page({
             }).catch(function () {
               if (session !== self.session) return
               finalize({
-                content: '抱歉，AI 服务暂时不可用。您可以稍后重试，或拨打村党群服务中心电话 0999-5021688。',
+                content: '抱歉，AI 服务暂时不可用。您可以稍后重试，或拨打村党群服务中心电话 0432-64216888。',
                 error: true
               })
             })
             return
           }
           finalize({
-            content: buffer || ('抱歉，' + message + '。您可以稍后重试，或拨打村党群服务中心电话 0999-5021688。'),
+            content: buffer || ('抱歉，' + message + '。您可以稍后重试，或拨打村党群服务中心电话 0432-64216888。'),
             error: !buffer
           })
         }
       })
-    }).catch(function () {
-      if (session !== self.session) return
-      finalize({
-        content: '登录已过期，请退出小程序后重新进入。',
-        error: true
-      })
-    })
   },
 
   stopStream(silent) {
@@ -469,6 +507,10 @@ Page({
   },
 
   onFeedback(e) {
+    if (!this.isLoggedIn()) {
+      this.showLoginGate()
+      return
+    }
     const ds = e.currentTarget.dataset
     const index = Number(ds.index)
     const type = ds.type
@@ -515,6 +557,10 @@ Page({
   },
 
   onRegenerate(e) {
+    if (!this.isLoggedIn()) {
+      this.showLoginGate()
+      return
+    }
     if (this.data.streaming) return
     const index = Number(e.currentTarget.dataset.index)
     const msg = this.data.messages[index]
@@ -550,6 +596,10 @@ Page({
   },
 
   onNewChat() {
+    if (!this.isLoggedIn()) {
+      this.showLoginGate()
+      return
+    }
     const self = this
     wx.showModal({
       title: '开始新对话',

@@ -13,7 +13,7 @@
         </view>
         <view class="head-desc">AI 网格员 · 已学习 128 条本地政策</view>
       </view>
-      <view class="head-actions">
+      <view class="head-actions" wx:if="{{!needLogin}}">
         <view class="history-btn" bindtap="onHistory" hover-class="press">历史</view>
         <view class="new-chat" bindtap="onNewChat" hover-class="press">＋ 新对话</view>
       </view>
@@ -38,6 +38,14 @@
         <view class="date-text">今天 · 新源村</view>
       </view>
 
+      <view class="login-gate" wx:if="{{needLogin}}">
+        <view class="gate-badge">AI</view>
+        <view class="gate-title">登录后使用 AI 小贾</view>
+        <view class="gate-desc">AI 问政、政策依据和历史会话需要登录后使用。</view>
+        <view class="gate-btn" bindtap="onGoLogin" hover-class="press">去登录</view>
+        <view class="gate-tip">支持微信一键登录 / 手机号 + 密码</view>
+      </view>
+
       <block wx:for="{{messages}}" wx:key="id">
         <view class="msg-row user-row" wx:if="{{item.role === 'user'}}">
           <view class="bubble user-bubble">
@@ -47,8 +55,8 @@
         </view>
 
         <view class="msg-row ai-row" wx:else>
-          <view class="msg-avatar">
-            <image class="msg-avatar-img" src="/assets/icons/ai-xiaojia.png" mode="aspectFill"></image>
+          <view class="msg-avatar ai-msg-avatar">
+            <image class="msg-avatar-img" src="/assets/icons/ai-xiaojia-face.png" mode="aspectFill"></image>
           </view>
           <view class="msg-body">
             <view class="bubble ai-bubble {{item.error ? 'error-bubble' : ''}}">
@@ -131,7 +139,7 @@
         </view>
       </block>
 
-      <view class="suggest-card" wx:if="{{messages.length === 1 && suggestions.length}}">
+      <view class="suggest-card" wx:if="{{!needLogin && messages.length === 1 && suggestions.length}}">
         <view class="suggest-head">
           <view class="suggest-title">您可以这样问</view>
           <view class="suggest-sub">点一下就能问</view>
@@ -151,7 +159,7 @@
         </view>
       </view>
 
-      <view class="ai-note">
+      <view class="ai-note" wx:if="{{!needLogin}}">
         <view class="note-line"></view>
         <text>小贾会标明依据；没有依据时会直接说“没查到”</text>
         <view class="note-line"></view>
@@ -166,7 +174,7 @@
     <text class="scroll-arrow">↓</text>
   </view>
 
-  <view class="composer">
+  <view class="composer" wx:if="{{!needLogin}}">
     <view class="composer-box">
       <textarea
         class="composer-input"
@@ -198,5 +206,9 @@
       <text class="char-count" wx:if="{{!streaming}}">{{input.length}}/200</text>
       <text class="stop-hint" wx:else>正在回答 · 点右侧停止</text>
     </view>
+  </view>
+  <view class="login-composer" wx:else>
+    <view class="login-composer-btn" bindtap="onGoLogin" hover-class="press">登录后提问</view>
+    <view class="login-composer-note">未登录不能使用 AI 小贾</view>
   </view>
 </view>

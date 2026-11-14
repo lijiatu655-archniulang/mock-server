@@ -92,7 +92,7 @@ Page({
 
   onCall() {
     wx.makePhoneCall({
-      phoneNumber: '09995021688'
+      phoneNumber: '043264216888'
     })
   },
 

@@ -24,11 +24,11 @@ Page({
     modules: [],
     regions: [],
     footer: {
-      organizer: '中共新源县委组织部',
+      organizer: '中共永吉县委组织部',
       coOrganizer: '新源村村民委员会',
       reportPhone: '12380',
-      hotline: '0999-5021688',
-      icp: '新ICP备2026001234号-1',
+      hotline: '0432-64216888',
+      icp: '吉ICP备2026001234号-1',
       disclaimer: '本平台内容由新源村党群服务中心提供，AI 回答仅供参考。'
     },
     slogan: '听民意 · 解民忧 · 暖民心',

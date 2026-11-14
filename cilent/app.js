@@ -34,8 +34,8 @@ App({
   },
 
   /**
-   * 启动登录：优先复用 token，其次 Mock 登录，最后留给页面引导登录
-   * 不阻塞首页公开数据加载
+   * 启动登录：优先复用 token；真实后端不再静默登录，
+   * 未登录先以游客浏览，AI 等受保护能力由页面引导去个人中心登录。
    */
   bootstrap() {
     const self = this
@@ -47,7 +47,7 @@ App({
           resolve(user)
         }).catch(function () {
           storage.clearAuth()
-          self.autoLogin().then(resolve)
+          resolve(null)
         })
         return
       }
@@ -67,16 +67,7 @@ App({
         return null
       })
     }
-    if (!config.USE_MOCK) {
-      // 生产环境静默登录：wx.login → /auth/wx-login；失败不阻塞公开页面
-      return auth.wxLogin().then(function (res) {
-        self.setUser(res.user)
-        return res.user
-      }).catch(function (err) {
-        console.warn('[auth] wx-login failed', err)
-        return null
-      })
-    }
+    // 真实后端：不静默登录，必须由用户在个人中心选择微信/账号密码登录
     return Promise.resolve(null)
   },
 
