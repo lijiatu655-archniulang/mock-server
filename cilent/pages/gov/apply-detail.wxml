@@ -12,7 +12,7 @@
     <view class="alert-icon">!</view>
     <view class="alert-main">
       <view class="alert-title">需要补正材料</view>
-      <view class="alert-desc">缺少：{{apply.missingMaterials ? apply.missingMaterials.join('、') : '相关材料'}}。请尽快联系村党群服务中心补齐。</view>
+      <view class="alert-desc">缺少：{{apply.missingText}}。请尽快联系村党群服务中心补齐。</view>
       <view class="alert-action" bindtap="onCall">电话联系</view>
     </view>
   </view>

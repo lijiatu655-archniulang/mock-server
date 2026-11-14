@@ -54,7 +54,11 @@ Page({
       self.setData({
         apply: Object.assign({}, apply, {
           statusTheme: THEME[apply.status] || 'gray',
-          amountText: amount > 0 ? (amount / 100).toFixed(2).replace(/\.00$/, '') + ' 元' : '免费'
+          amountText: amount > 0 ? (amount / 100).toFixed(2).replace(/\.00$/, '') + ' 元' : '免费',
+          // WXML 不支持 .join()，在这里算好
+          missingText: (apply.missingMaterials && apply.missingMaterials.length)
+            ? apply.missingMaterials.join('、')
+            : '相关材料'
         }),
         formRows: formRows,
         loading: false,
