@@ -5,3 +5,7 @@ data/
 
 # 联调产物
 tests/api-test.json
+
+# 本地密钥（不要提交）
+.env
+*.env

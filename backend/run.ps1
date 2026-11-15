@@ -46,6 +46,21 @@ if (-not (Test-Path $jar)) {
 Write-Host "[3/3] 启动 http://127.0.0.1:$Port/api/v1/home" -ForegroundColor Green
 Write-Host "      数据库账号：$DbUser（密码通过环境变量注入）" -ForegroundColor DarkGray
 
+# 本地 .env（已被 gitignore，不会提交）
+$envFile = Join-Path $root ".env"
+if (Test-Path $envFile) {
+    Get-Content $envFile | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -and -not $line.StartsWith("#") -and $line.Contains("=")) {
+            $k, $v = $line.Split("=", 2)
+            if (-not [Environment]::GetEnvironmentVariable($k.Trim())) {
+                [Environment]::SetEnvironmentVariable($k.Trim(), $v.Trim())
+            }
+        }
+    }
+    Write-Host "      已加载本地 .env" -ForegroundColor DarkGray
+}
+
 $env:DB_USER = $DbUser
 $env:DB_PASSWORD = $DbPassword
 if ($AiKey) {
