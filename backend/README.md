@@ -224,7 +224,11 @@ AI_ENABLED=true AI_API_KEY=sk-xxx AI_MODEL=qwen-plus \
 | `AI_MODEL` | qwen-plus | 模型名 |
 | `AI_BASE_URL` | DashScope 兼容地址 | 可换 DeepSeek/自建网关 |
 
-**RAG 实现**（`modules/ai/rag`）：
+**RAG 实现**（`modules/ai/rag`，2026-11 调优）：
+
+- 多主题问题按“和/与/、/，”拆子问题，每类各取前 2 条，保证两类资料都进上下文；
+- 拒答判定只看开头 60 字，部分拒答不会清空已检索到的引用；
+
 
 - 语料：`cms_article` 正文（去 HTML、按句切 260 字）+ `gov_item` 事项（条件/材料/流程/FAQ 拍平）；
 - 索引：首次检索时在内存构建，几十个 chunk，无向量库依赖；

@@ -301,8 +301,10 @@ public class AiService {
 
     private static boolean refusal(String s) {
         if (s == null) return false;
-        return s.contains("没查到") || s.contains("没有查到") || s.contains("查不到")
-                || s.contains("不掌握") || s.contains("无法回答") || s.contains("不在村务");
+        String head = s.substring(0, Math.min(60, s.length()));
+        return head.contains("没查到") || head.contains("没有查到") || head.contains("查不到")
+                || head.contains("不掌握") || head.contains("无法回答") || head.contains("不在村务")
+                || head.startsWith("抱歉");
     }
 
     private String titleOf(String question) {

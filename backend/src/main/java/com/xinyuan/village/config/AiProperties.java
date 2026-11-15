@@ -23,7 +23,7 @@ public class AiProperties {
 
     @Data
     public static class Rag {
-        private int topK = 3;
+        private int topK = 4;
         private double minScore = 0.2;
         private int historyRounds = 3;
     }

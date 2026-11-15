@@ -37,17 +37,45 @@ public class RagService {
     public RagResult retrieve(String question) {
         Retriever r = ensureIndex();
         if (r == null) return RagResult.empty();
-        List<Retriever.Scored> hits = r.search(question, Math.max(props.getRag().getTopK() * 3, 9));
+        List<String> parts = new ArrayList<>();
+        for (String p : question.split("[和与、，,；;？?\\s]+")) {
+            String t = p.trim().replaceAll("(有什么区别|区别|不同|关系|是什么|怎么样)$", "").trim();
+            if (t.length() >= 2) parts.add(t);
+        }
+        boolean multi = parts.size() >= 2;
+        List<Retriever.Scored> hits;
+        if (multi) {
+            // 多主题问题：每个子问题各取前 2 条，保证两类资料都进上下文
+            Map<String, Retriever.Scored> best = new LinkedHashMap<>();
+            for (String q : parts) {
+                int taken = 0;
+                for (Retriever.Scored s : r.search(q, props.getRag().getTopK() * 3)) {
+                    if (s.score() < props.getRag().getMinScore() || s.coverage() < 0.3) continue;
+                    String key = s.chunk().id() + "#" + s.chunk().text().hashCode();
+                    Retriever.Scored old = best.get(key);
+                    if (old == null || s.score() > old.score()) best.put(key, s);
+                    if (++taken >= 2) break;
+                }
+            }
+            hits = new ArrayList<>(best.values());
+            hits.sort((a, b) -> Double.compare(b.score(), a.score()));
+        } else {
+            hits = r.search(question, Math.max(props.getRag().getTopK() * 3, 9));
+        }
         List<Retriever.Scored> candidates = new ArrayList<>();
         for (Retriever.Scored h : hits) {
             if (h.score() >= props.getRag().getMinScore() && h.coverage() >= 0.3) candidates.add(h);
         }
         if (candidates.isEmpty()) return RagResult.empty();
-        // 只保留与第一名分数接近的结果，避免“高龄补贴”带出值班表、就业证之类的弱相关文章
+        // 单主题：只保留与第一名接近的结果；多主题：已按子问题配额，放宽上限
         double top = candidates.get(0).score();
         List<Retriever.Scored> kept = new ArrayList<>();
         for (Retriever.Scored h : candidates) {
-            if (h.score() >= top * 0.65 && kept.size() < props.getRag().getTopK()) kept.add(h);
+            if (multi) {
+                if (kept.size() < props.getRag().getTopK() + 2) kept.add(h);
+            } else if (h.score() >= top * 0.5 && kept.size() < props.getRag().getTopK()) {
+                kept.add(h);
+            }
         }
 
         StringBuilder ctx = new StringBuilder();

@@ -20,6 +20,7 @@ public class PromptBuilder {
             4. 不讨论与村务、政策、办事无关的话题。
             5. 输出纯文本，不要使用 Markdown 语法（不要 **、#、`、表格）；分点用“1. 2. 3.”，强调用「」。
             6. 资料没有写到的条件、材料、金额、时限不要补充；不确定就直说不确定。
+            7. 遇到报修、投诉、邻里纠纷、意见建议这类事，先回答能回答的，再引导用户到首页「诉求建议」在线提交：可上传现场照片、查看办理进度、给结果评价；紧急情况（安全隐患、人身危险）让用户直接拨 110 或联系网格员。
             """;
 
     public List<LlmMessage> build(String question, RagService.RagResult rag, List<AiMessage> history, int rounds) {

@@ -45,7 +45,7 @@ app:
     max-tokens: 800
     timeout-ms: 60000
     rag:
-      top-k: 3
+      top-k: 4
       min-score: 0.2
       history-rounds: 3
   wechat:
