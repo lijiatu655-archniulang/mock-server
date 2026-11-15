@@ -45,9 +45,14 @@ const DEMO_PASSWORD_HASH = "$2a$10$j7flrxK2h9WHXWbFw3t6/.eoyJDx7cNaWsBHAMIU5S8r7
 ins("sys_user",
   ["id", "openid", "name", "nickname", "role_code", "role_name", "phone", "phone_display", "avatar_text",
    "avatar_url", "region_id", "grid_name", "house_no", "joined_at", "is_verified", "status", "password_hash"],
-  [[q(u.id), q("seed_openid_" + u.id), q(u.name), q(u.nickname), q(u.roleCode), q(u.roleName),
-    q(u.phone), q(u.phoneDisplay), q(u.avatarText), q(""), q(u.regionId), q(u.gridName),
-    q(u.houseNo), q(u.joinedAt), "1", "1", q(DEMO_PASSWORD_HASH)]]);
+  [
+    [q(u.id), q("seed_openid_" + u.id), q(u.name), q(u.nickname), q(u.roleCode), q(u.roleName),
+     q(u.phone), q(u.phoneDisplay), q(u.avatarText), q(""), q(u.regionId), q(u.gridName),
+     q(u.houseNo), q(u.joinedAt), "1", "1", q(DEMO_PASSWORD_HASH)],
+    // V3 管理员账号
+    [q("u1002"), "NULL", q("李建国"), q("李建国"), q("admin"), q("管理员"), q("13843219072"), q("138****9072"), q("李"),
+     q(""), q(u.regionId), q("第三网格"), q("村部 1 号"), q("2023-01-10"), "1", "1", q(DEMO_PASSWORD_HASH)]
+  ]);
 
 // 配置
 head("应用配置");
@@ -173,6 +178,38 @@ ins("biz_request", ["id", "request_no", "user_id", "type", "type_label", "title"
 ins("biz_request_log", ["request_id", "status", "label", "time_text", "operator", "note", "sort"], reqLogRows);
 ins("biz_request_reply", ["request_id", "time_text", "operator", "content", "sort"], reqReplyRows);
 
+// 户籍样例（V3 统计用，确定性生成：3 网格 / 20 户 / 66 人）
+head("户籍样例");
+const GRIDS = ["第一网格", "第二网格", "第三网格"];
+const SURNAMES = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴"];
+const GIVEN = ["建国", "秀兰", "志强", "丽华", "国庆", "桂英", "永强", "秀英", "国梁", "玉梅"];
+const hhRows = [];
+const hmRows = [];
+for (let i = 0; i < 20; i++) {
+  const grid = GRIDS[i % 3];
+  const size = 2 + (i % 4);           // 2..5 人
+  const hhId = "hh" + String(i + 1).padStart(3, "0");
+  const hhNo = "H" + u.regionId + String(i + 1).padStart(3, "0");
+  const head = SURNAMES[i % 10] + GIVEN[i % 10];
+  hhRows.push([q(hhId), q(hhNo), q(u.regionId), q(grid), q(head),
+    q("138" + String(20000000 + i).padStart(8, "0")), q(grid + " " + (i + 1) + " 号"), String(size),
+    q(i % 5 === 4 ? "空挂" : "常住")]);
+  const headAge = 30 + ((i * 7) % 30);
+  for (let m = 0; m < size; m++) {
+    let name, gender, age, relation, isHead = m === 0 ? "1" : "0";
+    if (m === 0) { name = head; gender = "男"; age = headAge; relation = "户主"; }
+    else if (m === 1) { name = SURNAMES[(i + 3) % 10] + "秀英"; gender = "女"; age = headAge - (i % 4); relation = "配偶"; }
+    else if (m === 2) { name = SURNAMES[i % 10] + (i % 2 ? "小" : "志"); gender = i % 2 ? "女" : "男"; age = 3 + ((i * 5) % 18); relation = "子女"; }
+    else if (m === 3) { name = SURNAMES[(i + 5) % 10] + "老"; gender = "男"; age = 60 + ((i * 7) % 25); relation = "父母"; }
+    else { name = SURNAMES[i % 10] + "芳"; gender = "女"; age = 5 + ((i * 3) % 16); relation = "子女"; }
+    hmRows.push([q("hm" + (i * 5 + m + 1)), q(hhId), q(name), q(gender), String(age),
+      q(relation), q("220221********" + String(1000 + i * 10 + m)), isHead]);
+  }
+}
+ins("sys_household", ["id", "household_no", "region_id", "grid_name", "head_name", "head_phone",
+  "address", "member_count", "category"], hhRows);
+ins("sys_household_member", ["id", "household_id", "name", "gender", "age", "relation", "id_card_masked", "is_head"], hmRows);
+
 const sql = "-- 自动生成：node db/gen-seed.cjs（数据源 cilent/mock/data.js）\n" +
   "SET NAMES utf8mb4;\nUSE xinyuan_village;\nSET FOREIGN_KEY_CHECKS = 0;\n" +
   "TRUNCATE TABLE sys_region;\nTRUNCATE TABLE sys_village;\nTRUNCATE TABLE sys_user;\nTRUNCATE TABLE sys_config;\n" +
@@ -180,7 +217,7 @@ const sql = "-- 自动生成：node db/gen-seed.cjs（数据源 cilent/mock/data
   "TRUNCATE TABLE app_module;\nTRUNCATE TABLE cms_banner;\nTRUNCATE TABLE cms_notice;\nTRUNCATE TABLE gov_category;\n" +
   "TRUNCATE TABLE gov_item;\nTRUNCATE TABLE gov_apply;\nTRUNCATE TABLE gov_apply_log;\nTRUNCATE TABLE biz_request;\n" +
   "TRUNCATE TABLE biz_request_log;\nTRUNCATE TABLE biz_request_reply;\nTRUNCATE TABLE biz_directory;\nTRUNCATE TABLE biz_job;\n" +
-  "TRUNCATE TABLE biz_tea_meeting;\nTRUNCATE TABLE ai_suggestion;\nTRUNCATE TABLE ai_conversation;\nTRUNCATE TABLE ai_message;\n" +
+  "TRUNCATE TABLE biz_tea_meeting;\nTRUNCATE TABLE ai_suggestion;\nTRUNCATE TABLE ai_conversation;\nTRUNCATE TABLE ai_message;\nTRUNCATE TABLE sys_household;\nTRUNCATE TABLE sys_household_member;\nTRUNCATE TABLE user_family_member;\n" +
   out.join("\n") + "\nSET FOREIGN_KEY_CHECKS = 1;\n";
 
 fs.writeFileSync(path.join(__dirname, "seed.sql"), sql, "utf8");
@@ -188,5 +225,6 @@ console.log("seed.sql written:", sql.length, "bytes");
 console.log("rows:", {
   regions: regionRows.length, articles: data.articles.length, govItems: data.govItems.length,
   modules: data.modules.length, directory: data.serviceDirectory.length, jobs: data.jobs.length,
-  tea: data.teaMeetings.length, applies: applyRows.length, requests: reqRows.length
+  tea: data.teaMeetings.length, applies: applyRows.length, requests: reqRows.length,
+  households: hhRows.length, householdMembers: hmRows.length
 });

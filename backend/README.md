@@ -1,8 +1,8 @@
-# 新源村情通 · 后端 V2（严格对齐 `cilent` 前端契约 v1）
+# 新源村情通 · 后端 V3（严格对齐 `cilent` 前端契约 v1）
 
 > Spring Boot 3.2.12 / JDK 17 / MyBatis / MySQL 8 ｜ 无管理端（按你的要求）
 > 数据源唯一真相：`cilent/mock/data.js`；接口唯一真相：`temp/接口契约-v1.md`
-> 当前版本：**V2.1.0**（2026-11，吉林数据 + 双登录）
+> 当前版本：**V3.0.0**（2026-11，吉林数据 + 双登录）
 > 本机实测：**53 条契约路由全部实现，50 条主用例 + 10 条预留接口 + 密码登录 3 条全部通过**
 
 ---
@@ -60,7 +60,7 @@ BASE_URL: 'http://127.0.0.1:8080/api/v1',   // 真机换成电脑局域网 IP
 
 ```powershell
 .\mvnw.cmd -DskipTests package
-java -jar target\village-server-2.1.0.jar --server.port=8080
+java -jar target\village-server-3.0.0.jar --server.port=8080
 ```
 
 ### 常见报错
@@ -82,7 +82,7 @@ Get-Content -Raw -Encoding UTF8 ..\db\seed.sql   | mysql -uroot -p123456 xinyuan
 
 # ② 打包并启动（端口 8080，绑定 0.0.0.0 便于真机）
 mvn -DskipTests package
-java -jar target\village-server-2.1.0.jar
+java -jar target\village-server-3.0.0.jar
 ```
 
 健康检查：
@@ -213,7 +213,7 @@ backend/src/main/java/com/xinyuan/village/
 ```bash
 # 启用真实模型（示例：通义兼容模式）
 AI_ENABLED=true AI_API_KEY=sk-xxx AI_MODEL=qwen-plus \
-  java -jar target\village-server-2.1.0.jar
+  java -jar target\village-server-3.0.0.jar
 ```
 
 | 配置 | 默认 | 说明 |

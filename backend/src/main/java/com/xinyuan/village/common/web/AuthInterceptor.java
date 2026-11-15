@@ -28,6 +28,8 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         boolean needLogin = hm.hasMethodAnnotation(LoginRequired.class)
                 || hm.getBeanType().isAnnotationPresent(LoginRequired.class);
+        boolean needAdmin = hm.hasMethodAnnotation(AdminRequired.class)
+                || hm.getBeanType().isAnnotationPresent(AdminRequired.class);
 
         String token = resolveToken(req);
         if (token != null) {
@@ -44,6 +46,11 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         if (needLogin && UserContext.get() == null) {
             throw new BizException(ErrorCode.UNAUTHORIZED);
+        }
+        if (needAdmin) {
+            LoginUser u = UserContext.get();
+            if (u == null) throw new BizException(ErrorCode.UNAUTHORIZED);
+            if (!"admin".equals(u.getRole())) throw new BizException(ErrorCode.FORBIDDEN, "仅管理员可操作");
         }
         return true;
     }

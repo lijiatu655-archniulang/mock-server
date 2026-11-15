@@ -995,7 +995,7 @@ const suggestions = [{
 const footer = {
   hotline: '0432-64216888',
   serviceTime: '周一至周五 10:00—19:30',
-  version: 'V2.1.0'
+  version: 'V3.0.0'
 }
 
 const appConfig = {

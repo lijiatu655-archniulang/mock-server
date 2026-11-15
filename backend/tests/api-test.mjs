@@ -177,7 +177,7 @@ check("files", r, (x) => { if (!x.json.data.url || !x.json.data.id) throw new Er
 
 // 12 预留 + 错误
 r = await call("GET", "/workbench/summary", {});
-check("workbench→40004", r, (x) => { eq(x.json.code, 40004, "code"); return x.json.message; });
+check("workbench→需管理员", r, (x) => { eq(x.json.code, 20002, "code"); return x.json.message; });
 r = await call("GET", "/points", {});
 check("points→40004", r, (x) => { eq(x.json.code, 40004, "code"); return x.json.message; });
 r = await call("GET", "/articles/nope", { auth: false });

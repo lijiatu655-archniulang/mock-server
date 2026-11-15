@@ -156,11 +156,13 @@ CREATE TABLE cms_banner (
 
 DROP TABLE IF EXISTS cms_notice;
 CREATE TABLE cms_notice (
-  id         VARCHAR(16)  NOT NULL,
+  id         VARCHAR(32)  NOT NULL,
   text       VARCHAR(255) NOT NULL,
   type       VARCHAR(16)  NOT NULL DEFAULT 'normal' COMMENT 'urgent / normal',
   article_id VARCHAR(32)  DEFAULT NULL,
   status     TINYINT      NOT NULL DEFAULT 1,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='首页通知条';
 
@@ -411,5 +413,54 @@ CREATE TABLE sys_file (
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文件';
+
+DROP TABLE IF EXISTS sys_household;
+CREATE TABLE sys_household (
+  id           VARCHAR(32) NOT NULL,
+  household_no VARCHAR(32) NOT NULL,
+  region_id    VARCHAR(32) NOT NULL,
+  grid_name    VARCHAR(32) DEFAULT NULL,
+  head_name    VARCHAR(32) NOT NULL,
+  head_phone   VARCHAR(20) DEFAULT NULL,
+  address      VARCHAR(128) DEFAULT NULL,
+  member_count INT         NOT NULL DEFAULT 0,
+  category     VARCHAR(16) NOT NULL DEFAULT '常住' COMMENT '常住/空挂/流动',
+  created_at   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_hh_no (household_no),
+  KEY idx_region (region_id)
+) ENGINE=InnoDB COMMENT='户籍户（V3 统计）';
+
+DROP TABLE IF EXISTS sys_household_member;
+CREATE TABLE sys_household_member (
+  id             VARCHAR(32) NOT NULL,
+  household_id   VARCHAR(32) NOT NULL,
+  name           VARCHAR(32) NOT NULL,
+  gender         VARCHAR(4)  NOT NULL DEFAULT '男',
+  age            INT         NOT NULL DEFAULT 0,
+  relation       VARCHAR(16) DEFAULT NULL COMMENT '户主/配偶/子女/父母/其他',
+  id_card_masked VARCHAR(24) DEFAULT NULL,
+  is_head        TINYINT     NOT NULL DEFAULT 0,
+  created_at     DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_hh (household_id)
+) ENGINE=InnoDB COMMENT='户籍成员（V3 统计）';
+
+DROP TABLE IF EXISTS user_family_member;
+CREATE TABLE user_family_member (
+  id             VARCHAR(32) NOT NULL,
+  user_id        VARCHAR(32) NOT NULL,
+  name           VARCHAR(32) NOT NULL,
+  relation       VARCHAR(16) DEFAULT NULL COMMENT '父亲/母亲/配偶/子女/其他',
+  gender         VARCHAR(4)  DEFAULT NULL,
+  age            INT         DEFAULT NULL,
+  phone          VARCHAR(20) DEFAULT NULL,
+  id_card_masked VARCHAR(24) DEFAULT NULL,
+  is_guardian    TINYINT     NOT NULL DEFAULT 0,
+  created_at     DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_user (user_id)
+) ENGINE=InnoDB COMMENT='居民家庭（V3）';
 
 SET FOREIGN_KEY_CHECKS = 1;

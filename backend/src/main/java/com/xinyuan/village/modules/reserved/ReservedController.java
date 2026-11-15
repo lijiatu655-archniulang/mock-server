@@ -18,18 +18,8 @@ public class ReservedController {
         return new BizException(ErrorCode.NOT_OPEN, "该能力将在 V3 版本开放");
     }
 
-    @GetMapping("/workbench/summary")
-    public Result<Object> summary() {
-        throw new BizException(ErrorCode.NOT_OPEN, "网格员工作台将在 V3 版本开放");
-    }
-
     @GetMapping("/workbench/applies")
     public Result<Object> workbenchApplies() {
-        throw v3();
-    }
-
-    @GetMapping("/workbench/requests")
-    public Result<Object> workbenchRequests() {
         throw v3();
     }
 
@@ -50,16 +40,6 @@ public class ReservedController {
 
     @PostMapping("/workbench/events/{id}/transfer")
     public Result<Object> transfer(@PathVariable String id, @RequestBody(required = false) Map<String, Object> body) {
-        throw v3();
-    }
-
-    @GetMapping("/users/family")
-    public Result<Object> family() {
-        throw v3();
-    }
-
-    @PostMapping("/users/family")
-    public Result<Object> bindFamily(@RequestBody(required = false) Map<String, Object> body) {
         throw v3();
     }
 

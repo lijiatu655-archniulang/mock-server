@@ -11,7 +11,7 @@
   </parent>
   <groupId>com.xinyuan</groupId>
   <artifactId>village-server</artifactId>
-  <version>2.1.0</version>
+  <version>3.0.0</version>
   <name>village-server</name>
   <description>新源村情通后端（对齐 cilent 前端契约 v1）</description>
   <properties>
