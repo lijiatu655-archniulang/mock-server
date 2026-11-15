@@ -14,7 +14,16 @@
   ```powershell
   & "C:\Users\zero\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe" build_doc.py
   ```
-- 重新导出 PDF 后覆盖本目录同名文件。
+- 目录是 Word 自动生成域：改完正文后右键目录 → 更新域 → 更新整个目录，再导出 PDF。
+
+## 重新生成（目录 + PDF）
+
+```powershell
+python build_doc.py                 # 生成带 [[TOC]] 占位的 DOCX
+powershell -File postprocess.ps1    # 用 Word 生成真目录并导出 PDF
+```
+
+> `postprocess.ps1` 需要本机安装 Microsoft Word；它会替换占位符、生成目录、保存 DOCX 并导出 PDF。
 
 ## 打包
 

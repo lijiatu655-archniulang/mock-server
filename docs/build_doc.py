@@ -101,7 +101,7 @@ def table(headers, rows, widths=None, size=9.5, header_fill="EAF1FB"):
         p = hdr[i].paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         set_run_font(p.add_run(str(htext)), "微软雅黑", size, True)
-        shade(hdr[i], header_fill)
+        pass
     for row in rows:
         cells = t.add_row().cells
         for i, val in enumerate(row):
@@ -122,12 +122,6 @@ def code(text):
     p.paragraph_format.left_indent = Cm(0.4)
     p.paragraph_format.space_after = Pt(6)
     p.paragraph_format.line_spacing = 1.05
-    pPr = p._p.get_or_add_pPr()
-    shd = OxmlElement("w:shd")
-    shd.set(qn("w:val"), "clear")
-    shd.set(qn("w:color"), "auto")
-    shd.set(qn("w:fill"), "F4F5F7")
-    pPr.append(shd)
     r = p.add_run(text)
     set_run_font(r, "Consolas", 8.8)
     r.font.color.rgb = RGBColor(0x2B, 0x2B, 0x2B)
@@ -144,12 +138,25 @@ def shot(title):
     p.paragraph_format.space_before = Pt(26)
     p.paragraph_format.space_after = Pt(26)
     set_run_font(p.add_run("【截图位】" + title + "（粘贴小程序截图）"), "宋体", 10, False, (0x88, 0x88, 0x88))
-    shade(c, "FAFAFA")
+    pass
     no_split(t)
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
 
+def add_toc():
+    p = doc.add_paragraph()
+    run = p.add_run()
+    fld1 = OxmlElement("w:fldChar"); fld1.set(qn("w:fldCharType"), "begin")
+    instr = OxmlElement("w:instrText"); instr.set(qn("xml:space"), "preserve")
+    instr.text = 'TOC \\o "1-3" \\h \\z \\u'
+    fld2 = OxmlElement("w:fldChar"); fld2.set(qn("w:fldCharType"), "separate")
+    txt = OxmlElement("w:t"); txt.text = "打开 Word 后右键“更新域”生成目录"
+    fld3 = OxmlElement("w:fldChar"); fld3.set(qn("w:fldCharType"), "end")
+    run._r.append(fld1); run._r.append(instr); run._r.append(fld2); run._r.append(txt); run._r.append(fld3)
+
 def page_break():
-    PENDING["break"] = True
+    # 取消强制换页：用空行分隔章节
+    for _ in range(2):
+        doc.add_paragraph()
 
 # ============ 封面 ============
 for _ in range(3):
@@ -179,7 +186,7 @@ for k, v in info:
     p.paragraph_format.space_after = Pt(6)
     set_run_font(p.add_run(k + "：" ), "微软雅黑", 10.5, True)
     set_run_font(p.add_run(v), "宋体", 10.5)
-page_break()
+doc.add_page_break()
 
 # ============ 摘要 ============
 h("摘 要", 1)
@@ -194,28 +201,12 @@ para("项目已实现居民与管理员双角色闭环：居民在线申报、�
 p = doc.add_paragraph(); p.paragraph_format.space_before = Pt(8)
 set_run_font(p.add_run("关键词："), "微软雅黑", 10.5, True)
 set_run_font(p.add_run("村级事务；微信小程序；大模型；RAG；SSE；数字乡村"), "宋体", 10.5)
-page_break()
+doc.add_page_break()
 
 # ============ 目录 ============
 h("目 录", 1)
-toc = [
-    "一、项目说明",
-    "二、小程序与 AI 能力说明",
-    "三、创新点说明",
-    "四、技术实现",
-    "五、成果展示",
-    "六、历史说明",
-    "七、落地规划",
-    "附录 A  接口总表（摘要）",
-    "附录 B  演示视频脚本（3 分钟）",
-    "附录 C  提交材料清单",
-]
-for item in toc:
-    p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.left_indent = Cm(1.0)
-    set_run_font(p.add_run(item), "宋体", 11)
-page_break()
+para("[[TOC]]", first_indent=False)
+doc.add_page_break()
 
 # ============ 一、项目说明 ============
 h("一、项目说明", 1)
