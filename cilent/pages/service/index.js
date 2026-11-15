@@ -4,18 +4,53 @@ const TABS = [{
   key: 'directory',
   name: '服务黄页',
   title: '服务黄页',
-  icon: '电'
+  icon: '电',
+  sub: '水电气暖'
 }, {
   key: 'jobs',
   name: '就业招聘',
   title: '就业招聘',
-  icon: '岗'
+  icon: '岗',
+  sub: '家门口的工作'
 }, {
   key: 'tea',
   name: '线上奶茶会',
   title: '线上奶茶会',
-  icon: '茶'
+  icon: '茶',
+  sub: '议村里的事'
 }]
+
+const TEA_LOCAL = {
+  t1: {
+    title: '入冬取暖和防一氧化碳中毒',
+    date: '2026-11-20 19:30',
+    location: '新源村党群服务中心二楼',
+    host: '村两委 · 网格员',
+    summary: '东北入冬早，一起议煤炉取暖、一氧化碳报警器安装、独居老人和脱贫户上门检查。',
+    agenda: ['通报全村取暖方式和隐患排查情况', '议报警器安装、煤炉通风和秸秆禁烧', '确定网格员包保到户名单和上门时间']
+  },
+  t2: {
+    title: '医保缴费扫尾和老人代缴',
+    date: '2026-12-05 19:30',
+    location: '新源村党群服务中心一楼便民窗口',
+    host: '村医保专干 刘芳',
+    summary: '2026 年度医保集中缴费到 12 月 31 日，议外出务工、老人和断保人员怎么缴、谁帮着代缴。',
+    agenda: ['演示“吉林税务社保缴费”小程序', '统计需要上门代缴的老人和断保人员', '确定集中代缴和补缴提醒时间']
+  },
+  t3: {
+    title: '玉米储存和卖粮那些事',
+    date: '2026-11-08 19:30',
+    location: '新源村党群服务中心二楼',
+    host: '村新时代文明实践站 · 种植大户',
+    summary: '秋收后玉米露天存放容易返潮、霉变，一起议储粮、测水、卖粮渠道和电商助农。',
+    agenda: ['通报今年玉米产量和收购行情', '议庭院储粮、防霉防鼠和测水卖粮', '商量电商直播和合作社统一销售']
+  }
+}
+
+function localizeTea(item) {
+  const local = TEA_LOCAL[item.id]
+  return local ? Object.assign({}, item, local) : item
+}
 
 Page({
   data: {
@@ -78,7 +113,7 @@ Page({
       })
       const jobs = results[1].list || []
       const teas = (results[2].list || []).map(function (item) {
-        return Object.assign({}, item, {
+        return Object.assign({}, localizeTea(item), {
           signed: !!self.data.signed[item.id],
           percent: Math.min(100, Math.round((item.joined / item.total) * 100))
         })

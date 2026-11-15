@@ -76,8 +76,8 @@ image {
 /* ---------- 卡片 ---------- */
 .card {
   background: #FFFFFF;
-  border-radius: 24rpx;
-  box-shadow: var(--shadow-card);
+  border-radius: 28rpx;
+  box-shadow: 0 10rpx 30rpx rgba(94, 42, 37, 0.06), 0 2rpx 6rpx rgba(94, 42, 37, 0.025);
 }
 
 .card-flat {
@@ -327,4 +327,41 @@ image {
 
 .safe-bottom {
   height: calc(24rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------- 页面标题统一修饰 ---------- */
+.list-page .list-head .head-title,
+.request-list-page .list-head .head-title,
+.applies-page .list-head .head-title,
+.create-head .head-title,
+.edit-head .head-title,
+.history-head .head-title {
+  display: flex;
+  align-items: center;
+}
+
+.list-page .list-head .head-title::before,
+.request-list-page .list-head .head-title::before,
+.applies-page .list-head .head-title::before,
+.create-head .head-title::before,
+.edit-head .head-title::before,
+.history-head .head-title::before {
+  content: "";
+  flex: none;
+  width: 8rpx;
+  height: 34rpx;
+  margin-right: 14rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #E23B32, #A8111A);
+}
+
+/* 轻量页面顶部：统一暖白渐变和间距 */
+.list-page .list-head,
+.request-list-page .list-head,
+.applies-page .list-head,
+.create-head,
+.edit-head,
+.history-head {
+  padding: 34rpx 30rpx 24rpx;
+  background: linear-gradient(180deg, #FFF9F5 0%, #F6F2F0 100%);
 }

@@ -22,8 +22,20 @@
   background: linear-gradient(155deg, #970D14 0%, #B8141B 42%, #C91E24 72%, #D9372C 100%);
 }
 
+.hero-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.22;
+  filter: saturate(0.85) contrast(1.05);
+}
+
 .hero-glow {
   position: absolute;
+  z-index: 1;
   border-radius: 50%;
   pointer-events: none;
 }
@@ -50,6 +62,7 @@
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 1;
   opacity: 0.55;
   background-image: repeating-linear-gradient(
     125deg,
@@ -325,6 +338,17 @@
   box-shadow: 0 18rpx 38rpx rgba(142, 15, 20, 0.22);
 }
 
+.banner-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.22;
+  filter: saturate(0.8);
+}
+
 .banner-pattern {
   position: absolute;
   border-radius: 50%;
@@ -473,6 +497,60 @@
   font-size: 18rpx;
 }
 
+/* ---------- 村里掠影 ---------- */
+.gallery-section {
+  margin-bottom: 36rpx;
+}
+
+.gallery-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.gallery-inner {
+  display: flex;
+}
+
+.gallery-card {
+  flex: none;
+  width: 306rpx;
+  margin-right: 14rpx;
+  overflow: hidden;
+  border-radius: 18rpx;
+  background: #FFFFFF;
+  box-shadow: 0 8rpx 22rpx rgba(94, 42, 37, 0.07);
+}
+
+.gallery-card:last-child {
+  margin-right: 0;
+}
+
+.gallery-img {
+  display: block;
+  width: 100%;
+  height: 190rpx;
+  background: #EFEAE7;
+}
+
+.gallery-caption {
+  padding: 12rpx 16rpx 14rpx;
+}
+
+.gallery-title {
+  color: #33363A;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+
+.gallery-sub {
+  overflow: hidden;
+  margin-top: 2rpx;
+  color: #A19A95;
+  font-size: 18rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* ---------- 资讯 ---------- */
 .news-section {
   margin-bottom: 38rpx;
@@ -500,7 +578,16 @@
 .news-main {
   flex: 1;
   min-width: 0;
-  padding-right: 16rpx;
+  padding-right: 14rpx;
+}
+
+.news-thumb {
+  flex: none;
+  width: 142rpx;
+  height: 104rpx;
+  margin-right: 12rpx;
+  border-radius: 12rpx;
+  background: #F3EEEA;
 }
 
 .news-title {

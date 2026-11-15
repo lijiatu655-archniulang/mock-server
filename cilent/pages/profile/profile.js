@@ -4,38 +4,59 @@ const authApi = require('../../api/auth')
 const config = require('../../utils/config')
 const storage = require('../../utils/storage')
 
+function normalizeAvatarUrl(url) {
+  if (!url) return ''
+  const text = String(url)
+  const base = config.BASE_URL.replace(/\/api\/v1\/?$/, '')
+  if (text.charAt(0) === '/') return base + text
+  return text.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i, base)
+}
+
 function decorate(user) {
   if (!user) return null
   const joined = String(user.joinedAt || '').split('-')
   const joinedText = joined.length === 3 ? joined[0] + '年' + Number(joined[1]) + '月加入' : ''
   const stats = user.stats || {}
   const displayName = user.nickname || user.name || '村民'
+  const worker = user.gridWorker || {
+    name: '李建国',
+    phoneDisplay: '138****9072',
+    phone: '13843219072',
+    duty: '周一至周五 10:00—19:30'
+  }
   return Object.assign({}, user, {
+    avatarUrl: normalizeAvatarUrl(user.avatarUrl),
     displayName: displayName,
     avatarText: user.avatarText || displayName.charAt(0),
     joinedText: joinedText,
     isAdmin: user.roleCode === 'admin',
     regionPath: user.regionPath || ['永吉县', '口前镇', '新源村'],
-    gridWorker: user.gridWorker || {
-      name: '李建国',
-      phoneDisplay: '138****9072',
-      phone: '13843219072',
-      duty: '周一至周五 10:00—19:30'
-    },
+    gridWorker: Object.assign({}, worker, {
+      initial: String(worker.name || '李').charAt(0)
+    }),
     statList: [{
       key: 'applies',
       label: '我的办件',
       value: stats.applies || 0,
+      icon: '件',
+      tint: '#FBEBEB',
+      color: '#C4161C',
       badge: ''
     }, {
       key: 'appeals',
       label: '我的诉求',
       value: stats.appeals || 0,
+      icon: '诉',
+      tint: '#FDF0E8',
+      color: '#C2571A',
       badge: ''
     }, {
       key: 'ratings',
       label: '待评价',
       value: stats.ratings || 0,
+      icon: '评',
+      tint: '#EAF4EE',
+      color: '#2F8A59',
       badge: ''
     }]
   })

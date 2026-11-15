@@ -10,6 +10,42 @@ const DEFAULT_REGION = {
   population: 1632
 }
 
+const ARTICLE_IMAGES = {
+  a1001: '/assets/images/home/news-medical.jpg',
+  a1010: '/assets/images/home/news-village.jpg',
+  a1002: '/assets/images/home/news-finance.jpg',
+  a1003: '/assets/images/home/news-apple.jpg'
+}
+
+const COLUMN_IMAGES = {
+  c1: '/assets/images/home/news-village.jpg',
+  c2: '/assets/images/home/news-finance.jpg',
+  c3: '/assets/images/home/news-apple.jpg',
+  c4: '/assets/images/home/news-medical.jpg'
+}
+
+function decorateArticles(list) {
+  return (list || []).map(function (item) {
+    return Object.assign({}, item, {
+      thumb: ARTICLE_IMAGES[item.id] || COLUMN_IMAGES[item.columnId] || '/assets/images/home/news-default.jpg'
+    })
+  })
+}
+
+function unifyModules(list) {
+  return (list || []).map(function (item) {
+    if (item.code === 'gov' || item.id === 'm5') {
+      return Object.assign({}, item, {
+        highlight: false,
+        badge: '',
+        tint: '#FBEBEB',
+        icon: '/assets/icons/grid-gov.png'
+      })
+    }
+    return item
+  })
+}
+
 Page({
   data: {
     statusBarHeight: 20,
@@ -23,6 +59,32 @@ Page({
     articles: [],
     modules: [],
     regions: [],
+    gallery: [
+      {
+        id: 'g1',
+        image: '/assets/images/home/hero-village.jpg',
+        title: '乡村新貌',
+        sub: '白墙灰瓦，村口新景'
+      },
+      {
+        id: 'g2',
+        image: '/assets/images/home/news-apple.jpg',
+        title: '苹果助农',
+        sub: '果园里的丰收季'
+      },
+      {
+        id: 'g3',
+        image: '/assets/images/home/banner-health.jpg',
+        title: '幸福晚年',
+        sub: '家门口的暖心服务'
+      },
+      {
+        id: 'g4',
+        image: '/assets/images/home/news-village.jpg',
+        title: '村口日常',
+        sub: '烟火气里的新源村'
+      }
+    ],
     footer: {
       hotline: '0432-64216888'
     },
@@ -62,8 +124,8 @@ Page({
         notice: res.notice,
         banner: res.banner,
         columns: res.columns || [],
-        articles: res.articles || [],
-        modules: res.modules || [],
+        articles: decorateArticles(res.articles),
+        modules: unifyModules(res.modules),
         regions: res.regions || [],
         footer: res.footer || self.data.footer,
         newsTitle: '最新动态',
@@ -110,7 +172,7 @@ Page({
     }).then(function (res) {
       if (self.data.activeColumn !== columnId) return
       self.setData({
-        articles: res.list || [],
+        articles: decorateArticles(res.list),
         listLoading: false
       })
     }).catch(function () {

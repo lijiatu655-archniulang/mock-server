@@ -2,6 +2,7 @@
   <view class="status-fill" style="height:{{statusBarHeight}}px;"></view>
   <!-- 政务红头部（信任视觉） -->
   <view class="hero" style="padding-top:{{statusBarHeight}}px;">
+    <image class="hero-photo" src="/assets/images/home/hero-village.jpg" mode="aspectFill"></image>
     <view class="hero-glow glow-a"></view>
     <view class="hero-glow glow-b"></view>
     <view class="hero-lines"></view>
@@ -98,6 +99,7 @@
       <block wx:else>
         <!-- 政策横幅 -->
         <view class="banner" wx:if="{{banner}}" bindtap="onBanner" hover-class="press">
+          <image class="banner-photo" src="/assets/images/home/banner-health.jpg" mode="aspectFill"></image>
           <view class="banner-pattern pattern-1"></view>
           <view class="banner-pattern pattern-2"></view>
           <view class="banner-copy">
@@ -122,6 +124,27 @@
               <text class="art-unit">元/人·年</text>
             </view>
           </view>
+        </view>
+
+        <!-- 村里掠影 -->
+        <view class="gallery-section">
+          <view class="section-head">
+            <view class="section-title">
+              村里掠影
+              <text class="section-sub">图库示意</text>
+            </view>
+          </view>
+          <scroll-view class="gallery-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+            <view class="gallery-inner">
+              <view class="gallery-card" wx:for="{{gallery}}" wx:key="id">
+                <image class="gallery-img" src="{{item.image}}" mode="aspectFill" lazy-load></image>
+                <view class="gallery-caption">
+                  <view class="gallery-title">{{item.title}}</view>
+                  <view class="gallery-sub">{{item.sub}}</view>
+                </view>
+              </view>
+            </view>
+          </scroll-view>
         </view>
 
         <!-- 资讯流 -->
@@ -159,6 +182,7 @@
                   <text>{{item.views}} 阅读</text>
                 </view>
               </view>
+              <image class="news-thumb" src="{{item.thumb}}" mode="aspectFill" lazy-load></image>
               <view class="news-arrow"></view>
             </view>
           </view>
@@ -210,6 +234,11 @@
               <text class="service-desc">{{item.desc}}</text>
               <view class="service-badge {{item.highlight ? 'badge-light' : ''}}" wx:if="{{item.badge}}">{{item.badge}}</view>
             </view>
+          </view>
+          <view class="service-tip" bindtap="onModuleTap" data-name="政务管理" data-status="online" data-route="/pages/gov/index">
+            <view class="tip-icon">✓</view>
+            <text>医保、养老、高龄补贴、独生子女证等事项，可直接在线申报</text>
+            <view class="arrow arrow-red"></view>
           </view>
         </view>
       </block>

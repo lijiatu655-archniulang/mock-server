@@ -10,8 +10,9 @@
 
 1. 微信开发者工具 → 导入项目 → 选择本目录 `cilent`；
 2. 编译。当前 `USE_MOCK = false`，连本机 Spring Boot 后端 `http://127.0.0.1:8080/api/v1`；
-3. 若后端未启动、想离线演示，把 `utils/config.js` 改回 `USE_MOCK: true` / `BASE_URL: 'http://127.0.0.1:3000/api/v1'`，再启动 `temp/mock-server`；
-4. 若提示域名校验，确认 `project.private.config.json` 中 `urlCheck` 为 `false`（已配置）。
+3. 手机真机访问时，手机和电脑要连同一个 Wi-Fi；电脑 IP 变了就同步改 `BASE_URL`；
+4. 若后端未启动、想离线演示，把 `utils/config.js` 改回 `USE_MOCK: true` / `BASE_URL: 'http://127.0.0.1:3000/api/v1'`，再启动 `temp/mock-server`；
+5. 若提示域名校验，确认 `project.private.config.json` 中 `urlCheck` 为 `false`（已配置）。
 
 AppID 沿用项目里的 `wx2bfc9ee3e046f12e`，如需换成自己的，改 `project.config.json`。
 

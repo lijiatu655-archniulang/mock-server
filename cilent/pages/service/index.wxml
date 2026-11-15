@@ -1,19 +1,46 @@
 <view class="page service-page">
-  <view class="service-head">
-    <view class="head-kicker">新源村 · 生活服务</view>
-    <view class="head-title">便民服务</view>
-    <view class="head-sub">水电气暖、家门口的工作、村里的事，都能找到人</view>
+  <view class="service-hero">
+    <view class="hero-glow"></view>
+    <view class="hero-kicker">
+      <view class="kicker-dot"></view>
+      <text>新源村 · 生活服务</text>
+    </view>
+    <view class="hero-title">便民服务</view>
+    <view class="hero-sub">水电气暖、家门口的工作、村里的事，都能找到人</view>
+    <view class="hero-stats">
+      <view class="hero-stat">
+        <view class="hero-num">{{stats.services}}</view>
+        <view class="hero-label">服务电话</view>
+      </view>
+      <view class="hero-line"></view>
+      <view class="hero-stat">
+        <view class="hero-num">{{stats.jobs}}</view>
+        <view class="hero-label">在招岗位</view>
+      </view>
+      <view class="hero-line"></view>
+      <view class="hero-stat">
+        <view class="hero-num">{{stats.teas}}</view>
+        <view class="hero-label">村里议事</view>
+      </view>
+    </view>
   </view>
 
-  <view class="tab-bar">
+  <view class="service-tabs">
     <view
-      class="tab-item {{tab === item.key ? 'on' : ''}}"
+      class="service-tab {{tab === item.key ? 'on' : ''}}"
       wx:for="{{tabs}}"
       wx:key="key"
       data-tab="{{item.key}}"
       bindtap="onTabTap"
       hover-class="press"
-    >{{item.name}}</view>
+    >
+      <view class="tab-icon">{{item.icon}}</view>
+      <view class="tab-main">
+        <view class="tab-name">{{item.name}}</view>
+        <view class="tab-sub">{{item.sub}}</view>
+      </view>
+      <view class="tab-count">{{item.count}}</view>
+    </view>
   </view>
 
   <block wx:if="{{loading}}">
@@ -50,7 +77,10 @@
     <!-- 服务黄页 -->
     <block wx:if="{{tab === 'directory'}}">
       <view class="group" wx:for="{{directoryGroups}}" wx:key="name" wx:for-item="group">
-        <view class="group-title">{{group.name}}</view>
+        <view class="group-head">
+          <view class="group-name">{{group.name}}</view>
+          <view class="group-count">{{group.list.length}} 个服务</view>
+        </view>
         <view class="service-card card" wx:for="{{group.list}}" wx:key="id" wx:for-item="item">
           <view class="service-row">
             <view class="service-icon" style="background:{{item.tint}};color:{{item.color}};">{{item.icon}}</view>
@@ -64,7 +94,10 @@
               <text>拨打</text>
             </view>
           </view>
-          <view class="service-phone">{{item.phoneDisplay}}</view>
+          <view class="service-phone-row">
+            <text class="service-phone">{{item.phoneDisplay}}</text>
+            <text class="service-hint">工作日可拨打</text>
+          </view>
         </view>
       </view>
     </block>

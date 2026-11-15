@@ -1,82 +1,238 @@
 .service-page {
   background: #F6F2F0;
+  padding-bottom: 20rpx;
 }
 
-.service-head {
-  padding: 34rpx 30rpx 24rpx;
-  background: linear-gradient(180deg, #FFF8F3 0%, #F6F2F0 100%);
+.service-page .state-box {
+  margin: 0 24rpx;
 }
 
-.head-kicker {
-  color: #A06A4C;
-  font-size: 20rpx;
-  letter-spacing: 1rpx;
+/* ---------- 顶部 ---------- */
+.service-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 30rpx 30rpx 64rpx;
+  background: linear-gradient(148deg, #8E0B11 0%, #B8141B 52%, #D02528 100%);
 }
 
-.head-title {
-  margin-top: 8rpx;
-  color: #24262A;
-  font-size: 46rpx;
-  font-weight: 800;
-  letter-spacing: 2rpx;
+.hero-glow {
+  position: absolute;
+  top: -160rpx;
+  right: -100rpx;
+  width: 430rpx;
+  height: 430rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 213, 148, 0.3) 0%, rgba(255, 213, 148, 0) 68%);
 }
 
-.head-sub {
-  margin-top: 6rpx;
-  color: #9A938E;
-  font-size: 22rpx;
-  line-height: 1.6;
+.service-hero::after {
+  content: "";
+  position: absolute;
+  left: -80rpx;
+  bottom: -180rpx;
+  width: 360rpx;
+  height: 360rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
 }
 
-.tab-bar {
+.hero-kicker {
+  position: relative;
+  z-index: 2;
   display: flex;
-  margin: 0 24rpx 20rpx;
-  padding: 6rpx;
-  border-radius: 999rpx;
-  background: #EFE8E4;
-}
-
-.tab-item {
-  flex: 1;
-  height: 68rpx;
-  border-radius: 999rpx;
-  color: #7E8288;
-  font-size: 24rpx;
-  line-height: 68rpx;
-  text-align: center;
-}
-
-.tab-item.on {
-  background: #FFFFFF;
-  box-shadow: 0 4rpx 12rpx rgba(94, 42, 37, 0.08);
-  color: #C4161C;
-  font-weight: 600;
-}
-
-.group {
-  margin-bottom: 18rpx;
-}
-
-.group-title {
-  padding: 0 30rpx 10rpx;
-  color: #9A7A6A;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 21rpx;
   letter-spacing: 2rpx;
 }
 
-.group-title::before {
+.kicker-dot {
+  width: 8rpx;
+  height: 8rpx;
+  margin-right: 10rpx;
+  border-radius: 50%;
+  background: #F2C87E;
+}
+
+.hero-title {
+  position: relative;
+  z-index: 2;
+  margin-top: 10rpx;
+  color: #FFFFFF;
+  font-size: 48rpx;
+  font-weight: 800;
+  letter-spacing: 3rpx;
+}
+
+.hero-sub {
+  position: relative;
+  z-index: 2;
+  margin-top: 6rpx;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  margin-top: 26rpx;
+}
+
+.hero-stat {
+  min-width: 130rpx;
+}
+
+.hero-num {
+  color: #FFE7B8;
+  font-family: "DIN Alternate", "Helvetica Neue", sans-serif;
+  font-size: 42rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.hero-label {
+  margin-top: 2rpx;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 19rpx;
+}
+
+.hero-line {
+  width: 1rpx;
+  height: 48rpx;
+  margin: 0 26rpx;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ---------- 三个入口 ---------- */
+.service-tabs {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  margin: -38rpx 20rpx 22rpx;
+  padding: 8rpx;
+  border-radius: 24rpx;
+  background: #FFFFFF;
+  box-shadow: 0 14rpx 36rpx rgba(94, 42, 37, 0.12);
+}
+
+.service-tab {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  padding: 14rpx 8rpx;
+  border-radius: 18rpx;
+}
+
+.service-tab.on {
+  background: #FBEBEB;
+}
+
+.tab-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 52rpx;
+  height: 52rpx;
+  margin-right: 8rpx;
+  border-radius: 15rpx;
+  background: #F7F2EF;
+  color: #9A7A6A;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
+.service-tab.on .tab-icon {
+  background: #C4161C;
+  color: #FFFFFF;
+}
+
+.tab-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tab-name {
+  overflow: hidden;
+  color: #4B4E53;
+  font-size: 21rpx;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.service-tab.on .tab-name {
+  color: #C4161C;
+}
+
+.tab-sub {
+  overflow: hidden;
+  margin-top: 1rpx;
+  color: #B0A9A4;
+  font-size: 16rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tab-count {
+  flex: none;
+  min-width: 32rpx;
+  margin-left: 4rpx;
+  padding: 0 6rpx;
+  border-radius: 999rpx;
+  background: #F3EEEA;
+  color: #9A7A6A;
+  font-size: 16rpx;
+  line-height: 28rpx;
+  text-align: center;
+}
+
+.service-tab.on .tab-count {
+  background: #FFFFFF;
+  color: #C4161C;
+}
+
+/* ---------- 黄页 ---------- */
+.group {
+  margin-bottom: 18rpx;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx 12rpx;
+}
+
+.group-name {
+  display: flex;
+  align-items: center;
+  color: #5C4033;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.group-name::before {
   content: "";
-  display: inline-block;
-  width: 24rpx;
+  width: 28rpx;
   height: 2rpx;
   margin-right: 10rpx;
-  background: #D9A15E;
-  vertical-align: 6rpx;
+  background: #C99437;
+}
+
+.group-count {
+  color: #B0A9A4;
+  font-size: 19rpx;
 }
 
 .service-card {
   margin: 0 24rpx 12rpx;
-  padding: 22rpx 24rpx 18rpx;
+  padding: 22rpx 24rpx 16rpx;
+  border: 1rpx solid #F3EAE4;
 }
 
 .service-row {
@@ -89,12 +245,12 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
-  height: 68rpx;
+  width: 70rpx;
+  height: 70rpx;
   margin-right: 16rpx;
   border-radius: 18rpx;
-  font-size: 28rpx;
-  font-weight: 600;
+  font-size: 27rpx;
+  font-weight: 700;
 }
 
 .service-main {
@@ -109,13 +265,16 @@
 }
 
 .service-desc {
+  overflow: hidden;
   margin-top: 2rpx;
   color: #8C8F94;
   font-size: 20rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .service-hours {
-  margin-top: 2rpx;
+  margin-top: 3rpx;
   color: #B0A9A4;
   font-size: 18rpx;
 }
@@ -125,41 +284,55 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  height: 60rpx;
-  margin-left: 12rpx;
-  padding: 0 18rpx;
-  border: 1rpx solid rgba(196, 22, 28, 0.28);
+  height: 56rpx;
+  margin-left: 10rpx;
+  padding: 0 16rpx;
+  border: 1rpx solid rgba(196, 22, 28, 0.26);
   border-radius: 999rpx;
+  background: #FFF8F5;
   color: #C4161C;
-  font-size: 21rpx;
+  font-size: 20rpx;
+  font-weight: 600;
 }
 
 .call-btn.small {
-  height: 56rpx;
+  height: 54rpx;
   padding: 0 16rpx;
-  font-size: 20rpx;
+  font-size: 19rpx;
 }
 
 .call-icon {
-  width: 26rpx;
-  height: 26rpx;
-  margin-right: 6rpx;
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 5rpx;
+}
+
+.service-phone-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #F5EFEC;
 }
 
 .service-phone {
-  margin-top: 10rpx;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #F4EFEC;
   color: #C4161C;
-  font-size: 27rpx;
-  font-weight: 600;
+  font-size: 25rpx;
+  font-weight: 700;
   letter-spacing: 1rpx;
 }
 
-/* 招聘 */
+.service-hint {
+  color: #B7B0AB;
+  font-size: 18rpx;
+}
+
+/* ---------- 招聘 ---------- */
 .job-card {
   margin: 0 24rpx 14rpx;
-  padding: 24rpx 26rpx 20rpx;
+  padding: 24rpx 26rpx 18rpx;
+  border: 1rpx solid #F3EAE4;
 }
 
 .job-top {
@@ -178,6 +351,7 @@
   color: #292B2F;
   font-size: 29rpx;
   font-weight: 700;
+  line-height: 1.4;
 }
 
 .job-company {
@@ -188,8 +362,11 @@
 
 .job-salary {
   flex: none;
+  padding: 6rpx 12rpx;
+  border-radius: 8rpx;
+  background: #FBEBEB;
   color: #C4161C;
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 700;
 }
 
@@ -205,8 +382,8 @@
   margin-bottom: 4rpx;
   padding: 0 10rpx;
   border-radius: 5rpx;
-  background: #FFF3EC;
-  color: #B46332;
+  background: #F8F3EF;
+  color: #8A7A6D;
   font-size: 18rpx;
   line-height: 34rpx;
 }
@@ -221,6 +398,7 @@
 .job-meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   margin-top: 10rpx;
   color: #A19A95;
   font-size: 19rpx;
@@ -229,22 +407,37 @@
 .job-foot {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 14rpx;
   padding-top: 14rpx;
-  border-top: 1rpx solid #F4EFEC;
+  border-top: 1rpx solid #F5EFEC;
 }
 
 .job-contact {
-  flex: 1;
-  min-width: 0;
-  color: #8C8F94;
+  overflow: hidden;
+  color: #9A938E;
   font-size: 19rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* 奶茶会 */
+/* ---------- 奶茶会 ---------- */
 .tea-card {
-  margin: 0 24rpx 14rpx;
+  position: relative;
+  overflow: hidden;
+  margin: 0 24rpx 16rpx;
   padding: 24rpx 26rpx 20rpx;
+  border: 1rpx solid #F3EAE4;
+}
+
+.tea-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4rpx;
+  background: linear-gradient(90deg, #C4161C, #C99437);
 }
 
 .tea-top {
@@ -254,90 +447,87 @@
 }
 
 .tea-status {
-  height: 36rpx;
-  padding: 0 12rpx;
-  border-radius: 6rpx;
+  height: 34rpx;
+  padding: 0 10rpx;
+  border-radius: 5rpx;
   font-size: 18rpx;
-  line-height: 36rpx;
+  line-height: 34rpx;
 }
 
 .tea-status.open {
-  background: #EAF4EE;
-  color: #2F8A59;
+  background: #FBEBEB;
+  color: #C4161C;
 }
 
 .tea-status.end {
-  background: #F1EEEC;
-  color: #8E8A86;
+  background: #F3EFED;
+  color: #9A938E;
 }
 
 .tea-date {
-  color: #C4161C;
-  font-size: 21rpx;
-  font-weight: 600;
+  color: #A19A95;
+  font-size: 20rpx;
 }
 
 .tea-title {
-  margin-top: 12rpx;
-  color: #292B2F;
+  margin-top: 10rpx;
+  color: #26282B;
   font-size: 29rpx;
   font-weight: 700;
   line-height: 1.5;
 }
 
 .tea-location {
-  margin-top: 6rpx;
+  margin-top: 4rpx;
   color: #8C8F94;
   font-size: 21rpx;
 }
 
 .tea-progress {
-  display: flex;
-  align-items: center;
-  margin-top: 14rpx;
+  margin-top: 16rpx;
 }
 
 .progress-track {
-  flex: 1;
   height: 10rpx;
-  border-radius: 999rpx;
-  background: #F1E9E5;
   overflow: hidden;
+  border-radius: 999rpx;
+  background: #F2EAE5;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: 999rpx;
-  background: linear-gradient(90deg, #E8641B, #C4161C);
+  background: linear-gradient(90deg, #D21F24, #C99437);
 }
 
 .progress-text {
-  flex: none;
-  margin-left: 12rpx;
+  display: block;
+  margin-top: 6rpx;
   color: #A19A95;
   font-size: 18rpx;
+  text-align: right;
 }
 
 .tea-summary {
-  margin-top: 14rpx;
+  margin-top: 12rpx;
   color: #6E7278;
-  font-size: 22rpx;
-  line-height: 1.75;
+  font-size: 21rpx;
+  line-height: 1.7;
 }
 
 .tea-agenda {
   margin-top: 12rpx;
   padding: 14rpx 16rpx;
-  border-radius: 12rpx;
-  background: #FAF7F5;
+  border-radius: 10rpx;
+  background: #FBF8F6;
 }
 
 .agenda-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 8rpx;
-  color: #6E625B;
-  font-size: 21rpx;
+  margin-bottom: 6rpx;
+  color: #6E7278;
+  font-size: 20rpx;
   line-height: 1.6;
 }
 
@@ -347,14 +537,15 @@
 
 .agenda-index {
   flex: none;
-  width: 30rpx;
-  height: 30rpx;
-  margin: 2rpx 10rpx 0 0;
+  width: 28rpx;
+  height: 28rpx;
+  margin: 2rpx 8rpx 0 0;
   border-radius: 50%;
-  background: #FBEBEB;
-  color: #C4161C;
+  background: #F2C87E;
+  color: #7A3B22;
   font-size: 16rpx;
-  line-height: 30rpx;
+  font-weight: 700;
+  line-height: 28rpx;
   text-align: center;
 }
 
@@ -362,27 +553,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16rpx;
+  margin-top: 14rpx;
   padding-top: 14rpx;
-  border-top: 1rpx solid #F4EFEC;
+  border-top: 1rpx solid #F5EFEC;
 }
 
 .tea-host {
-  flex: 1;
-  min-width: 0;
-  color: #A19A95;
-  font-size: 18rpx;
+  color: #A06A4C;
+  font-size: 19rpx;
 }
 
 .signup-btn {
-  flex: none;
   height: 62rpx;
-  padding: 0 22rpx;
+  padding: 0 24rpx;
   border-radius: 999rpx;
   background: linear-gradient(135deg, #D21F24, #A8111A);
   box-shadow: 0 6rpx 14rpx rgba(196, 22, 28, 0.18);
   color: #FFFFFF;
-  font-size: 22rpx;
+  font-size: 21rpx;
+  font-weight: 600;
   line-height: 62rpx;
 }
 
@@ -402,7 +591,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30rpx 30rpx 10rpx;
+  padding: 26rpx 30rpx 12rpx;
   color: #B0A9A4;
   font-size: 18rpx;
   line-height: 1.9;

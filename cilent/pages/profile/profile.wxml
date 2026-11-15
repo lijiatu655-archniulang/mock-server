@@ -19,10 +19,16 @@
 
 <view class="page profile-page" wx:elif="{{!loggedIn}}">
   <view class="login-hero">
+    <image class="login-hero-photo" src="/assets/images/home/hero-village.jpg" mode="aspectFill"></image>
     <view class="login-glow"></view>
     <view class="login-seal">★</view>
     <view class="login-name">新源村情通</view>
     <view class="login-slogan">听民意 · 解民忧 · 暖民心</view>
+    <view class="login-features">
+      <text>实名认证</text>
+      <text>村务公开</text>
+      <text>在线办事</text>
+    </view>
   </view>
   <view class="login-card card">
     <view class="login-title">欢迎回来</view>
@@ -106,18 +112,22 @@
 
 <view class="page profile-page" wx:else>
   <view class="profile-hero">
+    <image class="profile-hero-photo" src="/assets/images/home/hero-village.jpg" mode="aspectFill"></image>
     <view class="hero-glow"></view>
     <view class="hero-lines"></view>
     <view class="profile-top">
       <view class="avatar-wrap">
-        <image
-          wx:if="{{user.avatarUrl && !avatarFailed}}"
-          class="avatar avatar-img"
-          src="{{user.avatarUrl}}"
-          mode="aspectFill"
-          binderror="onAvatarError"
-        ></image>
-        <view wx:else class="avatar">{{user.avatarText}}</view>
+        <view class="avatar-shell" style="width:112rpx;height:112rpx;border-radius:50%;overflow:hidden;">
+          <view wx:if="{{!user.avatarUrl || avatarFailed}}" class="avatar-fallback">{{user.avatarText}}</view>
+          <image
+            wx:else
+            class="avatar-photo"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;"
+            src="{{user.avatarUrl}}"
+            mode="aspectFill"
+            binderror="onAvatarError"
+          ></image>
+        </view>
         <view class="avatar-badge">✓</view>
       </view>
       <view class="identity">
@@ -137,6 +147,24 @@
       <text>{{user.joinedText}}</text>
       <text class="hero-sep">·</text>
       <text>新源村情通 V{{version}}</text>
+    </view>
+  </view>
+
+  <view class="stats-card card">
+    <view
+      class="stat-item"
+      wx:for="{{user.statList}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onStatsTap"
+      hover-class="press"
+    >
+      <view class="stat-top">
+        <text class="stat-value">{{item.value}}</text>
+        <view class="stat-icon" style="background:{{item.tint}};color:{{item.color}};">{{item.icon}}</view>
+      </view>
+      <view class="stat-label">{{item.label}}</view>
+      <view class="stat-tag" wx:if="{{item.badge}}">{{item.badge}}</view>
     </view>
   </view>
 
@@ -168,7 +196,7 @@
     </view>
 
     <view class="worker-row" wx:if="{{user.gridWorker}}">
-      <view class="worker-avatar">李</view>
+      <view class="worker-avatar">{{user.gridWorker.initial}}</view>
       <view class="worker-main">
         <view class="worker-name">网格员 {{user.gridWorker.name}}</view>
         <view class="worker-desc">{{user.gridWorker.phoneDisplay}} · {{user.gridWorker.duty}}</view>
@@ -180,21 +208,6 @@
     </view>
 
     <view class="grid-foot">有困难找网格员，行动不便可预约上门代办</view>
-  </view>
-
-  <view class="stats-card card">
-    <view
-      class="stat-item"
-      wx:for="{{user.statList}}"
-      wx:key="key"
-      data-key="{{item.key}}"
-      bindtap="onStatsTap"
-      hover-class="press"
-    >
-      <view class="stat-value">{{item.value}}</view>
-      <view class="stat-label">{{item.label}}</view>
-      <view class="stat-tag" wx:if="{{item.badge}}">{{item.badge}}</view>
-    </view>
   </view>
 
   <view class="menu-group card" wx:for="{{menuGroups}}" wx:key="title" wx:for-item="group">
