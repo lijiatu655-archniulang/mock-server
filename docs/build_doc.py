@@ -21,7 +21,7 @@ sec.right_margin = Cm(2.2)
 sec.top_margin = Cm(2.0)
 sec.bottom_margin = Cm(2.0)
 
-def set_run_font(run, name="宋体", size=10.5, bold=False, color=None):
+def set_run_font(run, name="仿宋", size=10.5, bold=False, color=None):
     run.font.name = name
     run._element.get_or_add_rPr().rFonts.set(qn("w:eastAsia"), name)
     run.font.size = Pt(size)
@@ -35,9 +35,17 @@ def style_font(style, name, size, bold=False):
     style.font.size = Pt(size)
     style.font.bold = bold
 
-style_font(doc.styles["Normal"], "宋体", 10.5)
-for i, (sz, nm) in enumerate([(16, "微软雅黑"), (13, "微软雅黑"), (11.5, "微软雅黑")], start=1):
+style_font(doc.styles["Normal"], "仿宋", 10.5)
+for i, (sz, nm) in enumerate([(16, "仿宋"), (13, "仿宋"), (11.5, "仿宋")], start=1):
     style_font(doc.styles["Heading %d" % i], nm, sz, True)
+
+from docx.enum.style import WD_STYLE_TYPE
+for _nm, _sz in [("TOC 1", 11), ("TOC 2", 10.5), ("TOC 3", 10.5)]:
+    try:
+        _st = doc.styles[_nm]
+    except KeyError:
+        _st = doc.styles.add_style(_nm, WD_STYLE_TYPE.PARAGRAPH)
+    style_font(_st, "仿宋", _sz, False)
 
 PENDING = {"break": False}
 
@@ -63,20 +71,20 @@ def para(text="", size=10.5, bold=False, align=None, space_after=4, first_indent
     elif align == "right":
         p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     r = p.add_run(text)
-    set_run_font(r, "宋体", size, bold, color)
+    set_run_font(r, "仿宋", size, bold, color)
     return p
 
 def bullet(text, size=10.5):
     p = doc.add_paragraph(style="List Bullet")
     p.paragraph_format.space_after = Pt(2)
     p.paragraph_format.line_spacing = 1.35
-    set_run_font(p.add_run(text), "宋体", size)
+    set_run_font(p.add_run(text), "仿宋", size)
 
 def num(text, size=10.5):
     p = doc.add_paragraph(style="List Number")
     p.paragraph_format.space_after = Pt(2)
     p.paragraph_format.line_spacing = 1.35
-    set_run_font(p.add_run(text), "宋体", size)
+    set_run_font(p.add_run(text), "仿宋", size)
 
 def shade(cell, hexcolor):
     tcPr = cell._tc.get_or_add_tcPr()
@@ -100,7 +108,7 @@ def table(headers, rows, widths=None, size=9.5, header_fill="EAF1FB"):
         hdr[i].text = ""
         p = hdr[i].paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        set_run_font(p.add_run(str(htext)), "微软雅黑", size, True)
+        set_run_font(p.add_run(str(htext)), "仿宋", size, False)
         pass
     for row in rows:
         cells = t.add_row().cells
@@ -108,7 +116,7 @@ def table(headers, rows, widths=None, size=9.5, header_fill="EAF1FB"):
             cells[i].text = ""
             p = cells[i].paragraphs[0]
             p.paragraph_format.line_spacing = 1.2
-            set_run_font(p.add_run(str(val)), "宋体", size)
+            set_run_font(p.add_run(str(val)), "仿宋", size)
     if widths:
         for i, w in enumerate(widths):
             for r in t.rows:
@@ -140,7 +148,7 @@ def shot(title):
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(26)
     p.paragraph_format.space_after = Pt(26)
-    set_run_font(p.add_run("【截图位】" + title + "（粘贴小程序截图）"), "宋体", 10, False, (0x88, 0x88, 0x88))
+    set_run_font(p.add_run("【截图位】" + title + "（粘贴小程序截图）"), "仿宋", 10, False, (0x88, 0x88, 0x88))
     pass
     no_split(t)
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
@@ -165,14 +173,14 @@ def page_break():
 for _ in range(3):
     doc.add_paragraph()
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-set_run_font(p.add_run("第九届传智杯全国大学生数智创新与 AI 应用大赛"), "微软雅黑", 15, True)
+set_run_font(p.add_run("第九届传智杯全国大学生数智创新与 AI 应用大赛"), "仿宋", 15, True)
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-set_run_font(p.add_run("AI 微信小程序开发挑战赛 · 作品说明"), "微软雅黑", 13, False, (0x55, 0x55, 0x55))
+set_run_font(p.add_run("AI 微信小程序开发挑战赛 · 作品说明"), "仿宋", 13, False, (0x55, 0x55, 0x55))
 doc.add_paragraph()
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-set_run_font(p.add_run("新源村情通"), "微软雅黑", 30, True, (0xC4, 0x16, 0x1C))
+set_run_font(p.add_run("新源村情通"), "仿宋", 30, True, (0xC4, 0x16, 0x1C))
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-set_run_font(p.add_run("村级事务与 AI 网格员一体化服务平台"), "微软雅黑", 12, False, (0x44, 0x44, 0x44))
+set_run_font(p.add_run("村级事务与 AI 网格员一体化服务平台"), "仿宋", 12, False, (0x44, 0x44, 0x44))
 for _ in range(5):
     doc.add_paragraph()
 info = [
@@ -187,8 +195,8 @@ info = [
 for k, v in info:
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(6)
-    set_run_font(p.add_run(k + "：" ), "微软雅黑", 10.5, True)
-    set_run_font(p.add_run(v), "宋体", 10.5)
+    set_run_font(p.add_run(k + "：" ), "仿宋", 10.5, False)
+    set_run_font(p.add_run(v), "仿宋", 10.5)
 doc.add_page_break()
 
 # ============ 摘要 ============
@@ -202,8 +210,8 @@ para("技术上是“小程序 + Spring Boot + MySQL”的前后端分离架构�
 para("项目已实现居民与管理员双角色闭环：居民在线申报、提交诉求、查看进度、评价；管理员发布通知、受理诉求、"
      "回复办结、查看户籍统计；家庭成员可维护。配套 60+ 条自动化用例，接口、页面、交互回归全部通过。")
 p = doc.add_paragraph(); p.paragraph_format.space_before = Pt(8)
-set_run_font(p.add_run("关键词："), "微软雅黑", 10.5, True)
-set_run_font(p.add_run("村级事务；微信小程序；大模型；RAG；SSE；数字乡村"), "宋体", 10.5)
+set_run_font(p.add_run("关键词："), "仿宋", 10.5, False)
+set_run_font(p.add_run("村级事务；微信小程序；大模型；RAG；SSE；数字乡村"), "仿宋", 10.5)
 doc.add_page_break()
 
 # ============ 目录 ============
@@ -431,7 +439,7 @@ bullet("降级：未配置密钥/调用失败/首字前失败 → 规则引擎�
 bullet("密钥：仅服务端 AI_API_KEY（环境变量或 backend/.env，已 gitignore），不进仓库。")
 
 h("4.7 关键代码片段", 2)
-para("（1）RAG 多主题召回（RagService）", size=9.5, bold=True, first_indent=False)
+para("（1）RAG 多主题召回（RagService）", size=9.5, bold=False, first_indent=False)
 code("""List<String> parts = splitTopics(question);          // “养老和医保有什么区别” → 养老 / 医保
 Map<String, Scored> best = new LinkedHashMap<>();
 for (String q : parts) {
@@ -442,7 +450,7 @@ for (String q : parts) {
         if (++taken >= 2) break;                      // 每类资料至少 2 条
     }
 }""")
-para("（2）SSE 流式与落库（AiService）", size=9.5, bold=True, first_indent=False)
+para("（2）SSE 流式与落库（AiService）", size=9.5, bold=False, first_indent=False)
 code("""String messageId = saveMessage(conv.getId(), userId, "assistant", "", null, null);
 sink.send("meta", Map.of("conversationId", conv.getId(), "messageId", messageId, ...));
 llmClient.chatStream(messages, delta -> {
@@ -452,7 +460,7 @@ llmClient.chatStream(messages, delta -> {
 aiMapper.finishMessage(messageId, buffer.toString(), Json.write(refs), Json.write(followUps));
 sink.send("refs", Map.of("refs", refs));
 sink.send("done", done);""")
-para("（3）管理员鉴权（AuthInterceptor）", size=9.5, bold=True, first_indent=False)
+para("（3）管理员鉴权（AuthInterceptor）", size=9.5, bold=False, first_indent=False)
 code("""boolean needAdmin = hm.hasMethodAnnotation(AdminRequired.class) || ...;
 if (needAdmin) {
     LoginUser u = UserContext.get();
