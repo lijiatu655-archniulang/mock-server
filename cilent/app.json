@@ -14,6 +14,9 @@
     "pages/service/index",
     "pages/ai/ai",
     "pages/ai/history",
+    "pages/family/index",
+    "pages/workbench/index",
+    "pages/workbench/request-detail",
     "pages/profile/profile",
     "pages/profile/edit"
   ],

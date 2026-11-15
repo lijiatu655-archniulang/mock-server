@@ -211,11 +211,6 @@
               <view class="service-badge {{item.highlight ? 'badge-light' : ''}}" wx:if="{{item.badge}}">{{item.badge}}</view>
             </view>
           </view>
-          <view class="service-tip" bindtap="onModuleTap" data-name="政务管理" data-status="online" data-route="/pages/gov/index">
-            <view class="tip-icon">✓</view>
-            <text>医保、养老、高龄补贴、独生子女证等事项，可直接在线申报</text>
-            <view class="arrow arrow-red"></view>
-          </view>
         </view>
       </block>
     </block>

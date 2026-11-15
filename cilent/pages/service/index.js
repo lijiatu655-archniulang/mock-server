@@ -3,15 +3,18 @@ const serviceApi = require('../../api/service')
 const TABS = [{
   key: 'directory',
   name: '服务黄页',
-  title: '服务黄页'
+  title: '服务黄页',
+  icon: '电'
 }, {
   key: 'jobs',
   name: '就业招聘',
-  title: '就业招聘'
+  title: '就业招聘',
+  icon: '岗'
 }, {
   key: 'tea',
   name: '线上奶茶会',
-  title: '线上奶茶会'
+  title: '线上奶茶会',
+  icon: '茶'
 }]
 
 Page({
@@ -22,6 +25,11 @@ Page({
     jobs: [],
     teas: [],
     signed: {},
+    stats: {
+      services: 0,
+      jobs: 0,
+      teas: 0
+    },
     loading: true,
     error: ''
   },
@@ -57,24 +65,37 @@ Page({
       serviceApi.getTeaMeetings()
     ]).then(function (results) {
       const directory = results[0]
+      const directoryList = directory.list || []
       const groups = (directory.categories || []).map(function (category) {
         return {
           name: category,
-          list: (directory.list || []).filter(function (item) {
+          list: directoryList.filter(function (item) {
             return item.category === category
           })
         }
       }).filter(function (group) {
         return group.list.length
       })
+      const jobs = results[1].list || []
+      const teas = (results[2].list || []).map(function (item) {
+        return Object.assign({}, item, {
+          signed: !!self.data.signed[item.id],
+          percent: Math.min(100, Math.round((item.joined / item.total) * 100))
+        })
+      })
       self.setData({
         directoryGroups: groups,
-        jobs: results[1].list || [],
-        teas: (results[2].list || []).map(function (item) {
-          return Object.assign({}, item, {
-            signed: !!self.data.signed[item.id],
-            percent: Math.min(100, Math.round((item.joined / item.total) * 100))
-          })
+        jobs: jobs,
+        teas: teas,
+        stats: {
+          services: directoryList.length,
+          jobs: jobs.length,
+          teas: teas.length
+        },
+        tabs: TABS.map(function (item) {
+          const count = item.key === 'directory' ? directoryList.length
+            : item.key === 'jobs' ? jobs.length : teas.length
+          return Object.assign({}, item, { count: count })
         }),
         loading: false,
         error: ''

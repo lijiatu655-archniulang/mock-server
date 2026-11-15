@@ -1,0 +1,118 @@
+<view class="rd-page">
+  <view class="rd-head">
+    <view class="rd-back" bindtap="onBack" hover-class="press">‹</view>
+    <view class="rd-head-main">
+      <view class="rd-title">诉求详情</view>
+      <view class="rd-sub">管理员处理</view>
+    </view>
+    <view class="rd-refresh" bindtap="onRefresh" hover-class="press">刷新</view>
+  </view>
+
+  <view class="rd-loading" wx:if="{{loading}}">加载中…</view>
+  <view class="rd-error" wx:elif="{{error}}">{{error}}</view>
+
+  <block wx:elif="{{request}}">
+    <view class="rd-hero">
+      <view class="rd-status {{request.status}}">{{request.statusLabel || request.status}}</view>
+      <view class="rd-type">{{request.typeLabel}} · {{request.requestNo}}</view>
+      <view class="rd-title-text">{{request.title}}</view>
+      <view class="rd-meta">{{request.userName || '村民'}} · {{request.createdAt}}</view>
+    </view>
+
+    <view class="rd-card">
+      <view class="rd-section-title">诉求内容</view>
+      <view class="rd-content">{{request.content}}</view>
+      <view class="rd-location" wx:if="{{request.location}}">地点：{{request.location}}</view>
+      <view class="rd-phone" wx:if="{{request.contactPhone}}">联系电话：{{request.contactPhone}}</view>
+      <view class="rd-photos" wx:if="{{request.photos.length}}">
+        <image
+          class="rd-photo"
+          wx:for="{{request.photos}}"
+          wx:key="*this"
+          src="{{item}}"
+          mode="aspectFill"
+          data-src="{{item}}"
+          bindtap="onPreviewPhoto"
+        ></image>
+      </view>
+    </view>
+
+    <view class="rd-card">
+      <view class="rd-section-title">办理时间轴</view>
+      <view class="rd-timeline" wx:if="{{request.logs.length}}">
+        <view class="rd-log" wx:for="{{request.logs}}" wx:key="timeText">
+          <view class="rd-log-dot {{index === request.logs.length - 1 ? 'active' : ''}}"></view>
+          <view class="rd-log-body">
+            <view class="rd-log-top">
+              <text class="rd-log-label">{{item.label}}</text>
+              <text class="rd-log-time">{{item.timeText}}</text>
+            </view>
+            <view class="rd-log-note">{{item.note}}</view>
+            <view class="rd-log-operator" wx:if="{{item.operator}}">经办：{{item.operator}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="rd-empty" wx:else>暂无办理记录</view>
+    </view>
+
+    <view class="rd-card" wx:if="{{request.replies.length}}">
+      <view class="rd-section-title">办理回复</view>
+      <view class="rd-reply" wx:for="{{request.replies}}" wx:key="timeText">
+        <view class="rd-reply-top">
+          <text class="rd-reply-operator">{{item.operator || '村委会'}}</text>
+          <text class="rd-reply-time">{{item.timeText}}</text>
+        </view>
+        <view class="rd-reply-content">{{item.content}}</view>
+      </view>
+    </view>
+
+    <view class="rd-actions">
+      <view
+        class="rd-btn primary"
+        wx:if="{{request.status === 'PENDING'}}"
+        bindtap="onAccept"
+        hover-class="press"
+      >{{actionLoading ? '处理中…' : '受理诉求'}}</view>
+      <block wx:if="{{request.status === 'ACCEPTED' || request.status === 'PROCESSING'}}">
+        <view class="rd-btn" bindtap="onReplyOpen" hover-class="press">回复居民</view>
+        <view class="rd-btn primary" bindtap="onComplete" hover-class="press">办结</view>
+      </block>
+      <view class="rd-done" wx:if="{{request.status === 'COMPLETED'}}">该诉求已办结</view>
+    </view>
+  </block>
+
+  <view class="rd-mask" wx:if="{{replyOpen}}" bindtap="onReplyClose">
+    <view class="rd-sheet" catchtap="noop">
+      <view class="rd-sheet-title">回复居民</view>
+      <textarea
+        class="rd-textarea"
+        value="{{replyContent}}"
+        maxlength="500"
+        placeholder="请填写办理结果，居民端会同步看到"
+        placeholder-class="rd-placeholder"
+        bindinput="onReplyInput"
+      ></textarea>
+      <view class="rd-count">{{replyContent.length}}/500</view>
+      <view class="rd-image-block">
+        <view class="rd-image-label">
+          <text>现场/办理图片</text>
+          <text class="rd-image-reserved">预留位 · 后端暂未接收</text>
+        </view>
+        <view class="rd-image-grid">
+          <view class="rd-image-item" wx:for="{{replyImages}}" wx:key="*this">
+            <image class="rd-image-thumb" src="{{item}}" mode="aspectFill" data-src="{{item}}" bindtap="previewReplyImage"></image>
+            <view class="rd-image-del" data-index="{{index}}" catchtap="removeReplyImage">×</view>
+          </view>
+          <view class="rd-image-add" wx:if="{{replyImages.length < 3}}" bindtap="chooseReplyImages" hover-class="press">
+            <text class="rd-image-plus">＋</text>
+            <text class="rd-image-text">添加图片</text>
+          </view>
+        </view>
+      </view>
+      <view class="rd-sheet-actions">
+        <view class="rd-cancel" bindtap="onReplyClose">取消</view>
+        <view class="rd-save {{actionLoading ? 'loading' : ''}}" bindtap="onReplySubmit">{{actionLoading ? '提交中…' : '提交回复'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -46,6 +46,18 @@
 
     <block wx:else>
       <view class="login-desc">使用手机号和密码登录，适合不方便使用微信授权的场景。</view>
+      <view class="role-switch">
+        <view
+          class="role-item {{loginRole === 'villager' ? 'active' : ''}}"
+          data-role="villager"
+          bindtap="onLoginRole"
+        >居民</view>
+        <view
+          class="role-item {{loginRole === 'admin' ? 'active' : ''}}"
+          data-role="admin"
+          bindtap="onLoginRole"
+        >管理员</view>
+      </view>
       <view class="login-form">
         <view class="login-field">
           <text class="login-field-label">手机号</text>
@@ -76,9 +88,10 @@
         </view>
         <view class="login-error" wx:if="{{loginError}}">{{loginError}}</view>
         <view class="login-btn {{loginLoading ? 'loading' : ''}}" bindtap="onAccountLogin" hover-class="press">
-          {{loginLoading ? '登录中…' : '登录'}}
+          {{loginLoading ? '登录中…' : (loginRole === 'admin' ? '进入管理员工作台' : '登录')}}
         </view>
-        <view class="login-demo">演示账号：13843216621　密码：123456</view>
+        <view class="login-demo" wx:if="{{loginRole === 'admin'}}">管理员演示：13843219072　密码：123456</view>
+        <view class="login-demo" wx:else>居民演示：13843216621　密码：123456</view>
       </view>
     </block>
 
@@ -125,6 +138,14 @@
       <text class="hero-sep">·</text>
       <text>新源村情通 V{{version}}</text>
     </view>
+  </view>
+
+  <view class="admin-entry" wx:if="{{user.isAdmin}}" bindtap="onAdminWorkbench" hover-class="press">
+    <view class="admin-entry-main">
+      <view class="admin-entry-title">管理员工作台</view>
+      <view class="admin-entry-desc">通知发布 · 诉求受理 · 户籍统计</view>
+    </view>
+    <view class="admin-entry-arrow">›</view>
   </view>
 
   <view class="grid-card card">
@@ -216,7 +237,7 @@
       <view class="sheet-seal">★</view>
       <view class="sheet-title">新源村情通</view>
       <view class="sheet-version">V{{version}} · 村级事务服务平台</view>
-      <view class="sheet-desc">当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘和线上奶茶会。网格员工作台与家庭成员将在 V3 陆续开放。</view>
+      <view class="sheet-desc">当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘、线上奶茶会和家庭成员；管理员账号可进入工作台处理通知、诉求和户籍统计。</view>
       <view class="sheet-btn" bindtap="closeAbout" hover-class="press">知道了</view>
     </view>
   </view>

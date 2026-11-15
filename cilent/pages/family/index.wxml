@@ -1,0 +1,131 @@
+<view class="family-page">
+  <view class="family-head">
+    <view class="family-back" bindtap="onBack" hover-class="press">‹</view>
+    <view class="family-head-main">
+      <view class="family-title">我的家庭</view>
+      <view class="family-sub">父母、配偶、子女信息维护</view>
+    </view>
+    <view class="family-add" bindtap="openAdd" hover-class="press">＋ 添加</view>
+  </view>
+
+  <view class="family-intro">
+    <view class="intro-icon">家</view>
+    <view class="intro-main">
+      <view class="intro-title">家庭成员仅本人可见</view>
+      <view class="intro-desc">用于后续代办、家庭成员业务，新增或修改后立即生效。</view>
+    </view>
+  </view>
+
+  <view class="family-loading" wx:if="{{loading}}">加载中…</view>
+  <view class="family-error" wx:elif="{{error}}">{{error}}</view>
+
+  <block wx:elif="{{list.length}}">
+    <view class="member-card" wx:for="{{list}}" wx:key="id">
+      <view class="member-avatar">{{item.initial}}</view>
+      <view class="member-main">
+        <view class="member-top">
+          <text class="member-name">{{item.name}}</text>
+          <text class="member-relation">{{item.relation || '家庭成员'}}</text>
+          <text class="guardian-tag" wx:if="{{item.isGuardian}}">监护人</text>
+        </view>
+        <view class="member-meta">
+          {{item.gender || '—'}}<text wx:if="{{item.age !== null && item.age !== undefined}}"> · {{item.age}} 岁</text>
+        </view>
+        <view class="member-line" wx:if="{{item.phone}}">电话：{{item.phone}}</view>
+        <view class="member-line" wx:if="{{item.idCardMasked}}">证件：{{item.idCardMasked}}</view>
+      </view>
+      <view class="member-actions">
+        <view class="member-btn" data-id="{{item.id}}" bindtap="openEdit">编辑</view>
+        <view class="member-btn danger" data-id="{{item.id}}" bindtap="remove">删除</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="family-empty" wx:else>
+    <view class="empty-icon">家</view>
+    <view class="empty-title">还没有家庭成员</view>
+    <view class="empty-desc">添加父母、配偶或子女，方便后续代办村里的事。</view>
+    <view class="empty-btn" bindtap="openAdd">添加第一位成员</view>
+  </view>
+
+  <view class="family-mask" wx:if="{{formOpen}}" bindtap="closeForm">
+    <view class="family-sheet" catchtap="noop">
+      <view class="sheet-title">{{form.id ? '编辑家庭成员' : '添加家庭成员'}}</view>
+      <scroll-view class="sheet-scroll" scroll-y>
+        <view class="form-field">
+          <text class="form-label">姓名 <text class="required">*</text></text>
+          <input
+            class="form-input"
+            value="{{form.name}}"
+            maxlength="20"
+            placeholder="请输入成员姓名"
+            placeholder-class="form-placeholder"
+            data-field="name"
+            bindinput="onField"
+          />
+        </view>
+        <view class="form-field">
+          <text class="form-label">关系</text>
+          <picker mode="selector" range="{{relations}}" value="{{relationIndex}}" bindchange="onRelationChange">
+            <view class="form-picker">{{form.relation}} <text class="picker-arrow">›</text></view>
+          </picker>
+        </view>
+        <view class="form-field">
+          <text class="form-label">性别</text>
+          <picker mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="onGenderChange">
+            <view class="form-picker">{{form.gender}} <text class="picker-arrow">›</text></view>
+          </picker>
+        </view>
+        <view class="form-field">
+          <text class="form-label">年龄</text>
+          <input
+            class="form-input"
+            type="number"
+            value="{{form.age}}"
+            maxlength="3"
+            placeholder="请输入年龄"
+            placeholder-class="form-placeholder"
+            data-field="age"
+            bindinput="onField"
+          />
+        </view>
+        <view class="form-field">
+          <text class="form-label">电话</text>
+          <input
+            class="form-input"
+            type="number"
+            value="{{form.phone}}"
+            maxlength="11"
+            placeholder="请输入联系电话"
+            placeholder-class="form-placeholder"
+            data-field="phone"
+            bindinput="onField"
+          />
+        </view>
+        <view class="form-field">
+          <text class="form-label">证件号</text>
+          <input
+            class="form-input"
+            value="{{form.idCardMasked}}"
+            maxlength="24"
+            placeholder="可填脱敏证件号"
+            placeholder-class="form-placeholder"
+            data-field="idCardMasked"
+            bindinput="onField"
+          />
+        </view>
+        <view class="form-switch-row">
+          <view>
+            <view class="form-label">设为监护人</view>
+            <view class="form-hint">用于后续为家人代办业务</view>
+          </view>
+          <switch checked="{{form.isGuardian === 1}}" color="#C4161C" bindchange="onGuardianChange" />
+        </view>
+      </scroll-view>
+      <view class="sheet-actions">
+        <view class="sheet-cancel" bindtap="closeForm">取消</view>
+        <view class="sheet-save {{saving ? 'loading' : ''}}" bindtap="save">{{saving ? '保存中…' : '保存'}}</view>
+      </view>
+    </view>
+  </view>
+</view>

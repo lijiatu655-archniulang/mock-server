@@ -43,6 +43,11 @@ Page({
     this.loadHome(true)
   },
 
+  onShow() {
+    // 管理员发布通知后，切回首页立即刷新通知条
+    if (this.loadedOnce) this.loadHome(true)
+  },
+
   loadHome(isRefresh) {
     const self = this
     if (!isRefresh) this.setData({ loading: true, error: '' })
@@ -67,6 +72,7 @@ Page({
       app.globalData.region = res.region || null
       app.globalData.appConfig = app.globalData.appConfig || {}
       app.globalData.appConfig.footer = res.footer
+      self.loadedOnce = true
       if (first) {
         app.globalData.unread = 0
       }

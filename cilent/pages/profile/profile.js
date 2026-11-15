@@ -14,6 +14,7 @@ function decorate(user) {
     displayName: displayName,
     avatarText: user.avatarText || displayName.charAt(0),
     joinedText: joinedText,
+    isAdmin: user.roleCode === 'admin',
     regionPath: user.regionPath || ['永吉县', '口前镇', '新源村'],
     gridWorker: user.gridWorker || {
       name: '李建国',
@@ -47,6 +48,7 @@ Page({
     loading: true,
     avatarFailed: false,
     loginMode: 'wechat',
+    loginRole: 'villager',
     account: '',
     password: '',
     showPassword: false,
@@ -102,15 +104,13 @@ Page({
       }, {
         code: 'family',
         name: '家庭成员',
-        desc: '代家人查看办件与诉求',
+        desc: '维护父母、配偶、子女信息',
         icon: '家',
         tint: '#F1EEF8',
         color: '#7563A8',
-        action: 'locked',
-        version: 'V3',
-        descText: '家庭成员绑定将在 V3 版本开放，呼应“代际代办”场景。',
-        badge: 'V3',
-        badgeType: 'v3'
+        action: 'family',
+        badge: '可用',
+        badgeType: 'tel'
       }, {
         code: 'customer',
         name: '在线客服',
@@ -208,6 +208,10 @@ Page({
     })
   },
 
+  onAdminWorkbench() {
+    wx.navigateTo({ url: '/pages/workbench/index' })
+  },
+
   onMenuTap(e) {
     const ds = e.currentTarget.dataset
     const action = ds.action
@@ -225,6 +229,10 @@ Page({
     }
     if (action === 'directory') {
       wx.navigateTo({ url: '/pages/service/index?tab=directory' })
+      return
+    }
+    if (action === 'family') {
+      wx.navigateTo({ url: '/pages/family/index' })
       return
     }
     if (action === 'call') {
@@ -314,6 +322,12 @@ Page({
     })
   },
 
+  onLoginRole(e) {
+    const role = e.currentTarget.dataset.role === 'admin' ? 'admin' : 'villager'
+    if (role === this.data.loginRole) return
+    this.setData({ loginRole: role, loginError: '' })
+  },
+
   onAccountInput(e) {
     this.setData({
       account: e.detail.value || '',
@@ -348,11 +362,36 @@ Page({
     this.setData({ loginLoading: true, loginError: '' })
     wx.showLoading({ title: '登录中', mask: true })
     authApi.passwordLogin(account, password).then(function (res) {
+      const actualRole = res.user && res.user.roleCode === 'admin' ? 'admin' : 'villager'
+      if (actualRole !== self.data.loginRole) {
+        storage.clearAuth()
+        app.globalData.user = null
+        app.globalData.skipAutoLogin = true
+        wx.hideLoading()
+        self.setData({
+          loginLoading: false,
+          loginError: actualRole === 'admin'
+            ? '该账号是管理员，请切换到「管理员」身份登录'
+            : '该账号是居民，请切换到「居民」身份登录'
+        })
+        return
+      }
       app.globalData.skipAutoLogin = false
       app.setUser(res.user)
       wx.hideLoading()
-      self.setData({ loginLoading: false, loginError: '' })
-      self.loadUser()
+      self.setData({
+        loginLoading: false,
+        loginError: '',
+        user: decorate(res.user),
+        loggedIn: true,
+        loading: false
+      })
+      self.loadedOnce = true
+      if (actualRole === 'admin') {
+        wx.navigateTo({ url: '/pages/workbench/index' })
+      } else {
+        self.loadUser()
+      }
     }).catch(function (err) {
       wx.hideLoading()
       self.setData({
