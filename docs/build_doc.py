@@ -114,6 +114,9 @@ def table(headers, rows, widths=None, size=9.5, header_fill="EAF1FB"):
             for r in t.rows:
                 r.cells[i].width = Cm(w)
     no_split(t)
+    # 续表时重复表头
+    trPr = t.rows[0]._tr.get_or_add_trPr()
+    th = OxmlElement("w:tblHeader"); th.set(qn("w:val"), "true"); trPr.append(th)
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
     return t
 
@@ -325,7 +328,51 @@ page_break()
 
 # ============ 四、技术实现 ============
 h("四、技术实现", 1)
-h("4.1 总体架构", 2)
+h("4.1 技术选型", 2)
+para("选型原则：演示优先、部署简单、两人能维护、后续可演进；不追求性能极限，而是在真实约束下取综合最优。")
+table(["层", "选型", "版本", "选型理由"], [
+    ["小程序", "微信原生", "基础库 3.18", "只做微信端；enableChunked、chooseMedia 等原生能力直接可用，包体小"],
+    ["后端", "Spring Boot", "3.2.12", "内嵌 Tomcat、Starter 自动配置、SSE/鉴权/异常一站式"],
+    ["语言", "Java", "17 LTS", "团队主力语言；政务/企业环境普遍，后续对接成本低"],
+    ["持久层", "MyBatis", "3.0.4", "SQL 可控、字段与契约逐字对齐；注解 Mapper 无需 XML"],
+    ["数据库", "MySQL", "8.0", "关系型 + JSON 字段；事务、索引成熟，运维熟悉"],
+    ["鉴权", "JWT (jjwt)", "0.12.6", "无状态、跨端；登出用黑名单折中"],
+    ["密码", "spring-security-crypto", "Boot 管理", "只用 BCrypt，不引入整套 Security 过滤器链"],
+    ["流式", "SseEmitter", "Spring MVC 内置", "AI 是单向流；比 WebSocket 简单，Header 可带 token"],
+    ["AI", "DeepSeek（OpenAI 兼容）", "deepseek-chat", "协议标准、可替换；流式实现简单"],
+    ["检索", "内存 BM25", "自研", "语料仅几十个 chunk，零依赖、低延迟、可解释"],
+    ["构建", "Maven Wrapper", "3.9.9", "队友不装 Maven；一条命令打包"],
+    ["部署", "可执行 jar", "—", "单进程，Windows 演示与云服务器都简单"],
+], widths=[2.2, 3.2, 2.4, 8.6], size=8.8)
+
+h("4.1.1 为什么是 Spring Boot", 3)
+para("核心原因：用最低的部署成本，把鉴权、统一响应、异常、SSE、配置、测试这些公共能力一次性解决，把时间留给业务与 AI。")
+num("内嵌 Tomcat：打包成可执行 jar，java -jar 即可运行，不用装 Tomcat、配 web.xml、打 war 包。现场演示只需一个 jar + MySQL。")
+num("Starter 自动配置：只用 4 个 starter（web、validation、mybatis、security-crypto），就完成了 Web 容器、参数校验、SqlSessionFactory、BCrypt；否则要手写数百行配置。")
+num("分层与依赖注入：13 个模块、64 条接口按 Controller-Service-Mapper 拆分，构造器注入让依赖显式、可测试；两人按模块并行，冲突面小。")
+num("配置外置：application.yml 全部走环境变量（DB_USER/DB_PASSWORD/AI_API_KEY），本机用 backend/.env，队友用各自密码与 key，同一份代码不改即可运行，密钥不进仓库。")
+num("原生 SSE：SseEmitter 直接输出 text/event-stream，配合独立 aiExecutor，实现 meta→delta→refs→done；不必引入 WebSocket 的握手、心跳和独立鉴权（小程序 WS 还不能带 Header）。")
+num("统一契约：@RestControllerAdvice 统一 Result 与错误码映射，HandlerInterceptor 实现 @LoginRequired/@AdminRequired，Filter 统一 traceId 与访问日志——契约集中在基础设施层，而不是散落在每个接口。")
+num("演进空间：后续加 Redis 缓存、Actuator 健康检查、Spring Security、Docker 部署都能平滑接入，不用推翻重来。")
+num("团队与生态：课程主力是 Java，资料多、问题能查；Maven Wrapper 让队友只需 JDK 17 + MySQL；也与镇/县政务平台的技术栈匹配。")
+
+h("4.1.2 与其他方案对比", 3)
+table(["方案", "优势", "为什么没选"], [
+    ["Node.js / Express", "起步快、SSE 简单", "团队不熟；事务、鉴权、分层要自建；复杂 SQL 与类型约束弱"],
+    ["Python FastAPI", "AI 生态最好", "团队以 Java 为主；多一套 Python 环境；与政务/MySQL 对接不如 Java 普遍"],
+    ["Go", "性能好、部署轻", "3 天完成 V3 不现实；团队无经验"],
+    ["PHP", "虚拟主机便宜", "现代工程化（DI、测试、SSE）弱，不利于持续迭代"],
+    ["微信云开发", "免运维、免服务器", "绑定微信生态；云数据库能力弱；AI 密钥、RAG、统计仍要自建；与既有 MySQL 村务数据打通困难"],
+    ["uni-app / Taro", "一套代码多端", "本项目只做微信端，跨端收益为零；原生 API 更直接、包体更小"],
+], widths=[3.4, 4.6, 8.4], size=9)
+
+h("4.1.3 代价与边界", 3)
+bullet("启动约 3 秒、常驻 200–300MB，高于 Node/Go；对单村/单镇、几十到几百并发足够，上万并发才需要 WebFlux 或网关。")
+bullet("Spring 概念多，新手易迷路；通过“只引必要 starter + 注解 Mapper + 统一 Result”把复杂度压住。")
+bullet("JWT 无法即时失效，用登出黑名单折中；对村务场景足够。")
+bullet("SSE 每个流占一个线程，用独立 aiExecutor 隔离，避免拖垮普通接口。")
+
+h("4.2 总体架构", 2)
 para("系统分为三层：小程序端（19 页）— 后端 API（Spring Boot 3.2 / JDK 17 / MyBatis / MySQL 8）— 外部 AI（DeepSeek）。", first_indent=True)
 code("""┌──────────────────────────── 微信小程序（cilent） ────────────────────────────┐
 │  首页 / 资讯 / 政务 / 诉求 / 便民 / AI / 家庭 / 管理端 / 个人中心（19 页）      │
@@ -343,7 +390,7 @@ code("""┌───────────────────────
         │ MySQL 8（29 表）│                 │ DeepSeek API     │
         └────────────────┘                 └──────────────────┘""")
 
-h("4.2 页面结构", 2)
+h("4.3 页面结构", 2)
 table(["分组", "页面", "说明"], [
     ["首页", "index", "通知、轮播、资讯、九宫格、服务提示"],
     ["资讯", "article/list, article/detail", "分栏列表、正文、点赞、上下篇"],
@@ -356,13 +403,13 @@ table(["分组", "页面", "说明"], [
     ["个人", "profile/profile, profile/edit", "登录、资料、头像、我的入口"],
 ], widths=[3.0, 7.0, 6.0])
 
-h("4.3 前后端协同", 2)
+h("4.4 前后端协同", 2)
 bullet("契约先行：字段、错误码、SSE 事件在 temp/接口契约-v1.md、接口契约-v3.md 冻结，前后端按契约实现。")
 bullet("统一响应：Result{code,message,data,traceId,timestamp}；40001/40401/40402/40004 走 HTTP 200，20001→401、20002→403。")
 bullet("鉴权：默认公开，@LoginRequired / @AdminRequired 收紧；有 token 一律识别身份（游客可读、登录可操作）。")
 bullet("SSE：事件顺序 meta → delta → refs → done；先落库拿真实 messageId 再发 meta，保证赞踩可用。")
 
-h("4.4 数据模型", 2)
+h("4.5 数据模型", 2)
 table(["域", "表", "用途"], [
     ["区域/村情", "sys_region, sys_village", "县镇村树、村情概况"],
     ["用户", "sys_user, user_family_member", "账号/角色/家庭"],
@@ -376,14 +423,14 @@ table(["域", "表", "用途"], [
     ["系统", "sys_event_log, sys_file", "埋点、文件"],
 ], widths=[2.8, 8.2, 5.0])
 
-h("4.5 AI 接入方案", 2)
+h("4.6 AI 接入方案", 2)
 para("请求 → 意图识别（规则，用于兜底与 meta）→ RAG 检索 → 提示词（人设 + 资料 + 最近 3 轮历史）→ DeepSeek → SSE 逐字 → 结束回填引用/追问。", first_indent=True)
 bullet("检索：文章按 260 字切块、事项按字段拍平；BM25 打分，覆盖率≥0.3、相对分≥0.5；多主题按“和/与/、”拆子问题，每类取前 2 条。")
 bullet("提示词：只依据资料、200 字内、分点、引用标题、不补资料外条件；报修/投诉引导到“诉求建议”，紧急情况拨 110。")
 bullet("降级：未配置密钥/调用失败/首字前失败 → 规则引擎；首字后失败保留已输出内容并结束。")
 bullet("密钥：仅服务端 AI_API_KEY（环境变量或 backend/.env，已 gitignore），不进仓库。")
 
-h("4.6 关键代码片段", 2)
+h("4.7 关键代码片段", 2)
 para("（1）RAG 多主题召回（RagService）", size=9.5, bold=True, first_indent=False)
 code("""List<String> parts = splitTopics(question);          // “养老和医保有什么区别” → 养老 / 医保
 Map<String, Scored> best = new LinkedHashMap<>();
@@ -413,7 +460,7 @@ if (needAdmin) {
     if (!"admin".equals(u.getRole())) throw new BizException(ErrorCode.FORBIDDEN, "仅管理员可操作");
 }""")
 
-h("4.7 难点与解决", 2)
+h("4.8 难点与解决", 2)
 table(["难点", "解决"], [
     ["契约字段与前端 mock 对齐", "以 data.js + 契约文档为唯一真相，先写契约再写实现，逐字段回归"],
     ["金额、时限、材料规则", "金额存分、后端核定；承诺时间跳周末；材料缺失返回 missingMaterials"],
