@@ -178,32 +178,40 @@ ins("biz_request", ["id", "request_no", "user_id", "type", "type_label", "title"
 ins("biz_request_log", ["request_id", "status", "label", "time_text", "operator", "note", "sort"], reqLogRows);
 ins("biz_request_reply", ["request_id", "time_text", "operator", "content", "sort"], reqReplyRows);
 
-// 户籍样例（V3 统计用，确定性生成：3 网格 / 20 户 / 66 人）
+// 户籍样例（V3 统计用，确定性生成：3 网格 / 486 户 / 1632 人）
 head("户籍样例");
 const GRIDS = ["第一网格", "第二网格", "第三网格"];
 const SURNAMES = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴"];
 const GIVEN = ["建国", "秀兰", "志强", "丽华", "国庆", "桂英", "永强", "秀英", "国梁", "玉梅"];
 const hhRows = [];
 const hmRows = [];
-for (let i = 0; i < 20; i++) {
+// 486 户、1632 人：372 户 ×3 + 54 户 ×4 + 60 户 ×5
+const SIZES = [];
+for (let i = 0; i < 372; i++) SIZES.push(3);
+for (let i = 0; i < 54; i++) SIZES.push(4);
+for (let i = 0; i < 60; i++) SIZES.push(5);
+let seq = 0;
+for (let i = 0; i < SIZES.length; i++) {
+  const size = SIZES[i];
   const grid = GRIDS[i % 3];
-  const size = 2 + (i % 4);           // 2..5 人
   const hhId = "hh" + String(i + 1).padStart(3, "0");
   const hhNo = "H" + u.regionId + String(i + 1).padStart(3, "0");
-  const head = SURNAMES[i % 10] + GIVEN[i % 10];
+  const head = SURNAMES[i % 10] + GIVEN[(i * 3) % 10];
+  const headAge = 30 + ((i * 7) % 40);
   hhRows.push([q(hhId), q(hhNo), q(u.regionId), q(grid), q(head),
     q("138" + String(20000000 + i).padStart(8, "0")), q(grid + " " + (i + 1) + " 号"), String(size),
-    q(i % 5 === 4 ? "空挂" : "常住")]);
-  const headAge = 30 + ((i * 7) % 30);
+    q(i % 10 === 9 ? "空挂" : "常住")]);
   for (let m = 0; m < size; m++) {
     let name, gender, age, relation, isHead = m === 0 ? "1" : "0";
     if (m === 0) { name = head; gender = "男"; age = headAge; relation = "户主"; }
-    else if (m === 1) { name = SURNAMES[(i + 3) % 10] + "秀英"; gender = "女"; age = headAge - (i % 4); relation = "配偶"; }
-    else if (m === 2) { name = SURNAMES[i % 10] + (i % 2 ? "小" : "志"); gender = i % 2 ? "女" : "男"; age = 3 + ((i * 5) % 18); relation = "子女"; }
-    else if (m === 3) { name = SURNAMES[(i + 5) % 10] + "老"; gender = "男"; age = 60 + ((i * 7) % 25); relation = "父母"; }
-    else { name = SURNAMES[i % 10] + "芳"; gender = "女"; age = 5 + ((i * 3) % 16); relation = "子女"; }
-    hmRows.push([q("hm" + (i * 5 + m + 1)), q(hhId), q(name), q(gender), String(age),
-      q(relation), q("220221********" + String(1000 + i * 10 + m)), isHead]);
+    else if (m === 1) { name = SURNAMES[(i + 3) % 10] + "秀英"; gender = "女"; age = Math.max(22, headAge - 2 - (i % 3)); relation = "配偶"; }
+    else if (m === 2) { name = SURNAMES[(i + 1) % 10] + "小" + GIVEN[i % 10].slice(-1); gender = i % 2 ? "女" : "男"; age = 3 + ((i * 5) % 15); relation = "子女"; }
+    else if (m === 3) { name = SURNAMES[(i + 5) % 10] + "老" + GIVEN[(i * 2) % 10].slice(-1); gender = i % 2 ? "男" : "女"; age = 60 + ((i * 7) % 25); relation = "父母"; }
+    else { name = SURNAMES[(i + 7) % 10] + "芳"; gender = "女"; age = 5 + ((i * 3) % 13); relation = "子女"; }
+    if (age < 1) age = 1;
+    seq += 1;
+    hmRows.push([q("hm" + seq), q(hhId), q(name), q(gender), String(age),
+      q(relation), q("220221********" + String(1000 + seq)), isHead]);
   }
 }
 ins("sys_household", ["id", "household_no", "region_id", "grid_name", "head_name", "head_phone",

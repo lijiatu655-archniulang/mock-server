@@ -25,6 +25,11 @@ public class WorkbenchService {
             Map.entry("PENDING", "待受理"), Map.entry("ACCEPTED", "已受理"), Map.entry("PROCESSING", "办理中"),
             Map.entry("COMPLETED", "已办结"), Map.entry("CLOSED", "已关闭"), Map.entry("RATED", "已评价"));
 
+    private static final Map<String, String> APPLY_STATUS = Map.ofEntries(
+            Map.entry("DRAFT", "草稿"), Map.entry("SUBMITTED", "已提交"), Map.entry("ACCEPTED", "已受理"),
+            Map.entry("SUPPLEMENT", "待补正"), Map.entry("APPROVED", "已核准"), Map.entry("PAID", "已缴费"),
+            Map.entry("COMPLETED", "已办结"), Map.entry("REJECTED", "已驳回"), Map.entry("CANCELED", "已撤销"));
+
     private static final DateTimeFormatter MIN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     // ---------- 概览 ----------
@@ -160,6 +165,58 @@ public class WorkbenchService {
         mapper.updateRequestStatus(id, "COMPLETED");
         log(id, "COMPLETED", "已办结", operator, "办结归档");
         return requestDetail(id);
+    }
+
+    // ---------- 办件 ----------
+    public Map<String, Object> applies(String status, int page, int pageSize, String keyword) {
+        int p = Math.max(1, page);
+        int size = Math.min(Math.max(1, pageSize), 50);
+        List<Map<String, Object>> list = mapper.applies(status, keyword, (p - 1) * size, size);
+        for (Map<String, Object> r : list) {
+            r.put("statusLabel", APPLY_STATUS.getOrDefault(String.valueOf(r.get("status")), String.valueOf(r.get("status"))));
+        }
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("list", list);
+        m.put("total", mapper.countApplies(status, keyword));
+        m.put("page", p);
+        m.put("pageSize", size);
+        return m;
+    }
+
+    public Map<String, Object> applyDetail(String id) {
+        Map<String, Object> a = mapper.applyDetail(id);
+        if (a == null) throw new BizException(ErrorCode.PARAM_INVALID, "办件不存在");
+        a.put("statusLabel", APPLY_STATUS.getOrDefault(String.valueOf(a.get("status")), String.valueOf(a.get("status"))));
+        a.put("logs", mapper.applyLogs(id));
+        return a;
+    }
+
+    @Transactional
+    public Map<String, Object> acceptApply(String id, String operator) {
+        Map<String, Object> a = mapper.applyDetail(id);
+        if (a == null) throw new BizException(ErrorCode.PARAM_INVALID, "办件不存在");
+        String status = String.valueOf(a.get("status"));
+        if (!"SUBMITTED".equals(status) && !"SUPPLEMENT".equals(status)) {
+            throw new BizException(ErrorCode.PARAM_INVALID, "该办件当前状态不能受理");
+        }
+        mapper.updateApplyStatus(id, "ACCEPTED");
+        mapper.insertApplyLog(id, "ACCEPTED", "已受理", MIN.format(LocalDateTime.now()), operator,
+                "办件已受理，进入办理", mapper.maxApplyLogSort(id) + 1);
+        return applyDetail(id);
+    }
+
+    @Transactional
+    public Map<String, Object> completeApply(String id, String operator) {
+        Map<String, Object> a = mapper.applyDetail(id);
+        if (a == null) throw new BizException(ErrorCode.PARAM_INVALID, "办件不存在");
+        String status = String.valueOf(a.get("status"));
+        if (!"ACCEPTED".equals(status) && !"APPROVED".equals(status) && !"PAID".equals(status)) {
+            throw new BizException(ErrorCode.PARAM_INVALID, "该办件当前状态不能办结");
+        }
+        mapper.updateApplyStatus(id, "COMPLETED");
+        mapper.insertApplyLog(id, "COMPLETED", "已办结", MIN.format(LocalDateTime.now()), operator,
+                "办件办结归档", mapper.maxApplyLogSort(id) + 1);
+        return applyDetail(id);
     }
 
     // ---------- 户籍统计 ----------

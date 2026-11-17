@@ -22,7 +22,7 @@ check("未登录访问工作台", noauth.code === 20001, "code=" + noauth.code);
 
 // 概览
 const sum = await get("/workbench/summary", at);
-check("工作台概览", sum.code === 0 && sum.data.households === 20, JSON.stringify(sum.data));
+check("工作台概览", sum.code === 0 && sum.data.households === 486 && sum.data.population === 1632, JSON.stringify(sum.data));
 
 // 通知 CRUD
 const n1 = await post("/workbench/notices", { text: "测试通知：本周五停水", type: "urgent" }, at);
@@ -33,6 +33,8 @@ const n2 = await put("/workbench/notices/" + n1.data.id, { text: "测试通知�
 check("更新通知", n2.code === 0 && n2.data.text === "测试通知：改到周六停水");
 const n3 = await del("/workbench/notices/" + n1.data.id, at);
 check("删除通知", n3.code === 0);
+const list2 = await get("/workbench/notices", at);
+check("删除后通知不再返回", list2.code === 0 && !list2.data.some(x => x.id === n1.data.id));
 
 // 诉求受理流程
 const rq = await post("/requests", { type: "appeal", title: "测试诉求-路灯不亮", content: "村口路灯坏了三天" }, vt);
@@ -49,10 +51,21 @@ check("办结诉求", done.code === 0 && done.data.status === "COMPLETED" && don
 const rlist = await get("/workbench/requests?status=all&page=1&pageSize=10", at);
 check("诉求列表", rlist.code === 0 && rlist.data.total >= 3, "total=" + rlist.data.total);
 
+// 办件受理流程
+const apply = await post("/gov/applies", { itemCode: "YB001", formData: { "参保人姓名": "王秀兰", "身份证号": "220221********002X", "参保年度": "2026 年度", "人员类别": "普通居民", "联系电话": "138****6621" }, materialNames: ["身份证或户口簿"] }, vt);
+check("居民提交办件", apply.code === 0 && apply.data.id, apply.message);
+const aid = apply.data.id;
+const alist = await get("/workbench/applies?keyword=" + encodeURIComponent(apply.data.applyNo), at);
+check("办件列表", alist.code === 0 && alist.data.total >= 1, "total=" + alist.data.total);
+const aacc = await post("/workbench/applies/" + aid + "/accept", {}, at);
+check("受理办件", aacc.code === 0 && aacc.data.status === "ACCEPTED", aacc.message);
+const adone = await post("/workbench/applies/" + aid + "/complete", {}, at);
+check("办结办件", adone.code === 0 && adone.data.status === "COMPLETED" && adone.data.logs.length >= 3, adone.message);
+
 // 户籍统计
 const st = await get("/workbench/statistics/household?regionId=22022110001", at);
-check("户籍统计-户数人口", st.code === 0 && st.data.households === 20 && st.data.population === 70, JSON.stringify({ h: st.data.households, p: st.data.population }));
+check("户籍统计-户数人口", st.code === 0 && st.data.households === 486 && st.data.population === 1632, JSON.stringify({ h: st.data.households, p: st.data.population }));
 check("户籍统计-网格", st.data.grids.length === 3, "grids=" + st.data.grids.length);
-check("户籍统计-性别", st.data.gender.male + st.data.gender.female === 70, JSON.stringify(st.data.gender));
+check("户籍统计-性别", st.data.gender.male + st.data.gender.female === 1632, JSON.stringify(st.data.gender));
 
 console.log("workbench PASS=" + ok + " FAIL=" + fail);

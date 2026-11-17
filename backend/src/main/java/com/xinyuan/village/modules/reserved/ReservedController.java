@@ -18,11 +18,6 @@ public class ReservedController {
         return new BizException(ErrorCode.NOT_OPEN, "该能力将在 V3 版本开放");
     }
 
-    @GetMapping("/workbench/applies")
-    public Result<Object> workbenchApplies() {
-        throw v3();
-    }
-
     @PostMapping("/workbench/visits")
     public Result<Object> createVisit(@RequestBody(required = false) Map<String, Object> body) {
         throw v3();

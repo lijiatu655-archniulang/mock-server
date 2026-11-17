@@ -12,7 +12,7 @@ import java.util.Map;
 public interface WorkbenchMapper {
 
     // ---------- 通知 ----------
-    @Select("SELECT * FROM cms_notice ORDER BY created_at DESC, id DESC")
+    @Select("SELECT * FROM cms_notice WHERE status = 1 ORDER BY created_at DESC, id DESC")
     List<Notice> notices();
 
     @Select("SELECT * FROM cms_notice WHERE id = #{id}")
@@ -98,6 +98,53 @@ public interface WorkbenchMapper {
             "</script>"
     })
     List<HouseholdMember> householdMembers(@Param("regionId") String regionId);
+
+    // ---------- 办件 ----------
+    @Select({
+            "<script>",
+            "SELECT a.id, a.apply_no AS applyNo, a.item_code AS itemCode, a.item_name AS itemName,",
+            "       a.status, a.amount, DATE_FORMAT(a.created_at,'%Y-%m-%d %H:%i') AS createdAt,",
+            "       DATE_FORMAT(a.promise_at,'%Y-%m-%d %H:%i') AS promiseAt,",
+            "       u.name AS userName, u.phone_display AS userPhone",
+            "FROM gov_apply a LEFT JOIN sys_user u ON u.id = a.user_id WHERE 1=1",
+            "<if test=\"status != null and status != '' and status != 'all'\"> AND a.status = #{status} </if>",
+            "<if test=\"keyword != null and keyword != ''\"> AND (a.apply_no LIKE CONCAT('%', #{keyword}, '%') OR a.item_name LIKE CONCAT('%', #{keyword}, '%') OR u.name LIKE CONCAT('%', #{keyword}, '%')) </if>",
+            "ORDER BY a.created_at DESC, a.id DESC LIMIT #{offset}, #{pageSize}",
+            "</script>"
+    })
+    List<Map<String, Object>> applies(@Param("status") String status, @Param("keyword") String keyword,
+                                      @Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    @Select({
+            "<script>",
+            "SELECT COUNT(*) FROM gov_apply a LEFT JOIN sys_user u ON u.id = a.user_id WHERE 1=1",
+            "<if test=\"status != null and status != '' and status != 'all'\"> AND a.status = #{status} </if>",
+            "<if test=\"keyword != null and keyword != ''\"> AND (a.apply_no LIKE CONCAT('%', #{keyword}, '%') OR a.item_name LIKE CONCAT('%', #{keyword}, '%') OR u.name LIKE CONCAT('%', #{keyword}, '%')) </if>",
+            "</script>"
+    })
+    long countApplies(@Param("status") String status, @Param("keyword") String keyword);
+
+    @Select("SELECT a.id, a.apply_no AS applyNo, a.item_code AS itemCode, a.item_name AS itemName, " +
+            "a.status, a.amount, DATE_FORMAT(a.created_at,'%Y-%m-%d %H:%i') AS createdAt, " +
+            "DATE_FORMAT(a.promise_at,'%Y-%m-%d %H:%i') AS promiseAt, a.form_data AS formData, " +
+            "u.name AS userName, u.phone_display AS userPhone " +
+            "FROM gov_apply a LEFT JOIN sys_user u ON u.id = a.user_id WHERE a.id = #{id}")
+    Map<String, Object> applyDetail(String id);
+
+    @Select("SELECT id, status, label, time_text AS timeText, operator, note FROM gov_apply_log WHERE apply_id = #{id} ORDER BY sort, id")
+    List<Map<String, Object>> applyLogs(String id);
+
+    @Update("UPDATE gov_apply SET status = #{status} WHERE id = #{id}")
+    int updateApplyStatus(@Param("id") String id, @Param("status") String status);
+
+    @Select("SELECT COALESCE(MAX(sort),0) FROM gov_apply_log WHERE apply_id = #{id}")
+    int maxApplyLogSort(String id);
+
+    @Insert("INSERT INTO gov_apply_log (apply_id, status, label, time_text, operator, note, sort) " +
+            "VALUES (#{applyId}, #{status}, #{label}, #{timeText}, #{operator}, #{note}, #{sort})")
+    int insertApplyLog(@Param("applyId") String applyId, @Param("status") String status,
+                       @Param("label") String label, @Param("timeText") String timeText,
+                       @Param("operator") String operator, @Param("note") String note, @Param("sort") int sort);
 
     // ---------- 概览 ----------
     @Select("SELECT COUNT(*) FROM biz_request WHERE status IN ('PENDING','ACCEPTED','PROCESSING')")

@@ -84,6 +84,24 @@ public class WorkbenchController {
         return Result.ok(service.complete(id, operator()));
     }
 
+    @GetMapping("/applies")
+    public Result<Map<String, Object>> applies(@RequestParam(required = false) String status,
+                                               @RequestParam(defaultValue = "1") int page,
+                                               @RequestParam(defaultValue = "20") int pageSize,
+                                               @RequestParam(required = false) String keyword) {
+        return Result.ok(service.applies(status, page, pageSize, keyword));
+    }
+
+    @PostMapping("/applies/{id}/accept")
+    public Result<Map<String, Object>> acceptApply(@PathVariable String id) {
+        return Result.ok(service.acceptApply(id, operator()));
+    }
+
+    @PostMapping("/applies/{id}/complete")
+    public Result<Map<String, Object>> completeApply(@PathVariable String id) {
+        return Result.ok(service.completeApply(id, operator()));
+    }
+
     @GetMapping("/statistics/household")
     public Result<Map<String, Object>> statistics(@RequestParam(required = false) String regionId) {
         return Result.ok(service.statistics(regionId));
