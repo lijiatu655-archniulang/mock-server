@@ -18,10 +18,10 @@ public interface WorkbenchMapper {
     @Select("SELECT * FROM cms_notice WHERE id = #{id}")
     Notice notice(String id);
 
-    @Insert("INSERT INTO cms_notice (id, text, type, article_id, status) VALUES (#{id}, #{text}, #{type}, #{articleId}, 1)")
+    @Insert("INSERT INTO cms_notice (id, text, type, article_id, images, status) VALUES (#{id}, #{text}, #{type}, #{articleId}, #{images}, 1)")
     int insertNotice(Notice n);
 
-    @Update("UPDATE cms_notice SET text = #{text}, type = #{type}, article_id = #{articleId} WHERE id = #{id}")
+    @Update("UPDATE cms_notice SET text = #{text}, type = #{type}, article_id = #{articleId}, images = #{images} WHERE id = #{id}")
     int updateNotice(Notice n);
 
     @Update("UPDATE cms_notice SET status = #{status} WHERE id = #{id}")
@@ -58,7 +58,7 @@ public interface WorkbenchMapper {
     @Select("SELECT id, status, label, time_text AS timeText, operator, note FROM biz_request_log WHERE request_id = #{id} ORDER BY sort, id")
     List<Map<String, Object>> requestLogs(String id);
 
-    @Select("SELECT id, time_text AS timeText, operator, content FROM biz_request_reply WHERE request_id = #{id} ORDER BY sort, id")
+    @Select("SELECT id, time_text AS timeText, operator, content, images FROM biz_request_reply WHERE request_id = #{id} ORDER BY sort, id")
     List<Map<String, Object>> requestReplies(String id);
 
     @Update("UPDATE biz_request SET status = #{status} WHERE id = #{id}")
@@ -76,10 +76,11 @@ public interface WorkbenchMapper {
                          @Param("label") String label, @Param("timeText") String timeText,
                          @Param("operator") String operator, @Param("note") String note, @Param("sort") int sort);
 
-    @Insert("INSERT INTO biz_request_reply (request_id, time_text, operator, content, sort) " +
-            "VALUES (#{requestId}, #{timeText}, #{operator}, #{content}, #{sort})")
+    @Insert("INSERT INTO biz_request_reply (request_id, time_text, operator, content, images, sort) " +
+            "VALUES (#{requestId}, #{timeText}, #{operator}, #{content}, #{images}, #{sort})")
     int insertRequestReply(@Param("requestId") String requestId, @Param("timeText") String timeText,
-                           @Param("operator") String operator, @Param("content") String content, @Param("sort") int sort);
+                           @Param("operator") String operator, @Param("content") String content,
+                           @Param("images") String images, @Param("sort") int sort);
 
     // ---------- 户籍统计 ----------
     @Select({

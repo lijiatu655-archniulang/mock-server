@@ -3,6 +3,7 @@ package com.xinyuan.village.modules.workbench;
 import cn.hutool.core.util.IdUtil;
 import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.common.util.Times;
 import com.xinyuan.village.modules.workbench.entity.Household;
 import com.xinyuan.village.modules.workbench.entity.HouseholdMember;
@@ -32,6 +33,28 @@ public class WorkbenchService {
 
     private static final DateTimeFormatter MIN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    private static List<String> imageList(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        Object v = Json.parse(json);
+        if (!(v instanceof List<?> raw)) return List.of();
+        List<String> list = new ArrayList<>();
+        for (Object o : raw) {
+            if (o != null && !String.valueOf(o).isBlank()) list.add(String.valueOf(o));
+            if (list.size() >= 3) break;
+        }
+        return list;
+    }
+
+    private static String imageJson(List<String> images) {
+        if (images == null) return null;
+        List<String> list = new ArrayList<>();
+        for (String s : images) {
+            if (s != null && !s.isBlank()) list.add(s.trim());
+            if (list.size() >= 3) break;
+        }
+        return list.isEmpty() ? null : Json.write(list);
+    }
+
     // ---------- 概览 ----------
     public Map<String, Object> summary() {
         Map<String, Object> m = new LinkedHashMap<>();
@@ -53,29 +76,32 @@ public class WorkbenchService {
             m.put("type", n.getType());
             m.put("articleId", n.getArticleId());
             m.put("status", n.getStatus());
+            m.put("images", imageList(n.getImages()));
             m.put("createdAt", Times.minute(n.getCreatedAt()));
             list.add(m);
         }
         return list;
     }
 
-    public Map<String, Object> createNotice(String text, String type, String articleId) {
+    public Map<String, Object> createNotice(String text, String type, String articleId, List<String> images) {
         if (text == null || text.isBlank()) throw new BizException(ErrorCode.PARAM_INVALID, "请填写通知内容");
         Notice n = new Notice();
         n.setId("n" + IdUtil.getSnowflakeNextIdStr());
         n.setText(text.trim());
         n.setType("urgent".equals(type) ? "urgent" : "normal");
         n.setArticleId(articleId == null || articleId.isBlank() ? null : articleId);
+        n.setImages(imageJson(images));
         mapper.insertNotice(n);
         return notice(mapper.notice(n.getId()));
     }
 
-    public Map<String, Object> updateNotice(String id, String text, String type, String articleId) {
+    public Map<String, Object> updateNotice(String id, String text, String type, String articleId, List<String> images) {
         Notice n = mapper.notice(id);
         if (n == null) throw new BizException(ErrorCode.PARAM_INVALID, "通知不存在");
         if (text != null && !text.isBlank()) n.setText(text.trim());
         if (type != null) n.setType("urgent".equals(type) ? "urgent" : "normal");
         if (articleId != null) n.setArticleId(articleId.isBlank() ? null : articleId);
+        if (images != null) n.setImages(imageJson(images));
         mapper.updateNotice(n);
         return notice(mapper.notice(id));
     }
@@ -93,6 +119,7 @@ public class WorkbenchService {
         m.put("type", n.getType());
         m.put("articleId", n.getArticleId());
         m.put("status", n.getStatus());
+        m.put("images", imageList(n.getImages()));
         m.put("createdAt", Times.minute(n.getCreatedAt()));
         return m;
     }
@@ -118,7 +145,12 @@ public class WorkbenchService {
         if (r == null) throw new BizException(ErrorCode.PARAM_INVALID, "诉求不存在");
         r.put("statusLabel", STATUS.getOrDefault(String.valueOf(r.get("status")), String.valueOf(r.get("status"))));
         r.put("logs", mapper.requestLogs(id));
-        r.put("replies", mapper.requestReplies(id));
+        List<Map<String, Object>> replies = new ArrayList<>();
+        for (Map<String, Object> rp : mapper.requestReplies(id)) {
+            rp.put("images", imageList(String.valueOf(rp.get("images"))));
+            replies.add(rp);
+        }
+        r.put("replies", replies);
         return r;
     }
 
@@ -139,7 +171,7 @@ public class WorkbenchService {
     }
 
     @Transactional
-    public Map<String, Object> reply(String id, String content, String operator) {
+    public Map<String, Object> reply(String id, String content, List<String> images, String operator) {
         if (content == null || content.isBlank()) throw new BizException(ErrorCode.PARAM_INVALID, "请填写回复内容");
         Map<String, Object> r = mapper.requestDetail(id);
         if (r == null) throw new BizException(ErrorCode.PARAM_INVALID, "诉求不存在");
@@ -148,7 +180,7 @@ public class WorkbenchService {
             throw new BizException(ErrorCode.PARAM_INVALID, "该诉求已办结，不能回复");
         }
         int sort = mapper.maxReplySort(id) + 1;
-        mapper.insertRequestReply(id, MIN.format(LocalDateTime.now()), operator, content.trim(), sort);
+        mapper.insertRequestReply(id, MIN.format(LocalDateTime.now()), operator, content.trim(), imageJson(images), sort);
         if (!"PROCESSING".equals(status)) {
             mapper.updateRequestStatus(id, "PROCESSING");
             log(id, "PROCESSING", "已回复", operator, content.trim());

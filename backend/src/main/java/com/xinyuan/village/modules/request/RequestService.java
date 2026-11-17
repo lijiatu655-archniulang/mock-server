@@ -214,6 +214,17 @@ public class RequestService {
         return list;
     }
 
+    private List<String> images(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        Object v = com.xinyuan.village.common.util.Json.parse(json);
+        if (!(v instanceof List<?> raw)) return List.of();
+        List<String> list = new ArrayList<>();
+        for (Object o : raw) {
+            if (o != null && !String.valueOf(o).isBlank()) list.add(String.valueOf(o));
+        }
+        return list;
+    }
+
     private List<Map<String, Object>> replies(String requestId) {
         List<Map<String, Object>> list = new ArrayList<>();
         for (BizRequestReply rp : requestMapper.replies(requestId)) {
@@ -221,6 +232,7 @@ public class RequestService {
             m.put("time", rp.getTimeText());
             m.put("operator", rp.getOperator());
             m.put("content", rp.getContent());
+            m.put("images", images(rp.getImages()));
             list.add(m);
         }
         return list;

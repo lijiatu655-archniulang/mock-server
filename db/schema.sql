@@ -160,6 +160,7 @@ CREATE TABLE cms_notice (
   text       VARCHAR(255) NOT NULL,
   type       VARCHAR(16)  NOT NULL DEFAULT 'normal' COMMENT 'urgent / normal',
   article_id VARCHAR(32)  DEFAULT NULL,
+  images     JSON         DEFAULT NULL COMMENT '图片 URL 数组，最多 3 张',
   status     TINYINT      NOT NULL DEFAULT 1,
   created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -294,6 +295,7 @@ CREATE TABLE biz_request_reply (
   time_text  VARCHAR(32) NOT NULL,
   operator   VARCHAR(32) DEFAULT NULL,
   content    VARCHAR(500) NOT NULL,
+  images     JSON         DEFAULT NULL COMMENT '图片 URL 数组，最多 3 张',
   sort       INT         NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   KEY idx_request (request_id, sort)

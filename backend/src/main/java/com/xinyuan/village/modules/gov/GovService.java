@@ -2,6 +2,7 @@ package com.xinyuan.village.modules.gov;
 
 import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.i18n.I18nService;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.modules.gov.entity.GovCategory;
 import com.xinyuan.village.modules.gov.entity.GovItem;
@@ -15,6 +16,7 @@ import java.util.*;
 public class GovService {
 
     private final GovMapper govMapper;
+    private final I18nService i18n;
 
     public Map<String, Object> categories() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -27,6 +29,7 @@ public class GovService {
             m.put("name", c.getName());
             m.put("desc", c.getDescText());
             m.put("count", count);
+            i18n.attach(m, "govCategory", c.getId(), "name", "desc");
             list.add(m);
         }
         Map<String, Object> result = new LinkedHashMap<>();
@@ -78,6 +81,7 @@ public class GovService {
         m.put("tags", Json.parse(item.getTags()));
         m.put("promiseDays", item.getPromiseDays());
         m.put("fee", item.getFee());
+        i18n.attach(m, "govItem", item.getCode(), "name", "shortName", "summary");
         return m;
     }
 }

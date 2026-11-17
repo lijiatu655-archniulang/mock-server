@@ -1,5 +1,6 @@
 package com.xinyuan.village.modules.home;
 
+import com.xinyuan.village.common.i18n.I18nService;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.common.util.Times;
 import com.xinyuan.village.modules.content.ContentService;
@@ -18,6 +19,7 @@ import java.util.*;
 public class HomeService {
 
     private final SystemMapper systemMapper;
+    private final I18nService i18n;
     private final SystemService systemService;
     private final ContentService contentService;
 
@@ -49,6 +51,10 @@ public class HomeService {
         r.put("gridWorker", Json.parse(v.getGridWorker()));
         r.put("households", v.getHouseholds());
         r.put("population", v.getPopulation());
+        i18n.attach(r, "village", v.getId(), "name", "fullName", "gridName");
+        if (r.get("gridWorker") instanceof Map<?, ?> gw) {
+            i18n.attach((Map<String, Object>) gw, "village", v.getId(), "duty");
+        }
         return r;
     }
 

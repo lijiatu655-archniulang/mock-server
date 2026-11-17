@@ -12,5 +12,6 @@ public class NoticeRow {
     private String text;
     private String type;
     private String articleId;
+    private String images;
     private Integer status;
 }

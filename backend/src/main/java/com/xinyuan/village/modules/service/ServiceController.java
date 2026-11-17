@@ -1,6 +1,7 @@
 package com.xinyuan.village.modules.service;
 
 import com.xinyuan.village.common.api.Result;
+import com.xinyuan.village.common.i18n.I18nService;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.modules.service.entity.DirectoryItem;
 import com.xinyuan.village.modules.service.entity.JobItem;
@@ -16,6 +17,7 @@ import java.util.*;
 public class ServiceController {
 
     private final ServiceMapper serviceMapper;
+    private final I18nService i18n;
 
     @GetMapping("/directory")
     public Result<Map<String, Object>> directory() {
@@ -34,6 +36,7 @@ public class ServiceController {
             m.put("icon", d.getIcon());
             m.put("color", d.getColor());
             m.put("tint", d.getTint());
+            i18n.attach(m, "directory", d.getId(), "name", "desc", "hours");
             list.add(m);
         }
         Map<String, Object> m = new LinkedHashMap<>();
@@ -59,6 +62,7 @@ public class ServiceController {
             m.put("contactDisplay", j.getContactDisplay());
             m.put("publishedAt", j.getPublishedAt());
             m.put("deadline", j.getDeadline());
+            i18n.attach(m, "job", j.getId(), "title", "company", "location", "desc");
             list.add(m);
         }
         Map<String, Object> m = new LinkedHashMap<>();
@@ -82,6 +86,7 @@ public class ServiceController {
             m.put("host", t.getHost());
             m.put("summary", t.getSummary());
             m.put("agenda", Json.parse(t.getAgenda()));
+            i18n.attach(m, "tea", t.getId(), "title", "location", "host", "summary");
             list.add(m);
         }
         Map<String, Object> m = new LinkedHashMap<>();

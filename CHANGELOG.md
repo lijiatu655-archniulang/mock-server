@@ -1,5 +1,15 @@
 # 更新日志
 
+## 2026-11-17 V3.1 双语 / 图片 / 语音
+
+### 新增
+- **双语**：`X-Lang: zh|ko` / `?lang=ko`；首页、资讯、政务、便民、字典、错误提示返回 `i18n.ko`；AI 朝鲜语提问先翻译检索、再用朝鲜语回答；翻译表在 `backend/src/main/resources/i18n-ko.json`（缺失回退中文）；
+- **图片**：`cms_notice.images`、`biz_request_reply.images`（JSON，最多 3 张）；通知发布/编辑、诉求回复接收 `images`；首页通知、居民诉求详情返回；迁移脚本 `db/migrations/V3.1-image-fields.sql`；
+- **语音朗读**：`GET /api/v1/ai/tts?text=&lang=zh|ko&token=` 返回 MP3，md5 本地缓存 + 每分钟 60 次限流；默认 Google TTS，可通过 `TTS_PROXY` 配置代理。
+
+### 修复
+- 首页通知条改为取最新一条（原来按 id 取到旧通知）。
+
 ## 2026-11-17 后端修复
 
 - **户籍统计口径统一**：种子扩展为 3 网格 / 486 户 / 1632 人，首页与管理端统计一致；

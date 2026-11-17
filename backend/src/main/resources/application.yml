@@ -48,6 +48,14 @@ app:
       top-k: 4
       min-score: 0.2
       history-rounds: 3
+  tts:
+    enabled: ${TTS_ENABLED:true}
+    base-url: ${TTS_BASE_URL:https://translate.google.com/translate_tts}
+    cache-dir: ./data/tts
+    max-chars: 500
+    per-minute: 60
+    timeout-ms: 15000
+    proxy: ${TTS_PROXY:}
   wechat:
     app-id: ${WX_APP_ID:}
     app-secret: ${WX_APP_SECRET:}

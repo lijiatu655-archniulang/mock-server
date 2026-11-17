@@ -19,10 +19,10 @@ public class WorkbenchController {
     private final WorkbenchService service;
     private final UserMapper userMapper;
 
-    public record NoticeReq(String text, String type, String articleId) {
+    public record NoticeReq(String text, String type, String articleId, java.util.List<String> images) {
     }
 
-    public record ReplyReq(String content) {
+    public record ReplyReq(String content, java.util.List<String> images) {
     }
 
     private String operator() {
@@ -43,13 +43,15 @@ public class WorkbenchController {
     @PostMapping("/notices")
     public Result<Map<String, Object>> createNotice(@RequestBody NoticeReq req) {
         return Result.ok(service.createNotice(req == null ? null : req.text(),
-                req == null ? null : req.type(), req == null ? null : req.articleId()));
+                req == null ? null : req.type(), req == null ? null : req.articleId(),
+                req == null ? null : req.images()));
     }
 
     @PutMapping("/notices/{id}")
     public Result<Map<String, Object>> updateNotice(@PathVariable String id, @RequestBody NoticeReq req) {
         return Result.ok(service.updateNotice(id, req == null ? null : req.text(),
-                req == null ? null : req.type(), req == null ? null : req.articleId()));
+                req == null ? null : req.type(), req == null ? null : req.articleId(),
+                req == null ? null : req.images()));
     }
 
     @DeleteMapping("/notices/{id}")
@@ -76,7 +78,8 @@ public class WorkbenchController {
 
     @PostMapping("/requests/{id}/reply")
     public Result<Map<String, Object>> reply(@PathVariable String id, @RequestBody(required = false) ReplyReq req) {
-        return Result.ok(service.reply(id, req == null ? null : req.content(), operator()));
+        return Result.ok(service.reply(id, req == null ? null : req.content(),
+                req == null ? null : req.images(), operator()));
     }
 
     @PostMapping("/requests/{id}/complete")

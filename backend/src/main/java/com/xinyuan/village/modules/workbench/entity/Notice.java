@@ -9,6 +9,7 @@ public class Notice {
     private String text;
     private String type;
     private String articleId;
+    private String images;
     private Integer status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -3,6 +3,7 @@ package com.xinyuan.village.modules.content;
 import com.xinyuan.village.common.api.PageResult;
 import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.i18n.I18nService;
 import com.xinyuan.village.common.util.Times;
 import com.xinyuan.village.modules.content.entity.CmsArticle;
 import com.xinyuan.village.modules.content.entity.CmsColumn;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class ContentService {
 
     private final ContentMapper contentMapper;
+    private final I18nService i18n;
 
     public List<Map<String, Object>> columns() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -31,6 +33,7 @@ public class ContentService {
             m.put("color", c.getColor());
             m.put("description", c.getDescription());
             m.put("sort", c.getSort());
+            i18n.attach(m, "column", c.getId(), "name", "description");
             list.add(m);
         }
         return list;
@@ -106,6 +109,7 @@ public class ContentService {
         m.put("views", a.getViews());
         m.put("likes", a.getLikes());
         m.put("source", a.getSource());
+        i18n.attach(m, "article", a.getId(), "title", "summary");
         return m;
     }
 }

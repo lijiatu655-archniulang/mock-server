@@ -33,7 +33,7 @@ public interface SystemMapper {
     @Select("SELECT * FROM cms_banner WHERE status = 1 ORDER BY id LIMIT 1")
     BannerRow banner();
 
-    @Select("SELECT * FROM cms_notice WHERE status = 1 ORDER BY id LIMIT 1")
+    @Select("SELECT * FROM cms_notice WHERE status = 1 ORDER BY created_at DESC, id DESC LIMIT 1")
     NoticeRow notice();
 
     @Select("SELECT * FROM ai_suggestion ORDER BY sort, id")

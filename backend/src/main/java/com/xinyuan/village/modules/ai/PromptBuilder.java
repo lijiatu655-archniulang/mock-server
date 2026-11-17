@@ -1,5 +1,6 @@
 package com.xinyuan.village.modules.ai;
 
+import com.xinyuan.village.common.i18n.LangContext;
 import com.xinyuan.village.modules.ai.entity.AiMessage;
 import com.xinyuan.village.modules.ai.llm.LlmMessage;
 import com.xinyuan.village.modules.ai.rag.RagService;
@@ -25,6 +26,9 @@ public class PromptBuilder {
 
     public List<LlmMessage> build(String question, RagService.RagResult rag, List<AiMessage> history, int rounds) {
         StringBuilder system = new StringBuilder(SYSTEM);
+        if (LangContext.isKo()) {
+            system.append("\n8. 当前用户使用朝鲜语（延边通用朝鲜语）：请全程用朝鲜语回答，规则不变；政策名称、金额、时限按资料原意表达。\n");
+        }
         system.append("\n【参考资料】\n");
         if (rag == null || rag.context().isBlank()) {
             system.append("（本次未检索到本地资料）\n");

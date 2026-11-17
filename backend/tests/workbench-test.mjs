@@ -36,14 +36,23 @@ check("删除通知", n3.code === 0);
 const list2 = await get("/workbench/notices", at);
 check("删除后通知不再返回", list2.code === 0 && !list2.data.some(x => x.id === n1.data.id));
 
+// 通知配图
+const nImg = await post("/workbench/notices", { text: "图片通知：测试配图", type: "normal", images: ["http://x/1.jpg", "http://x/2.jpg", "http://x/3.jpg", "http://x/4.jpg"] }, at);
+check("通知配图截断到3张", nImg.code === 0 && nImg.data.images.length === 3, JSON.stringify(nImg.data && nImg.data.images));
+const homeKo = await fetch(BASE + "/home", { headers: { "X-Lang": "ko" } }).then(r => r.json());
+check("首页通知带图", homeKo.code === 0 && homeKo.data.notice.images.length === 3, JSON.stringify(homeKo.data.notice.images));
+check("朝鲜语首页", homeKo.data.region.i18n && homeKo.data.region.i18n.ko.name, JSON.stringify(homeKo.data.region.i18n));
+await del("/workbench/notices/" + nImg.data.id, at);
+
 // 诉求受理流程
 const rq = await post("/requests", { type: "appeal", title: "测试诉求-路灯不亮", content: "村口路灯坏了三天" }, vt);
 check("居民提交诉求", rq.code === 0 && rq.data.id, rq.message);
 const rid = rq.data.id;
 const acc = await post("/workbench/requests/" + rid + "/accept", {}, at);
 check("受理诉求", acc.code === 0 && acc.data.status === "ACCEPTED" && acc.data.statusLabel === "已受理", acc.data.status);
-const rp = await post("/workbench/requests/" + rid + "/reply", { content: "已安排电工，明天修复" }, at);
+const rp = await post("/workbench/requests/" + rid + "/reply", { content: "已安排电工，明天修复", images: ["http://x/reply.jpg"] }, at);
 check("回复诉求", rp.code === 0 && rp.data.status === "PROCESSING" && rp.data.replies.length === 1, rp.data.status);
+check("回复配图", rp.data.replies[0].images.length === 1, JSON.stringify(rp.data.replies[0].images));
 const done = await post("/workbench/requests/" + rid + "/complete", {}, at);
 check("办结诉求", done.code === 0 && done.data.status === "COMPLETED" && done.data.statusLabel === "已办结", done.data.status);
 

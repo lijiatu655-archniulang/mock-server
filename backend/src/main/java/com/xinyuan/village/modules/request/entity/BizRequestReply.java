@@ -13,5 +13,6 @@ public class BizRequestReply {
     private String timeText;
     private String operator;
     private String content;
+    private String images;
     private Integer sort;
 }

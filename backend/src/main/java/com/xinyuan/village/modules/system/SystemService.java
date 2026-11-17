@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.i18n.I18nService;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.modules.system.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.*;
 public class SystemService {
 
     private final SystemMapper systemMapper;
+    private final I18nService i18n;
 
     @Value("${app.storage.base-dir:./data/upload}")
     private String baseDir;
@@ -101,6 +103,8 @@ public class SystemService {
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("value", d.getDictValue());
             row.put("label", d.getDictLabel());
+            String tr = i18n.dict(type, d.getDictValue());
+            if (tr != null) row.put("i18n", Map.of("ko", Map.of("label", tr)));
             list.add(row);
         }
         Map<String, Object> m = new LinkedHashMap<>();
@@ -169,7 +173,19 @@ public class SystemService {
         m.put("actionText", b.getActionText());
         m.put("articleId", b.getArticleId());
         m.put("theme", b.getTheme());
+        i18n.attach(m, "banner", b.getId(), "tag", "title", "titleHighlight", "subtitle", "meta", "actionText");
         return m;
+    }
+
+    private List<String> images(String json) {
+        if (json == null || json.isBlank()) return List.of();
+        Object v = Json.parse(json);
+        if (!(v instanceof List<?> raw)) return List.of();
+        List<String> list = new ArrayList<>();
+        for (Object o : raw) {
+            if (o != null && !String.valueOf(o).isBlank()) list.add(String.valueOf(o));
+        }
+        return list;
     }
 
     public Map<String, Object> notice() {
@@ -180,6 +196,8 @@ public class SystemService {
         m.put("text", n.getText());
         m.put("type", n.getType());
         m.put("articleId", n.getArticleId());
+        m.put("images", images(n.getImages()));
+        i18n.attach(m, "notice", n.getId(), "text");
         return m;
     }
 }

@@ -1,11 +1,18 @@
 package com.xinyuan.village.modules.ai;
 
 import com.xinyuan.village.common.api.Result;
+import com.xinyuan.village.common.enums.ErrorCode;
+import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.util.JwtUtil;
 import com.xinyuan.village.common.web.LoginRequired;
 import com.xinyuan.village.common.web.UserContext;
+import com.xinyuan.village.modules.ai.tts.TtsService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -19,12 +26,40 @@ import java.util.concurrent.Executor;
 public class AiController {
 
     private final AiService aiService;
+    private final TtsService ttsService;
+    private final JwtUtil jwtUtil;
     private final Executor aiExecutor;
 
     public record ChatReq(String question, String conversationId) {
     }
 
     public record FeedbackReq(String feedback) {
+    }
+
+    @GetMapping(value = "/tts", produces = "audio/mpeg")
+    public ResponseEntity<byte[]> tts(@RequestParam String text,
+                                      @RequestParam(defaultValue = "zh") String lang,
+                                      @RequestParam(required = false) String token,
+                                      HttpServletRequest request) {
+        if (token != null && !token.isBlank()) {
+            try {
+                jwtUtil.parse(token);
+            } catch (Exception e) {
+                throw new BizException(ErrorCode.UNAUTHORIZED, "登录已失效，请重新登录");
+            }
+        }
+        String key = token != null && !token.isBlank() ? "t:" + token : "ip:" + clientIp(request);
+        byte[] audio = ttsService.synthesize(text, lang, key);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .cacheControl(CacheControl.maxAge(java.time.Duration.ofDays(1)).cachePublic())
+                .body(audio);
+    }
+
+    private String clientIp(HttpServletRequest request) {
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) return xff.split(",")[0].trim();
+        return request.getRemoteAddr();
     }
 
     @GetMapping("/suggestions")

@@ -3,6 +3,8 @@ package com.xinyuan.village.modules.ai;
 import cn.hutool.core.util.IdUtil;
 import com.xinyuan.village.common.enums.ErrorCode;
 import com.xinyuan.village.common.exception.BizException;
+import com.xinyuan.village.common.i18n.I18nService;
+import com.xinyuan.village.common.i18n.LangContext;
 import com.xinyuan.village.common.util.Json;
 import com.xinyuan.village.common.util.Times;
 import com.xinyuan.village.config.AiProperties;
@@ -33,6 +35,7 @@ public class AiService {
     private final RagService ragService;
     private final PromptBuilder promptBuilder;
     private final AiProperties aiProperties;
+    private final I18nService i18n;
 
     public interface Sink {
         void send(String event, Object data) throws Exception;
@@ -90,7 +93,7 @@ public class AiService {
 
         AnswerGenerator.Answer rule = answerGenerator.answerFor(question);
         RagService.RagResult rag = aiProperties.usable()
-                ? ragService.retrieve(question) : RagService.RagResult.empty();
+                ? ragService.retrieve(retrievalQuery(question)) : RagService.RagResult.empty();
 
         String text = rule.text();
         boolean llmOk = false;
@@ -109,6 +112,7 @@ public class AiService {
 
         List<Map<String, Object>> refs = llmOk ? rag.refs() : rule.refs();
         if (llmOk && refusal(text)) refs = List.of();
+        localizeRefs(refs);
         List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
         String messageId = saveMessage(conv.getId(), userId, "assistant", text,
                 Json.write(refs), Json.write(followUps));
@@ -140,8 +144,9 @@ public class AiService {
 
         AnswerGenerator.Answer rule = answerGenerator.answerFor(question);
         RagService.RagResult rag = aiProperties.usable()
-                ? ragService.retrieve(question) : RagService.RagResult.empty();
+                ? ragService.retrieve(retrievalQuery(question)) : RagService.RagResult.empty();
         List<Map<String, Object>> refs = aiProperties.usable() ? rag.refs() : rule.refs();
+        localizeRefs(refs);
 
         // 先落一条空消息拿到真实 messageId，再发 meta（否则前端反馈会打到 pending）
         String messageId = saveMessage(conv.getId(), userId, "assistant", "", null, null);
@@ -193,6 +198,7 @@ public class AiService {
         }
 
         if (usedLlm && refusal(buffer.toString())) refs = List.of();
+        localizeRefs(refs);
         List<String> followUps = rule.followUps() == null ? List.of() : rule.followUps();
         finishMessage(messageId, buffer.toString(), refs, followUps);
         touch(conv.getId());
@@ -205,6 +211,30 @@ public class AiService {
         done.put("latencyMs", (int) (System.currentTimeMillis() - start));
         done.put("followUps", followUps);
         sink.send("done", done);
+    }
+
+    /** 朝鲜语提问先翻译成中文再检索，避免 BM25 中文语料召回为 0。 */
+    private String retrievalQuery(String question) {
+        if (!LangContext.isKo()) return question;
+        try {
+            String zh = llmClient.chat(List.of(
+                    LlmMessage.system("把用户输入的朝鲜语村务问题翻译成简体中文检索关键词，只输出中文，不要解释。"),
+                    LlmMessage.user(question)));
+            return zh == null || zh.isBlank() ? question : zh.trim();
+        } catch (Exception e) {
+            log.warn("retrieval translate failed: {}", e.getMessage());
+            return question;
+        }
+    }
+
+    /** 引用标题按文章 id 补朝鲜语，前端用 i18n.ko.title 覆盖。 */
+    private void localizeRefs(List<Map<String, Object>> refs) {
+        if (!LangContext.isKo() || refs == null) return;
+        for (Map<String, Object> r : refs) {
+            if ("article".equals(String.valueOf(r.get("type"))) && r.get("articleId") != null) {
+                i18n.attach(r, "article", String.valueOf(r.get("articleId")), "title");
+            }
+        }
     }
 
     private void finishMessage(String id, String content, List<Map<String, Object>> refs, List<String> followUps) {

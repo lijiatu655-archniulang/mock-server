@@ -203,8 +203,8 @@ const check = (name, ok, note) => { out.push({ name, ok, note }); console.log((o
 
 // ---------- 5. 诉求提交（页面代码） ----------
 {
-  const p = loadPage("pages/request/create.js");
-  p.onLoad({ type: "appeal" });
+  const p = loadPage("pages/request/appeal/index.js");
+  p.onLoad({});
   await wait(200);
   p.setData({ title: "调试：三组路灯不亮", content: "三组东侧两盏路灯坏了快一周，晚上老人出行不安全，希望尽快维修。", location: "三组 26 号东侧" });
   const navBefore = nav.length;
