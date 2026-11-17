@@ -1,26 +1,27 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page service-page">
   <view class="service-hero">
     <view class="hero-glow"></view>
     <view class="hero-kicker">
       <view class="kicker-dot"></view>
-      <text>新源村 · 生活服务</text>
+      <text>{{i18n.t('新源村 · 生活服务', lang)}}</text>
     </view>
-    <view class="hero-title">便民服务</view>
-    <view class="hero-sub">水电气暖、家门口的工作、村里的事，都能找到人</view>
+    <view class="hero-title">{{i18n.t('便民服务', lang)}}</view>
+    <view class="hero-sub">{{i18n.t('水电气暖、家门口的工作、村里的事，都能找到人', lang)}}</view>
     <view class="hero-stats">
       <view class="hero-stat">
         <view class="hero-num">{{stats.services}}</view>
-        <view class="hero-label">服务电话</view>
+        <view class="hero-label">{{i18n.t('服务电话', lang)}}</view>
       </view>
       <view class="hero-line"></view>
       <view class="hero-stat">
         <view class="hero-num">{{stats.jobs}}</view>
-        <view class="hero-label">在招岗位</view>
+        <view class="hero-label">{{i18n.t('在招岗位', lang)}}</view>
       </view>
       <view class="hero-line"></view>
       <view class="hero-stat">
         <view class="hero-num">{{stats.teas}}</view>
-        <view class="hero-label">村里议事</view>
+        <view class="hero-label">{{i18n.t('村里议事', lang)}}</view>
       </view>
     </view>
   </view>
@@ -36,8 +37,8 @@
     >
       <view class="tab-icon">{{item.icon}}</view>
       <view class="tab-main">
-        <view class="tab-name">{{item.name}}</view>
-        <view class="tab-sub">{{item.sub}}</view>
+        <view class="tab-name">{{lang === 'ko' ? item.nameKo : item.name}}</view>
+        <view class="tab-sub">{{lang === 'ko' ? item.subKo : item.sub}}</view>
       </view>
       <view class="tab-count">{{item.count}}</view>
     </view>
@@ -52,26 +53,26 @@
 
   <view class="state-box card" wx:elif="{{error}}">
     <view class="state-emoji">!</view>
-    <view class="state-title">便民服务没有加载出来</view>
+    <view class="state-title">{{i18n.t('便民服务没有加载出来', lang)}}</view>
     <view class="state-desc">{{error}}</view>
-    <view class="state-action" bindtap="retry">重新加载</view>
+    <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
   </view>
 
   <block wx:else>
     <view class="state-box card" wx:if="{{tab === 'directory' && !directoryGroups.length}}">
-      <view class="state-emoji">空</view>
-      <view class="state-title">暂时没有服务电话</view>
-      <view class="state-desc">可以拨打村党群服务中心电话 0432-64216888 咨询。</view>
+      <view class="state-emoji">{{i18n.t('空', lang)}}</view>
+      <view class="state-title">{{i18n.t('暂时没有服务电话', lang)}}</view>
+      <view class="state-desc">{{i18n.t('可以拨打村党群服务中心电话 0432-64216888 咨询。', lang)}}</view>
     </view>
     <view class="state-box card" wx:elif="{{tab === 'jobs' && !jobs.length}}">
-      <view class="state-emoji">空</view>
-      <view class="state-title">暂时没有招聘岗位</view>
-      <view class="state-desc">有新岗位会第一时间发布，也可以到村党群服务中心登记求职意向。</view>
+      <view class="state-emoji">{{i18n.t('空', lang)}}</view>
+      <view class="state-title">{{i18n.t('暂时没有招聘岗位', lang)}}</view>
+      <view class="state-desc">{{i18n.t('有新岗位会第一时间发布，也可以到村党群服务中心登记求职意向。', lang)}}</view>
     </view>
     <view class="state-box card" wx:elif="{{tab === 'tea' && !teas.length}}">
-      <view class="state-emoji">空</view>
-      <view class="state-title">暂时没有议题</view>
-      <view class="state-desc">下一场奶茶会正在筹备，欢迎到村里提议题。</view>
+      <view class="state-emoji">{{i18n.t('空', lang)}}</view>
+      <view class="state-title">{{i18n.t('暂时没有议题', lang)}}</view>
+      <view class="state-desc">{{i18n.t('下一场奶茶会正在筹备，欢迎到村里提议题。', lang)}}</view>
     </view>
 
     <!-- 服务黄页 -->
@@ -91,12 +92,12 @@
             </view>
             <view class="call-btn" data-phone="{{item.phone}}" bindtap="onCall" hover-class="press">
               <image class="call-icon" src="/assets/icons/icon-phone.png" mode="aspectFit"></image>
-              <text>拨打</text>
+              <text>{{i18n.t('拨打', lang)}}</text>
             </view>
           </view>
           <view class="service-phone-row">
             <text class="service-phone">{{item.phoneDisplay}}</text>
-            <text class="service-hint">工作日可拨打</text>
+            <text class="service-hint">{{i18n.t('工作日可拨打', lang)}}</text>
           </view>
         </view>
       </view>
@@ -125,7 +126,7 @@
         </view>
         <view class="job-foot">
           <text class="job-contact">联系人电话 {{item.contactDisplay}}</text>
-          <view class="call-btn small" data-phone="{{item.contact}}" bindtap="onCall" hover-class="press">打电话</view>
+          <view class="call-btn small" data-phone="{{item.contact}}" bindtap="onCall" hover-class="press">{{i18n.t('打电话', lang)}}</view>
         </view>
       </view>
     </block>
@@ -159,14 +160,14 @@
             data-id="{{item.id}}"
             bindtap="onSignup"
             hover-class="press"
-          >{{item.status !== '报名中' ? '已结束' : item.signed ? '已报名' : '我要报名'}}</view>
+          >{{item.status !== '报名中' ? i18n.t('已结束', lang) : item.signed ? i18n.t('已报名', lang) : i18n.t('我要报名', lang)}}</view>
         </view>
       </view>
     </block>
   </block>
 
   <view class="service-footer">
-    <text>信息由新源村党群服务中心整理</text>
-    <text>如需新增服务电话，请联系 0432-64216888</text>
+    <text>{{i18n.t('信息由新源村党群服务中心整理', lang)}}</text>
+    <text>{{i18n.t('如需新增服务电话，请联系 0432-64216888', lang)}}</text>
   </view>
 </view>

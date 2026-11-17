@@ -1,3 +1,4 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page apply-page" wx:if="{{item}}">
   <view class="apply-head">
     <view class="head-row">
@@ -10,30 +11,30 @@
     <view class="head-meta">
       <view class="meta-item">
         <text class="meta-num">{{item.promiseDays}}</text>
-        <text class="meta-label">个工作日</text>
+        <text class="meta-label">{{i18n.t('个工作日', lang)}}</text>
       </view>
       <view class="meta-line"></view>
       <view class="meta-item">
         <text class="meta-num">1</text>
-        <text class="meta-label">次跑动</text>
+        <text class="meta-label">{{i18n.t('次跑动', lang)}}</text>
       </view>
       <view class="meta-line"></view>
       <view class="meta-item meta-fee">
         <text class="meta-value">{{item.fee}}</text>
-        <text class="meta-label">收费标准</text>
+        <text class="meta-label">{{i18n.t('收费标准', lang)}}</text>
       </view>
     </view>
   </view>
 
   <view class="tip-bar">
     <view class="tip-dot"></view>
-    <text>带 * 为必填项；材料可先提交，缺项会进入“待补正”。</text>
+    <text>{{i18n.t('带 * 为必填项；材料可先提交，缺项会进入“待补正”。', lang)}}</text>
   </view>
 
   <view class="form-card card">
     <view class="card-title">
       <view class="title-bar"></view>
-      <text>填写申报信息</text>
+      <text>{{i18n.t('填写申报信息', lang)}}</text>
     </view>
     <view class="form-error" wx:if="{{formError}}">{{formError}}</view>
 
@@ -41,7 +42,7 @@
       <view class="field-label">
         <text>{{field.label}}</text>
         <text class="field-required" wx:if="{{field.required}}">*</text>
-        <text class="field-type">{{field.type === 'idcard' ? '身份证号' : field.type === 'select' ? '单选' : field.type === 'radio' ? '单选' : field.type === 'date' ? '日期' : '文本'}}</text>
+        <text class="field-type">{{field.type === 'idcard' ? i18n.t('身份证号', lang) : field.type === 'select' ? i18n.t('单选', lang) : field.type === 'radio' ? i18n.t('单选', lang) : field.type === 'date' ? i18n.t('日期', lang) : i18n.t('文本', lang)}}</text>
       </view>
 
       <block wx:if="{{field.type === 'select'}}">
@@ -95,8 +96,8 @@
   <view class="form-card card">
     <view class="card-title">
       <view class="title-bar"></view>
-      <text>上传申请材料</text>
-      <text class="card-sub">选填，可现场补交</text>
+      <text>{{i18n.t('上传申请材料', lang)}}</text>
+      <text class="card-sub">{{i18n.t('选填，可现场补交', lang)}}</text>
     </view>
     <view class="material-row" wx:for="{{materials}}" wx:key="name" wx:for-item="material" wx:for-index="mi">
       <view class="material-icon">
@@ -105,8 +106,8 @@
       <view class="material-main">
         <view class="material-name">
           <text>{{material.name}}</text>
-          <text class="material-tag required" wx:if="{{material.required}}">必需</text>
-          <text class="material-tag optional" wx:else>可选</text>
+          <text class="material-tag required" wx:if="{{material.required}}">{{i18n.t('必需', lang)}}</text>
+          <text class="material-tag optional" wx:else>{{i18n.t('可选', lang)}}</text>
         </view>
         <view class="material-note">{{material.note}}</view>
       </view>
@@ -115,20 +116,20 @@
         data-index="{{mi}}"
         bindtap="onMaterialTap"
         hover-class="press"
-      >{{material.uploaded ? '已选择' : '选择照片'}}</view>
+      >{{material.uploaded ? i18n.t('已选择', lang) : i18n.t('选择照片', lang)}}</view>
     </view>
-    <view class="material-tip">材料可到村党群服务中心免费复印；行动不便的老人可联系网格员上门收取。</view>
+    <view class="material-tip">{{i18n.t('材料可到村党群服务中心免费复印；行动不便的老人可联系网格员上门收取。', lang)}}</view>
   </view>
 
   <view class="agree-row" bindtap="onAgreeTap" hover-class="press">
     <view class="agree-box {{agree ? 'on' : ''}}">{{agree ? '✓' : ''}}</view>
-    <text>我承诺填写信息真实有效，并已阅读《办事须知》</text>
+    <text>{{i18n.t('我承诺填写信息真实有效，并已阅读《办事须知》', lang)}}</text>
   </view>
 
   <view class="apply-footer">
-    <view class="footer-note">提交后可在「我的办件」查看进度</view>
+    <view class="footer-note">{{i18n.t('提交后可在「我的办件」查看进度', lang)}}</view>
     <view class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" hover-class="press">
-      {{submitting ? '正在提交…' : '提交申请'}}
+      {{submitting ? i18n.t('正在提交…', lang) : i18n.t('提交申请', lang)}}
     </view>
   </view>
 </view>
@@ -149,8 +150,8 @@
 <view class="page" wx:else>
   <view class="state-box card" style="margin:40rpx 24rpx;">
     <view class="state-emoji">!</view>
-    <view class="state-title">申报页没有加载出来</view>
+    <view class="state-title">{{i18n.t('申报页没有加载出来', lang)}}</view>
     <view class="state-desc">{{error}}</view>
-    <view class="state-action" bindtap="retry">重新加载</view>
+    <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
   </view>
 </view>

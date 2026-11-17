@@ -1,3 +1,4 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page request-detail-page" wx:if="{{request}}">
   <view class="detail-head">
     <view class="status-row">
@@ -11,22 +12,22 @@
   <view class="alert-card" wx:if="{{request.status === 'PENDING'}}">
     <view class="alert-icon">···</view>
     <view class="alert-main">
-      <view class="alert-title">已提交，等待受理</view>
-      <view class="alert-desc">网格员一般会在 1 个工作日内联系您；紧急情况请直接拨打村党群服务中心电话。</view>
+      <view class="alert-title">{{i18n.t('已提交，等待受理', lang)}}</view>
+      <view class="alert-desc">{{i18n.t('网格员一般会在 1 个工作日内联系您；紧急情况请直接拨打村党群服务中心电话。', lang)}}</view>
     </view>
   </view>
 
   <view class="alert-card processing" wx:if="{{request.status === 'PROCESSING' || request.status === 'ACCEPTED'}}">
     <view class="alert-icon">✓</view>
     <view class="alert-main">
-      <view class="alert-title">正在办理</view>
-      <view class="alert-desc">已转交相关人员处理，您可以随时查看进度或催办。</view>
+      <view class="alert-title">{{i18n.t('正在办理', lang)}}</view>
+      <view class="alert-desc">{{i18n.t('已转交相关人员处理，您可以随时查看进度或催办。', lang)}}</view>
     </view>
   </view>
 
   <view class="section card">
     <view class="section-head">
-      <view class="section-title">办理进度</view>
+      <view class="section-title">{{i18n.t('办理进度', lang)}}</view>
       <view class="section-sub">共 {{request.logs.length}} 条</view>
     </view>
     <view class="timeline">
@@ -46,11 +47,11 @@
 
   <view class="section card">
     <view class="section-head">
-      <view class="section-title">诉求内容</view>
+      <view class="section-title">{{i18n.t('诉求内容', lang)}}</view>
     </view>
     <view class="content-text">{{request.content}}</view>
     <view class="content-meta" wx:if="{{request.location}}">
-      <text class="meta-label">地点</text>
+      <text class="meta-label">{{i18n.t('地点', lang)}}</text>
       <text>{{request.location}}</text>
     </view>
     <view class="photo-row" wx:if="{{request.photos.length}}">
@@ -68,7 +69,7 @@
 
   <view class="section card" wx:if="{{request.replies.length}}">
     <view class="section-head">
-      <view class="section-title">办理回复</view>
+      <view class="section-title">{{i18n.t('办理回复', lang)}}</view>
     </view>
     <view class="reply" wx:for="{{request.replies}}" wx:key="time">
       <view class="reply-head">
@@ -90,21 +91,21 @@
   </view>
 
   <view class="detail-footer">
-    <text>新源村党群服务中心 · 0432-64216888</text>
-    <text>诉求信息仅用于本次办理</text>
+    <text>{{i18n.t('新源村党群服务中心 · 0432-64216888', lang)}}</text>
+    <text>{{i18n.t('诉求信息仅用于本次办理', lang)}}</text>
   </view>
 
   <view class="bottom-bar">
-    <view class="bar-ghost" bindtap="onCall">电话咨询</view>
-    <view class="bar-primary" wx:if="{{request.canUrge}}" bindtap="onUrge" hover-class="press">催办一下</view>
-    <view class="bar-primary" wx:elif="{{request.canRate}}" bindtap="openRating" hover-class="press">评价办理</view>
-    <view class="bar-primary muted" wx:else bindtap="onAgain" hover-class="press">再提一个</view>
+    <view class="bar-ghost" bindtap="onCall">{{i18n.t('电话咨询', lang)}}</view>
+    <view class="bar-primary" wx:if="{{request.canUrge}}" bindtap="onUrge" hover-class="press">{{i18n.t('催办一下', lang)}}</view>
+    <view class="bar-primary" wx:elif="{{request.canRate}}" bindtap="openRating" hover-class="press">{{i18n.t('评价办理', lang)}}</view>
+    <view class="bar-primary muted" wx:else bindtap="onAgain" hover-class="press">{{i18n.t('再提一个', lang)}}</view>
   </view>
 
   <view class="sheet-mask" wx:if="{{ratingOpen}}" bindtap="closeRating">
     <view class="rating-sheet" catchtap="noop">
       <view class="sheet-bar"></view>
-      <view class="sheet-title">评价办理</view>
+      <view class="sheet-title">{{i18n.t('评价办理', lang)}}</view>
       <view class="sheet-sub">{{request.typeLabel}} · {{request.requestNo}}</view>
       <view class="star-row">
         <text
@@ -119,13 +120,13 @@
       <textarea
         class="rating-input"
         value="{{ratingComment}}"
-        placeholder="说说哪里满意，或还有什么建议（选填）"
+        placeholder="{{i18n.t('说说哪里满意，或还有什么建议（选填）', lang)}}"
         placeholder-class="rating-placeholder"
         maxlength="200"
         bindinput="onCommentInput"
       ></textarea>
       <view class="sheet-submit {{submitting ? 'loading' : ''}}" bindtap="submitRating">
-        {{submitting ? '提交中…' : '提交评价'}}
+        {{submitting ? i18n.t('提交中…', lang) : i18n.t('提交评价', lang)}}
       </view>
     </view>
   </view>
@@ -147,8 +148,8 @@
 <view class="page" wx:else>
   <view class="state-box card" style="margin:40rpx 24rpx;">
     <view class="state-emoji">!</view>
-    <view class="state-title">诉求没有加载出来</view>
+    <view class="state-title">{{i18n.t('诉求没有加载出来', lang)}}</view>
     <view class="state-desc">{{error}}</view>
-    <view class="state-action" bindtap="retry">重新加载</view>
+    <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
   </view>
 </view>

@@ -2,7 +2,9 @@ const app = getApp()
 const familyApi = require('../../api/family')
 
 const RELATIONS = ['父亲', '母亲', '配偶', '子女', '其他']
+const RELATIONS_KO = ['아버지', '어머니', '배우자', '자녀', '기타']
 const GENDERS = ['男', '女']
+const GENDERS_KO = ['남', '여']
 
 Page({
   data: {
@@ -12,7 +14,9 @@ Page({
     formOpen: false,
     saving: false,
     relations: RELATIONS,
+    relationsKo: RELATIONS_KO,
     genders: GENDERS,
+    gendersKo: GENDERS_KO,
     relationIndex: 0,
     genderIndex: 0,
     form: {

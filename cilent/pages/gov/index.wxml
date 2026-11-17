@@ -1,27 +1,28 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page gov-page">
   <view class="gov-hero">
     <view class="hero-glow"></view>
     <view class="hero-lines"></view>
     <view class="hero-badge">
       <view class="badge-shield">✓</view>
-      <text>官方办事指南</text>
+      <text>{{i18n.t('官方办事指南', lang)}}</text>
     </view>
-    <view class="hero-title">政务办事指南</view>
-    <view class="hero-sub">四类高频事项 · 一次告知 · 承诺办结</view>
+    <view class="hero-title">{{i18n.t('政务办事指南', lang)}}</view>
+    <view class="hero-sub">{{i18n.t('四类高频事项 · 一次告知 · 承诺办结', lang)}}</view>
     <view class="hero-stats">
       <view class="stat">
         <text class="stat-num">{{categories.length > 1 ? categories.length - 1 : 4}}</text>
-        <text class="stat-label">事项类别</text>
+        <text class="stat-label">{{i18n.t('事项类别', lang)}}</text>
       </view>
       <view class="stat-line"></view>
       <view class="stat">
         <text class="stat-num">{{allTotal || 6}}</text>
-        <text class="stat-label">项可办事项</text>
+        <text class="stat-label">{{i18n.t('项可办事项', lang)}}</text>
       </view>
       <view class="stat-line"></view>
       <view class="stat">
         <text class="stat-num">1</text>
-        <text class="stat-label">天起办结</text>
+        <text class="stat-label">{{i18n.t('天起办结', lang)}}</text>
       </view>
     </view>
   </view>
@@ -31,14 +32,14 @@
     <input
       class="search-input"
       value="{{searchInput}}"
-      placeholder="搜索事项，如：医保、养老、独生子女"
+      placeholder="{{i18n.t('搜索事项，如：医保、养老、独生子女', lang)}}"
       placeholder-class="search-placeholder"
       confirm-type="search"
       bindinput="onSearchInput"
       bindconfirm="onSearchConfirm"
     />
     <view class="search-clear" wx:if="{{searchInput}}" bindtap="onClearSearch">×</view>
-    <view class="search-btn" bindtap="onSearchConfirm" hover-class="press">搜索</view>
+    <view class="search-btn" bindtap="onSearchConfirm" hover-class="press">{{i18n.t('搜索', lang)}}</view>
   </view>
 
   <scroll-view class="cate-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
@@ -58,8 +59,8 @@
   </scroll-view>
 
   <view class="v2-tip">
-    <view class="v2-badge">可办</view>
-    <text>支持在线申报，提交后可在「我的办件」查看进度、补正提醒和评价</text>
+    <view class="v2-badge">{{i18n.t('可办', lang)}}</view>
+    <text>{{i18n.t('支持在线申报，提交后可在「我的办件」查看进度、补正提醒和评价', lang)}}</text>
   </view>
 
   <view class="list-head">
@@ -81,17 +82,17 @@
 
     <view class="state-box card" wx:elif="{{error}}">
       <view class="state-emoji">!</view>
-      <view class="state-title">事项没有加载出来</view>
+      <view class="state-title">{{i18n.t('事项没有加载出来', lang)}}</view>
       <view class="state-desc">{{error}}</view>
-      <view class="state-action" bindtap="retry">重新加载</view>
+      <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
     </view>
 
     <view class="state-box card" wx:elif="{{!items.length}}">
-      <view class="state-emoji">空</view>
+      <view class="state-emoji">{{i18n.t('空', lang)}}</view>
       <view class="state-title" wx:if="{{keyword}}">没有找到“{{keyword}}”相关事项</view>
-      <view class="state-title" wx:else>这个分类暂时没有事项</view>
-      <view class="state-desc">试试搜索“医保”“养老”“高龄补贴”，或切换分类查看。</view>
-      <view class="state-action" wx:if="{{keyword}}" bindtap="onClearSearch">清除搜索</view>
+      <view class="state-title" wx:else>{{i18n.t('这个分类暂时没有事项', lang)}}</view>
+      <view class="state-desc">{{i18n.t('试试搜索“医保”“养老”“高龄补贴”，或切换分类查看。', lang)}}</view>
+      <view class="state-action" wx:if="{{keyword}}" bindtap="onClearSearch">{{i18n.t('清除搜索', lang)}}</view>
     </view>
 
     <block wx:else>
@@ -126,13 +127,13 @@
     <view class="gov-note">
     <view class="note-shield">✓</view>
     <view class="note-copy">
-      <text class="note-title">支持在线申报，信息由永吉县政务服务平台提供</text>
-      <text class="note-desc">材料、时限以窗口核定为准；行动不便的老人可联系网格员上门代办。</text>
+      <text class="note-title">{{i18n.t('支持在线申报，信息由永吉县政务服务平台提供', lang)}}</text>
+      <text class="note-desc">{{i18n.t('材料、时限以窗口核定为准；行动不便的老人可联系网格员上门代办。', lang)}}</text>
     </view>
   </view>
 
   <view class="gov-footer">
-    <text>新源村党群服务中心 · 0432-64216888</text>
-    <text>工作日 10:00—13:30 / 15:30—19:30</text>
+    <text>{{i18n.t('新源村党群服务中心 · 0432-64216888', lang)}}</text>
+    <text>{{i18n.t('工作日 10:00—13:30 / 15:30—19:30', lang)}}</text>
   </view>
 </view>

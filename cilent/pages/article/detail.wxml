@@ -1,3 +1,4 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page detail-page" wx:if="{{article}}">
   <view class="detail-head">
     <view class="head-tags">
@@ -5,7 +6,7 @@
         <view class="chip-dot" style="background:{{article.columnColor}}"></view>
         <text>{{article.columnName}}</text>
       </view>
-      <view class="top-chip" wx:if="{{article.isTop}}">置顶</view>
+      <view class="top-chip" wx:if="{{article.isTop}}">{{i18n.t('置顶', lang)}}</view>
     </view>
     <view class="detail-title">{{article.title}}</view>
     <view class="detail-meta">
@@ -21,20 +22,20 @@
     <rich-text class="rich-text" nodes="{{article.content}}" space="nbsp"></rich-text>
     <view class="content-end">
       <view class="end-line"></view>
-      <text>完</text>
+      <text>{{i18n.t('完', lang)}}</text>
       <view class="end-line"></view>
     </view>
     <view class="content-source">
       <text>来源：{{article.source}}</text>
       <text wx:if="{{article.author}}">作者：{{article.author}}</text>
     </view>
-    <view class="content-note">如对内容有疑问，请拨打村党群服务中心电话 0432-64216888。</view>
+    <view class="content-note">{{i18n.t('如对内容有疑问，请拨打村党群服务中心电话 0432-64216888。', lang)}}</view>
   </view>
 
   <view class="like-card card">
     <view class="like-copy">
-      <text class="like-title">这篇内容对您有帮助吗？</text>
-      <text class="like-sub">点个赞，让更多村民看到</text>
+      <text class="like-title">{{i18n.t('这篇内容对您有帮助吗？', lang)}}</text>
+      <text class="like-sub">{{i18n.t('点个赞，让更多村民看到', lang)}}</text>
     </view>
     <view class="like-btn {{liked ? 'on' : ''}}" bindtap="onLike" hover-class="press">
       <text class="like-heart">{{liked ? '♥' : '♡'}}</text>
@@ -44,12 +45,12 @@
 
   <view class="neighbor card" wx:if="{{article.prev || article.next}}">
     <view class="neighbor-row" wx:if="{{article.prev}}" bindtap="onPrev" hover-class="press">
-      <view class="neighbor-label">上一篇</view>
+      <view class="neighbor-label">{{i18n.t('上一篇', lang)}}</view>
       <view class="neighbor-title line-1">{{article.prev.title}}</view>
       <view class="neighbor-arrow up"></view>
     </view>
     <view class="neighbor-row" wx:if="{{article.next}}" bindtap="onNext" hover-class="press">
-      <view class="neighbor-label">下一篇</view>
+      <view class="neighbor-label">{{i18n.t('下一篇', lang)}}</view>
       <view class="neighbor-title line-1">{{article.next.title}}</view>
       <view class="neighbor-arrow"></view>
     </view>
@@ -58,7 +59,7 @@
   <view class="detail-footer">
     <view class="footer-seal">★</view>
     <view>{{article.source}} · 新源村情通</view>
-    <view>内容以官方发布为准，转载请注明来源</view>
+    <view>{{i18n.t('内容以官方发布为准，转载请注明来源', lang)}}</view>
   </view>
 
   <view class="bottom-bar">
@@ -66,10 +67,10 @@
       <text class="bar-heart">{{liked ? '♥' : '♡'}}</text>
       <text>{{likes}}</text>
     </view>
-    <button class="bar-share" open-type="share" hover-class="press">转发</button>
+    <button class="bar-share" open-type="share" hover-class="press">{{i18n.t('转发', lang)}}</button>
     <view class="bar-call" bindtap="onCall" hover-class="press">
       <image class="bar-call-icon" src="/assets/icons/icon-phone-white.png" mode="aspectFit"></image>
-      <text>电话咨询</text>
+      <text>{{i18n.t('电话咨询', lang)}}</text>
     </view>
   </view>
 </view>
@@ -96,8 +97,8 @@
 <view class="page" wx:else>
   <view class="state-box card" style="margin:40rpx 24rpx;">
     <view class="state-emoji">!</view>
-    <view class="state-title">文章没有加载出来</view>
+    <view class="state-title">{{i18n.t('文章没有加载出来', lang)}}</view>
     <view class="state-desc">{{error}}</view>
-    <view class="state-action" bindtap="retry">重新加载</view>
+    <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
   </view>
 </view>

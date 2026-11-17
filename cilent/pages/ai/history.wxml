@@ -1,24 +1,25 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page history-page">
   <view class="history-head">
     <view class="head-left">
-      <view class="head-title">历史会话</view>
-      <view class="head-sub">本机保存，最多 20 段对话</view>
+      <view class="head-title">{{i18n.t('历史会话', lang)}}</view>
+      <view class="head-sub">{{i18n.t('本机保存，最多 20 段对话', lang)}}</view>
     </view>
-    <view class="clear-btn" wx:if="{{sessions.length}}" bindtap="onClear" hover-class="press">清空</view>
+    <view class="clear-btn" wx:if="{{sessions.length}}" bindtap="onClear" hover-class="press">{{i18n.t('清空', lang)}}</view>
   </view>
 
   <view class="state-box card" wx:if="{{needLogin}}">
     <view class="state-emoji">AI</view>
-    <view class="state-title">登录后查看历史会话</view>
-    <view class="state-desc">登录后才能使用 AI 小贾，并保存、查看历史会话。</view>
-    <view class="state-action" bindtap="onGoLogin">去登录</view>
+    <view class="state-title">{{i18n.t('登录后查看历史会话', lang)}}</view>
+    <view class="state-desc">{{i18n.t('登录后才能使用 AI 小贾，并保存、查看历史会话。', lang)}}</view>
+    <view class="state-action" bindtap="onGoLogin">{{i18n.t('去登录', lang)}}</view>
   </view>
 
   <view class="state-box card" wx:elif="{{!sessions.length}}">
-    <view class="state-emoji">智</view>
-    <view class="state-title">还没有历史会话</view>
-    <view class="state-desc">去问小贾医保、养老、独生子女证等村里的事，对话会自动保存在这里。</view>
-    <view class="state-action" bindtap="onAsk">去问小贾</view>
+    <view class="state-emoji">{{i18n.t('智', lang)}}</view>
+    <view class="state-title">{{i18n.t('还没有历史会话', lang)}}</view>
+    <view class="state-desc">{{i18n.t('去问小贾医保、养老、独生子女证等村里的事，对话会自动保存在这里。', lang)}}</view>
+    <view class="state-action" bindtap="onAsk">{{i18n.t('去问小贾', lang)}}</view>
   </view>
 
   <block wx:else>
@@ -42,11 +43,11 @@
       <view class="session-foot">
         <text class="session-time">{{item.timeText}}</text>
         <view class="session-actions">
-          <view class="action-btn delete" data-id="{{item.id}}" catchtap="onDelete">删除</view>
-          <view class="action-btn continue" data-id="{{item.id}}" catchtap="onContinue">继续对话</view>
+          <view class="action-btn delete" data-id="{{item.id}}" catchtap="onDelete">{{i18n.t('删除', lang)}}</view>
+          <view class="action-btn continue" data-id="{{item.id}}" catchtap="onContinue">{{i18n.t('继续对话', lang)}}</view>
         </view>
       </view>
     </view>
-    <view class="history-note">历史会话只保存在当前手机，清理缓存后不可恢复。</view>
+    <view class="history-note">{{i18n.t('历史会话只保存在当前手机，清理缓存后不可恢复。', lang)}}</view>
   </block>
 </view>

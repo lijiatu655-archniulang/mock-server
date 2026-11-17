@@ -1,6 +1,7 @@
 const app = getApp()
 const aiApi = require('../../api/ai')
 const storage = require('../../utils/storage')
+const tts = require('../../utils/tts')
 
 const WELCOME = '您好，我是新源村 AI 网格员“小贾”。医保缴费、养老参保、独生子女证、高龄补贴……村里的事都可以问我。\n\n我会尽量给出政策依据；查不到的我也会直说，不会编造。请问您想了解什么？'
 
@@ -16,7 +17,10 @@ Page({
     showScrollBottom: false,
     needLogin: false,
     disclaimer: 'AI 生成内容仅供参考，具体政策以官方发布为准。',
-    loadingSuggestions: true
+    loadingSuggestions: true,
+    ttsOn: false,
+    ttsSpeaking: false,
+    ttsIndex: -1
   },
 
   onLoad() {
@@ -26,8 +30,18 @@ Page({
     this.sessionStartedAt = Date.now()
     this.atBottom = true
     this.scrollViewHeight = 0
+    this.pageAlive = true
+    const self = this
+    this.ttsListener = function (state) {
+      if (!self.pageAlive) return
+      const patch = { ttsSpeaking: !!state.speaking }
+      if (!state.speaking) patch.ttsIndex = -1
+      self.setData(patch)
+    }
+    tts.subscribe(this.ttsListener)
     const user = app.globalData.user
     this.setData({
+      ttsOn: tts.isOn(),
       userAvatar: (user && user.avatarText) || '王',
       needLogin: !user,
       messages: [{
@@ -183,9 +197,55 @@ Page({
   },
 
   onUnload() {
+    this.pageAlive = false
+    tts.stop()
     this.saveSession()
     this.session += 1
     this.stopStream(true)
+  },
+
+  /** 右上角声音开关：关闭后不再自动朗读，并立即停止当前朗读 */
+  onToggleTts() {
+    const next = tts.toggle()
+    this.setData({ ttsOn: next, ttsSpeaking: false, ttsIndex: -1 })
+    wx.showToast({
+      title: next
+        ? (this.data.lang === 'ko' ? '음성 읽기 켜짐' : '语音朗读已开启')
+        : (this.data.lang === 'ko' ? '음성 읽기 꺼짐' : '语音朗读已关闭'),
+      icon: 'none',
+      duration: 1400
+    })
+  },
+
+  /** 单条回答手动朗读 */
+  onSpeakMessage(e) {
+    const index = Number(e.currentTarget.dataset.index)
+    const msg = this.data.messages[index]
+    if (!msg || !msg.content) return
+    if (this.data.ttsSpeaking && this.data.ttsIndex === index) {
+      tts.stop()
+      this.setData({ ttsSpeaking: false, ttsIndex: -1 })
+      return
+    }
+    const lang = this.data.lang === 'ko' ? 'ko' : 'zh'
+    this.setData({ ttsIndex: index })
+    const ok = tts.speak(msg.content, { lang: lang })
+    if (!ok) {
+      this.setData({ ttsIndex: -1 })
+      wx.showToast({
+        title: this.data.lang === 'ko' ? '읽을 내용이 없습니다' : '没有可朗读的内容',
+        icon: 'none'
+      })
+    }
+  },
+
+  /** 回答生成完成后，如果开着声音开关就自动朗读 */
+  autoSpeak(text) {
+    if (!this.data.ttsOn) return
+    if (!text || !String(text).trim()) return
+    const index = this.data.messages.length - 1
+    this.setData({ ttsIndex: index })
+    tts.speak(text, { lang: this.data.lang === 'ko' ? 'ko' : 'zh' })
   },
 
   saveSession() {
@@ -282,6 +342,7 @@ Page({
   sendQuestion(text) {
     const question = String(text || '').trim()
     if (!question) return
+    tts.stop()
     if (!this.isLoggedIn()) {
       this.showLoginGate()
       wx.showToast({ title: '请先登录后使用 AI 小贾', icon: 'none' })
@@ -388,6 +449,7 @@ Page({
       self.pendingServerMessageId = ''
       if (!data.error) self.saveSession()
       self.scrollToBottom()
+      if (!data.error && data.content) self.autoSpeak(data.content)
     }
 
     self.pendingRefs = []
@@ -596,6 +658,7 @@ Page({
   },
 
   onNewChat() {
+    tts.stop()
     if (!this.isLoggedIn()) {
       this.showLoginGate()
       return

@@ -7,9 +7,12 @@ const config = {
   APP_VERSION: '3.0.0',
   CLIENT: 'wx-miniprogram',
   USE_MOCK: false,
-  BASE_URL: 'http://127.0.0.1:8080/api/v1',
+  BASE_URL: 'http://172.20.2.200:8080/api/v1',
   TIMEOUT: 15000,
   REGION_ID: '22022110001',
+  // AI 语音朗读：留空时默认走 `${BASE_URL}/ai/tts`，后端就绪后无需改代码
+  // 也可填完整地址，例如 https://<host>/tts
+  TTS_URL: '',
   // 关闭静默自动登录：由登录页手动选择微信或账号密码
   AUTO_MOCK_LOGIN: false,
   STORAGE: {
@@ -19,7 +22,8 @@ const config = {
     AI_HISTORY: 'xct_ai_history',
     AI_SESSIONS: 'xct_ai_sessions',
     PENDING_Q: 'xct_pending_q',
-    PENDING_SESSION: 'xct_pending_session'
+    PENDING_SESSION: 'xct_pending_session',
+    TTS: 'xct_tts'
   }
 }
 

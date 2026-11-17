@@ -2,6 +2,7 @@ const config = require('../utils/config')
 const request = require('../utils/request')
 const storage = require('../utils/storage')
 const sse = require('../utils/sse')
+const i18n = require('../utils/i18n')
 
 /** 推荐问题：GET /ai/suggestions */
 function getSuggestions() {
@@ -150,7 +151,8 @@ function realStream(options) {
       Accept: 'text/event-stream',
       Authorization: token ? 'Bearer ' + token : '',
       'X-Client': config.CLIENT,
-      'X-Client-Version': config.APP_VERSION
+      'X-Client-Version': config.APP_VERSION,
+      'X-Lang': i18n.getLang()
     },
     data: {
       question: options.question,

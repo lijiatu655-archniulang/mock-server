@@ -97,8 +97,11 @@ Page({
 
   onCreate() {
     const self = this
+    const ko = this.data.lang === 'ko'
     wx.showActionSheet({
-      itemList: ['咨询帮办', '诉求建议', '意见建议'],
+      itemList: ko
+        ? ['상담·대행', '요구·건의', '의견·건의']
+        : ['咨询帮办', '诉求建议', '意见建议'],
       success: function (res) {
         const types = ['consult', 'appeal', 'suggestion']
         const type = types[res.tapIndex] || 'appeal'
@@ -108,8 +111,13 @@ Page({
   },
 
   goCreate(type) {
+    const routes = {
+      consult: '/pages/request/consult/index',
+      appeal: '/pages/request/appeal/index',
+      suggestion: '/pages/request/suggest/index'
+    }
     wx.navigateTo({
-      url: '/pages/request/create?type=' + type
+      url: routes[type] || routes.appeal
     })
   },
 

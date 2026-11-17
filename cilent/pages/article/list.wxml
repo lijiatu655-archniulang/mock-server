@@ -1,15 +1,16 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page list-page">
   <view class="list-head">
     <view class="head-kicker">
       <view class="kicker-dot"></view>
-      <text>新源村 · 信息公开</text>
+      <text>{{i18n.t('新源村 · 信息公开', lang)}}</text>
     </view>
-    <view class="head-title">村情资讯</view>
-    <view class="head-desc">村里的事、上面的政策，一个屏看完</view>
+    <view class="head-title">{{i18n.t('村情资讯', lang)}}</view>
+    <view class="head-desc">{{i18n.t('村里的事、上面的政策，一个屏看完', lang)}}</view>
     <view class="head-meta" wx:if="{{!loading}}">
       <text>共 {{total}} 条</text>
       <text class="head-meta-sep">·</text>
-      <text>{{activeName}}</text>
+      <text>{{lang === 'ko' ? activeNameKo : activeName}}</text>
     </view>
   </view>
 
@@ -33,7 +34,7 @@
           hover-class="press"
         >
           <view class="chip-dot" style="background:{{activeColumn === item.id ? '#FFFFFF' : item.color}}"></view>
-          {{item.name}}
+          {{lang === 'ko' && item.nameKo ? item.nameKo : item.name}}
         </view>
       </view>
     </scroll-view>
@@ -52,15 +53,15 @@
 
     <view class="state-box card" wx:elif="{{error}}">
       <view class="state-emoji">!</view>
-      <view class="state-title">资讯没有加载出来</view>
+      <view class="state-title">{{i18n.t('资讯没有加载出来', lang)}}</view>
       <view class="state-desc">{{error}}</view>
-      <view class="state-action" bindtap="retry">重新加载</view>
+      <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
     </view>
 
     <view class="state-box card" wx:elif="{{!articles.length}}">
-      <view class="state-emoji">空</view>
-      <view class="state-title">这个栏目暂时没有内容</view>
-      <view class="state-desc">村里有新通知、新政策会第一时间发布，先去其他栏目看看。</view>
+      <view class="state-emoji">{{i18n.t('空', lang)}}</view>
+      <view class="state-title">{{i18n.t('这个栏目暂时没有内容', lang)}}</view>
+      <view class="state-desc">{{i18n.t('村里有新通知、新政策会第一时间发布，先去其他栏目看看。', lang)}}</view>
     </view>
 
     <block wx:else>
@@ -75,9 +76,9 @@
         <view class="article-head">
           <view class="column-label" style="color:{{item.columnColor}}">
             <view class="column-dot" style="background:{{item.columnColor}}"></view>
-            <text>{{item.columnName}}</text>
+            <text>{{i18n.t(item.columnName, lang)}}</text>
           </view>
-          <view class="top-flag" wx:if="{{item.isTop}}">置顶</view>
+          <view class="top-flag" wx:if="{{item.isTop}}">{{i18n.t('置顶', lang)}}</view>
           <text class="article-date">{{item.displayDate}}</text>
         </view>
         <view class="article-title line-2">{{item.title}}</view>
@@ -94,11 +95,11 @@
 
       <view class="list-more" wx:if="{{loadingMore}}">
         <view class="loading-dot"></view>
-        <text>正在加载…</text>
+        <text>{{i18n.t('正在加载…', lang)}}</text>
       </view>
       <view class="list-more" wx:elif="{{!hasMore}}">
         <view class="more-line"></view>
-        <text>已经到底啦</text>
+        <text>{{i18n.t('已经到底啦', lang)}}</text>
         <view class="more-line"></view>
       </view>
     </block>

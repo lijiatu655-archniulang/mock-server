@@ -3,6 +3,7 @@ const userApi = require('../../api/user')
 const authApi = require('../../api/auth')
 const config = require('../../utils/config')
 const storage = require('../../utils/storage')
+const i18n = require('../../utils/i18n')
 
 function normalizeAvatarUrl(url) {
   if (!url) return ''
@@ -16,6 +17,7 @@ function decorate(user) {
   if (!user) return null
   const joined = String(user.joinedAt || '').split('-')
   const joinedText = joined.length === 3 ? joined[0] + '年' + Number(joined[1]) + '月加入' : ''
+  const joinedTextKo = joined.length === 3 ? joined[0] + '년 ' + Number(joined[1]) + '월 가입' : ''
   const stats = user.stats || {}
   const displayName = user.nickname || user.name || '村民'
   const worker = user.gridWorker || {
@@ -29,7 +31,9 @@ function decorate(user) {
     displayName: displayName,
     avatarText: user.avatarText || displayName.charAt(0),
     joinedText: joinedText,
+    joinedTextKo: joinedTextKo,
     isAdmin: user.roleCode === 'admin',
+    roleNameKo: user.roleCode === 'admin' ? '관리자' : '주민',
     regionPath: user.regionPath || ['永吉县', '口前镇', '新源村'],
     gridWorker: Object.assign({}, worker, {
       initial: String(worker.name || '李').charAt(0)
@@ -37,6 +41,7 @@ function decorate(user) {
     statList: [{
       key: 'applies',
       label: '我的办件',
+      labelKo: '나의 민원',
       value: stats.applies || 0,
       icon: '件',
       tint: '#FBEBEB',
@@ -45,6 +50,7 @@ function decorate(user) {
     }, {
       key: 'appeals',
       label: '我的诉求',
+      labelKo: '나의 요구',
       value: stats.appeals || 0,
       icon: '诉',
       tint: '#FDF0E8',
@@ -53,6 +59,7 @@ function decorate(user) {
     }, {
       key: 'ratings',
       label: '待评价',
+      labelKo: '평가 대기',
       value: stats.ratings || 0,
       icon: '评',
       tint: '#EAF4EE',
@@ -76,13 +83,17 @@ Page({
     loginError: '',
     loginLoading: false,
     showAbout: false,
+    lang: i18n.getLang(),
     version: config.APP_VERSION,
     menuGroups: [{
       title: '政务服务',
+      titleKo: '정무 서비스',
       items: [{
         code: 'gov_guide',
         name: '办事指南',
+        nameKo: '민원 안내',
         desc: '医保、养老、高龄补贴、独生子女证',
+        descKo: '의료보험·연금·고령수당·외동자녀증',
         icon: '办',
         tint: '#FBEBEB',
         color: '#C4161C',
@@ -92,7 +103,9 @@ Page({
       }, {
         code: 'my_applies',
         name: '我的办件',
+        nameKo: '나의 민원',
         desc: '查看申报记录与办理进度',
+        descKo: '신청 기록과 처리 진행 상황',
         icon: '件',
         tint: '#FDF0E8',
         color: '#D06A2D',
@@ -102,7 +115,9 @@ Page({
       }, {
         code: 'my_appeals',
         name: '我的诉求',
+        nameKo: '나의 요구',
         desc: '提交诉求并跟踪办理结果',
+        descKo: '요구를 제출하고 처리 결과 확인',
         icon: '诉',
         tint: '#FAF3E3',
         color: '#BE8430',
@@ -112,10 +127,13 @@ Page({
       }]
     }, {
       title: '便民服务',
+      titleKo: '편의 서비스',
       items: [{
         code: 'directory',
         name: '服务黄页',
+        nameKo: '서비스 전화번호부',
         desc: '水、电、气、暖、维修电话',
+        descKo: '수도·전기·가스·난방·수리 전화',
         icon: '黄',
         tint: '#F8EAEA',
         color: '#B3202A',
@@ -125,7 +143,9 @@ Page({
       }, {
         code: 'family',
         name: '家庭成员',
+        nameKo: '가족 구성원',
         desc: '维护父母、配偶、子女信息',
+        descKo: '부모·배우자·자녀 정보 관리',
         icon: '家',
         tint: '#F1EEF8',
         color: '#7563A8',
@@ -135,20 +155,37 @@ Page({
       }, {
         code: 'customer',
         name: '在线客服',
+        nameKo: '온라인 상담',
         desc: '村党群服务中心 · 0432-64216888',
+        descKo: '촌당군민봉사센터 · 0432-64216888',
         icon: '客',
         tint: '#EAF4EE',
         color: '#2F8A59',
         action: 'call',
         badge: '电话',
         badgeType: 'tel'
+      }, {
+        code: 'language',
+        name: '语言设置',
+        nameKo: '언어 설정',
+        desc: '简体中文 / 조선어',
+        descKo: '중국어 / 조선어',
+        icon: '语',
+        tint: '#F1EEF8',
+        color: '#7563A8',
+        action: 'language',
+        badge: '中/조',
+        badgeType: 'tel'
       }]
     }, {
       title: '账号与设置',
+      titleKo: '계정 및 설정',
       items: [{
         code: 'profile_edit',
         name: '修改资料',
+        nameKo: '정보 수정',
         desc: '修改昵称与个人资料',
+        descKo: '닉네임과 개인 정보 수정',
         icon: '资',
         tint: '#F1F3F6',
         color: '#5D6B80',
@@ -158,7 +195,9 @@ Page({
       }, {
         code: 'clear_cache',
         name: '清除缓存',
+        nameKo: '캐시 삭제',
         desc: '清理本地点赞与 AI 对话记录',
+        descKo: '로컬 좋아요와 AI 대화 기록 정리',
         icon: '清',
         tint: '#F6F1ED',
         color: '#8A7A6D',
@@ -168,7 +207,9 @@ Page({
       }, {
         code: 'about',
         name: '关于平台',
+        nameKo: '플랫폼 소개',
         desc: '版本与功能说明',
+        descKo: '버전과 기능 안내',
         icon: '关',
         tint: '#F1F3F6',
         color: '#5D6B80',
@@ -192,6 +233,11 @@ Page({
   },
 
   onShow() {
+    const lang = i18n.getLang()
+    if (this.data.lang !== lang) this.setData({ lang: lang })
+    if (wx.setNavigationBarTitle) {
+      wx.setNavigationBarTitle({ title: lang === 'ko' ? '내 정보' : '个人中心' })
+    }
     if (this.loadedOnce && this.data.loggedIn) {
       this.loadUser()
     }
@@ -260,6 +306,10 @@ Page({
       this.onCallHotline()
       return
     }
+    if (action === 'language') {
+      this.onLanguage()
+      return
+    }
     if (action === 'edit') {
       this.onEditProfile()
       return
@@ -319,6 +369,19 @@ Page({
 
   onCallHotline() {
     wx.makePhoneCall({ phoneNumber: '043264216888' })
+  },
+
+  onLanguage() {
+    const self = this
+    wx.showActionSheet({
+      itemList: ['简体中文', '조선어'],
+      success: function (res) {
+        const next = res.tapIndex === 1 ? 'ko' : 'zh'
+        if (next === i18n.getLang()) return
+        i18n.setLang(next)
+        wx.reLaunch({ url: '/pages/profile/profile' })
+      }
+    })
   },
 
   onCallWorker() {
@@ -482,3 +545,4 @@ Page({
     }
   }
 })
+

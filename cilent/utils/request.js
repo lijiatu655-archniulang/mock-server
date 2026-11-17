@@ -1,6 +1,7 @@
 const config = require('./config')
 const storage = require('./storage')
 const format = require('./format')
+const i18n = require('./i18n')
 
 let mock = null
 function getMock() {
@@ -51,7 +52,8 @@ function request(options) {
     const header = Object.assign({
       'content-type': 'application/json',
       'X-Client': config.CLIENT,
-      'X-Client-Version': config.APP_VERSION
+      'X-Client-Version': config.APP_VERSION,
+      'X-Lang': i18n.getLang()
     }, opts.header || {})
     const token = storage.getToken()
     if (token) header.Authorization = 'Bearer ' + token
@@ -78,7 +80,7 @@ function request(options) {
           reject(normalizeError(body.message, body.code, traceId))
           return
         }
-        resolve(body.data)
+        resolve(i18n.localizeResponse(body.data))
       },
       fail: function (err) {
         const isTimeout = err && /timeout/i.test(err.errMsg || '')

@@ -1,11 +1,25 @@
 const contentApi = require('../../api/content')
 const homeApi = require('../../api/home')
 
+const COLUMN_KO = {
+  c1: '마을 소식',
+  c2: '삼무 공개',
+  c3: '향풍 기록',
+  c4: '정책 속보'
+}
+
+function columnsKo(list) {
+  return (list || []).map(function (item) {
+    return Object.assign({}, item, { nameKo: COLUMN_KO[item.id] || item.name })
+  })
+}
+
 Page({
   data: {
     columns: [],
     activeColumn: '',
     activeName: '全部',
+    activeNameKo: '전체',
     articles: [],
     page: 1,
     pageSize: 10,
@@ -37,13 +51,14 @@ Page({
   loadColumns() {
     const self = this
     homeApi.getColumns().then(function (res) {
-      const columns = res.list || []
+      const columns = columnsKo(res.list)
       const current = columns.filter(function (c) {
         return c.id === self.data.activeColumn
       })[0]
       self.setData({
         columns: columns,
-        activeName: current ? current.name : '全部'
+        activeName: current ? current.name : '全部',
+        activeNameKo: current ? current.nameKo : '전체'
       })
       if (current) {
         wx.setNavigationBarTitle({ title: current.name })

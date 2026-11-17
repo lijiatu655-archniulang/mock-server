@@ -1,3 +1,4 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page apply-detail-page" wx:if="{{apply}}">
   <view class="detail-head">
     <view class="status-row">
@@ -11,23 +12,23 @@
   <view class="alert-card warn" wx:if="{{apply.status === 'SUPPLEMENT' || (apply.missingMaterials && apply.missingMaterials.length)}}">
     <view class="alert-icon">!</view>
     <view class="alert-main">
-      <view class="alert-title">需要补正材料</view>
+      <view class="alert-title">{{i18n.t('需要补正材料', lang)}}</view>
       <view class="alert-desc">缺少：{{apply.missingText}}。请尽快联系村党群服务中心补齐。</view>
-      <view class="alert-action" bindtap="onCall">电话联系</view>
+      <view class="alert-action" bindtap="onCall">{{i18n.t('电话联系', lang)}}</view>
     </view>
   </view>
 
   <view class="alert-card done" wx:if="{{apply.status === 'COMPLETED'}}">
     <view class="alert-icon">✓</view>
     <view class="alert-main">
-      <view class="alert-title">已办结</view>
-      <view class="alert-desc">办理结果以村党群服务中心通知为准；如对服务满意，请给个评价。</view>
+      <view class="alert-title">{{i18n.t('已办结', lang)}}</view>
+      <view class="alert-desc">{{i18n.t('办理结果以村党群服务中心通知为准；如对服务满意，请给个评价。', lang)}}</view>
     </view>
   </view>
 
   <view class="section card">
     <view class="section-head">
-      <view class="section-title">办理进度</view>
+      <view class="section-title">{{i18n.t('办理进度', lang)}}</view>
       <view class="section-sub">共 {{apply.logs.length}} 条</view>
     </view>
     <view class="timeline">
@@ -47,36 +48,36 @@
 
   <view class="section card">
     <view class="section-head">
-      <view class="section-title">办理信息</view>
+      <view class="section-title">{{i18n.t('办理信息', lang)}}</view>
     </view>
     <view class="info-row">
-      <text class="info-label">办理事项</text>
+      <text class="info-label">{{i18n.t('办理事项', lang)}}</text>
       <text class="info-value">{{apply.itemName}}</text>
     </view>
     <view class="info-row">
-      <text class="info-label">承诺办结</text>
+      <text class="info-label">{{i18n.t('承诺办结', lang)}}</text>
       <text class="info-value">{{apply.promiseAt}}</text>
     </view>
     <view class="info-row">
-      <text class="info-label">收费标准</text>
+      <text class="info-label">{{i18n.t('收费标准', lang)}}</text>
       <text class="info-value amount">{{apply.amountText}}</text>
     </view>
     <view class="info-row">
-      <text class="info-label">办理地址</text>
+      <text class="info-label">{{i18n.t('办理地址', lang)}}</text>
       <text class="info-value">{{apply.itemAddress}}</text>
     </view>
     <view class="info-row info-last" bindtap="onCall">
-      <text class="info-label">咨询电话</text>
+      <text class="info-label">{{i18n.t('咨询电话', lang)}}</text>
       <view class="info-value phone-value">
         <text>{{apply.itemPhone}}</text>
-        <text class="phone-action">拨打</text>
+        <text class="phone-action">{{i18n.t('拨打', lang)}}</text>
       </view>
     </view>
   </view>
 
   <view class="section card" wx:if="{{apply.materials.length}}">
     <view class="section-head">
-      <view class="section-title">申请材料</view>
+      <view class="section-title">{{i18n.t('申请材料', lang)}}</view>
     </view>
     <view class="material-row" wx:for="{{apply.materials}}" wx:key="name">
       <view class="material-icon">
@@ -84,15 +85,15 @@
       </view>
       <view class="material-main">
         <view class="material-name">{{item.name}}</view>
-        <view class="material-note">{{item.required ? '必需材料' : '可选材料'}}</view>
+        <view class="material-note">{{item.required ? i18n.t('必需材料', lang) : i18n.t('可选材料', lang)}}</view>
       </view>
-      <view class="material-status {{item.uploaded ? 'ok' : 'pending'}}">{{item.uploaded ? '已提交' : '待补'}}</view>
+      <view class="material-status {{item.uploaded ? 'ok' : 'pending'}}">{{item.uploaded ? i18n.t('已提交', lang) : i18n.t('待补', lang)}}</view>
     </view>
   </view>
 
   <view class="section card" wx:if="{{formRows.length}}">
     <view class="section-head">
-      <view class="section-title">申报信息</view>
+      <view class="section-title">{{i18n.t('申报信息', lang)}}</view>
     </view>
     <view class="info-row" wx:for="{{formRows}}" wx:key="label">
       <text class="info-label">{{item.label}}</text>
@@ -108,21 +109,21 @@
   </view>
 
   <view class="detail-footer">
-    <text>新源村党群服务中心 · 0432-64216888</text>
-    <text>办件信息以最终核定为准</text>
+    <text>{{i18n.t('新源村党群服务中心 · 0432-64216888', lang)}}</text>
+    <text>{{i18n.t('办件信息以最终核定为准', lang)}}</text>
   </view>
 
   <view class="bottom-bar">
-    <view class="bar-ghost" bindtap="onGuide">办事指南</view>
-    <view class="bar-primary" wx:if="{{apply.canCancel}}" bindtap="onCancel" hover-class="press">撤销申请</view>
-    <view class="bar-primary" wx:elif="{{apply.canRate}}" bindtap="openRating" hover-class="press">评价办件</view>
-    <view class="bar-primary muted" wx:else bindtap="onAgain" hover-class="press">再办一件</view>
+    <view class="bar-ghost" bindtap="onGuide">{{i18n.t('办事指南', lang)}}</view>
+    <view class="bar-primary" wx:if="{{apply.canCancel}}" bindtap="onCancel" hover-class="press">{{i18n.t('撤销申请', lang)}}</view>
+    <view class="bar-primary" wx:elif="{{apply.canRate}}" bindtap="openRating" hover-class="press">{{i18n.t('评价办件', lang)}}</view>
+    <view class="bar-primary muted" wx:else bindtap="onAgain" hover-class="press">{{i18n.t('再办一件', lang)}}</view>
   </view>
 
   <view class="sheet-mask" wx:if="{{ratingOpen}}" bindtap="closeRating">
     <view class="rating-sheet" catchtap="noop">
       <view class="sheet-bar"></view>
-      <view class="sheet-title">评价办件</view>
+      <view class="sheet-title">{{i18n.t('评价办件', lang)}}</view>
       <view class="sheet-sub">{{apply.itemShortName}} · {{apply.applyNo}}</view>
       <view class="star-row">
         <text
@@ -137,13 +138,13 @@
       <textarea
         class="rating-input"
         value="{{ratingComment}}"
-        placeholder="说说哪里满意，或还有什么建议（选填）"
+        placeholder="{{i18n.t('说说哪里满意，或还有什么建议（选填）', lang)}}"
         placeholder-class="rating-placeholder"
         maxlength="200"
         bindinput="onCommentInput"
       ></textarea>
       <view class="sheet-submit {{submitting ? 'loading' : ''}}" bindtap="submitRating">
-        {{submitting ? '提交中…' : '提交评价'}}
+        {{submitting ? i18n.t('提交中…', lang) : i18n.t('提交评价', lang)}}
       </view>
     </view>
   </view>
@@ -166,8 +167,8 @@
 <view class="page" wx:else>
   <view class="state-box card" style="margin:40rpx 24rpx;">
     <view class="state-emoji">!</view>
-    <view class="state-title">办件没有加载出来</view>
+    <view class="state-title">{{i18n.t('办件没有加载出来', lang)}}</view>
     <view class="state-desc">{{error}}</view>
-    <view class="state-action" bindtap="retry">重新加载</view>
+    <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
   </view>
 </view>

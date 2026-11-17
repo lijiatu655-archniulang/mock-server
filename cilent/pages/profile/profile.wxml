@@ -1,3 +1,4 @@
+﻿<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page profile-page" wx:if="{{loading && !user}}">
   <view class="profile-hero">
     <view class="hero-glow"></view>
@@ -22,63 +23,63 @@
     <image class="login-hero-photo" src="/assets/images/home/hero-village.jpg" mode="aspectFill"></image>
     <view class="login-glow"></view>
     <view class="login-seal">★</view>
-    <view class="login-name">新源村情通</view>
-    <view class="login-slogan">听民意 · 解民忧 · 暖民心</view>
+    <view class="login-name">{{i18n.t('新源村情通', lang)}}</view>
+    <view class="login-slogan">{{i18n.t('听民意 · 解民忧 · 暖民心', lang)}}</view>
     <view class="login-features">
-      <text>实名认证</text>
-      <text>村务公开</text>
-      <text>在线办事</text>
+      <text>{{i18n.t('实名认证', lang)}}</text>
+      <text>{{i18n.t('村务公开', lang)}}</text>
+      <text>{{i18n.t('在线办事', lang)}}</text>
     </view>
   </view>
   <view class="login-card card">
-    <view class="login-title">欢迎回来</view>
+    <view class="login-title">{{i18n.t('欢迎回来', lang)}}</view>
     <view class="login-tabs">
       <view
         class="login-tab {{loginMode === 'wechat' ? 'active' : ''}}"
         data-mode="wechat"
         bindtap="onLoginMode"
-      >微信登录</view>
+      >{{i18n.t('微信登录', lang)}}</view>
       <view
         class="login-tab {{loginMode === 'password' ? 'active' : ''}}"
         data-mode="password"
         bindtap="onLoginMode"
-      >账号密码</view>
+      >{{i18n.t('账号密码', lang)}}</view>
     </view>
 
     <block wx:if="{{loginMode === 'wechat'}}">
-      <view class="login-desc">使用微信身份快速登录，登录后可使用我的办件、诉求建议等服务。</view>
-      <view class="login-btn" bindtap="onLogin" hover-class="press">微信一键登录</view>
+      <view class="login-desc">{{i18n.t('使用微信身份快速登录，登录后可使用我的办件、诉求建议等服务。', lang)}}</view>
+      <view class="login-btn" bindtap="onLogin" hover-class="press">{{i18n.t('微信一键登录', lang)}}</view>
     </block>
 
     <block wx:else>
-      <view class="login-desc">使用手机号和密码登录，适合不方便使用微信授权的场景。</view>
+      <view class="login-desc">{{i18n.t('使用手机号和密码登录，适合不方便使用微信授权的场景。', lang)}}</view>
       <view class="role-switch">
         <view
           class="role-item {{loginRole === 'villager' ? 'active' : ''}}"
           data-role="villager"
           bindtap="onLoginRole"
-        >居民</view>
+        >{{i18n.t('居民', lang)}}</view>
         <view
           class="role-item {{loginRole === 'admin' ? 'active' : ''}}"
           data-role="admin"
           bindtap="onLoginRole"
-        >管理员</view>
+        >{{i18n.t('管理员', lang)}}</view>
       </view>
       <view class="login-form">
         <view class="login-field">
-          <text class="login-field-label">手机号</text>
+          <text class="login-field-label">{{i18n.t('手机号', lang)}}</text>
           <input
             class="login-input"
             type="text"
             maxlength="20"
             value="{{account}}"
             bindinput="onAccountInput"
-            placeholder="请输入手机号或账号"
+            placeholder="{{lang === 'ko' ? '휴대폰 번호 또는 아이디' : '请输入手机号或账号'}}"
             placeholder-class="login-placeholder"
           />
         </view>
         <view class="login-field">
-          <text class="login-field-label">密码</text>
+          <text class="login-field-label">{{i18n.t('密码', lang)}}</text>
           <input
             class="login-input"
             password="{{!showPassword}}"
@@ -87,26 +88,26 @@
             bindinput="onPasswordInput"
             bindconfirm="onAccountLogin"
             confirm-type="done"
-            placeholder="请输入密码"
+            placeholder="{{lang === 'ko' ? '비밀번호를 입력하세요' : '请输入密码'}}"
             placeholder-class="login-placeholder"
           />
-          <view class="login-eye" bindtap="onTogglePassword">{{showPassword ? '隐藏' : '显示'}}</view>
+          <view class="login-eye" bindtap="onTogglePassword">{{showPassword ? (lang === 'ko' ? '숨기기' : '隐藏') : (lang === 'ko' ? '보기' : '显示')}}</view>
         </view>
         <view class="login-error" wx:if="{{loginError}}">{{loginError}}</view>
         <view class="login-btn {{loginLoading ? 'loading' : ''}}" bindtap="onAccountLogin" hover-class="press">
-          {{loginLoading ? '登录中…' : (loginRole === 'admin' ? '进入管理员工作台' : '登录')}}
+          {{loginLoading ? (lang === 'ko' ? '로그인 중…' : '登录中…') : (loginRole === 'admin' ? (lang === 'ko' ? '관리자 워크스테이션 입장' : '进入管理员工作台') : (lang === 'ko' ? '로그인' : '登录'))}}
         </view>
-        <view class="login-demo" wx:if="{{loginRole === 'admin'}}">管理员演示：13843219072　密码：123456</view>
-        <view class="login-demo" wx:else>居民演示：13843216621　密码：123456</view>
+        <view class="login-demo" wx:if="{{loginRole === 'admin'}}">{{i18n.t('管理员演示：13843219072　密码：123456', lang)}}</view>
+        <view class="login-demo" wx:else>{{i18n.t('居民演示：13843216621　密码：123456', lang)}}</view>
       </view>
     </block>
 
-    <view class="login-note">登录即代表同意《用户协议》与《隐私政策》</view>
-    <view class="login-help" bindtap="onCallHotline">登录遇到问题？拨打 0432-64216888</view>
+    <view class="login-note">{{i18n.t('登录即代表同意《用户协议》与《隐私政策》', lang)}}</view>
+    <view class="login-help" bindtap="onCallHotline">{{i18n.t('登录遇到问题？拨打 0432-64216888', lang)}}</view>
   </view>
   <view class="login-footer">
-    <view>新源村党群服务中心</view>
-    <view>本平台为村级政务服务演示版本</view>
+    <view>{{i18n.t('新源村党群服务中心', lang)}}</view>
+    <view>{{i18n.t('本平台为村级政务服务演示版本', lang)}}</view>
   </view>
 </view>
 
@@ -133,18 +134,18 @@
       <view class="identity">
         <view class="name-row">
           <text class="name">{{user.displayName}}</text>
-          <view class="role-badge">{{user.roleName}}</view>
+          <view class="role-badge">{{lang === 'ko' ? user.roleNameKo : user.roleName}}</view>
         </view>
         <view class="phone-line">{{user.phoneDisplay}} · {{user.houseNo}}</view>
         <view class="verify-line">
           <view class="verify-dot"></view>
-          <text>已实名认证 · 由村委核验</text>
+          <text>{{i18n.t('已实名认证 · 由村委核验', lang)}}</text>
         </view>
       </view>
-      <view class="edit-btn" bindtap="onEditProfile" hover-class="press">修改</view>
+      <view class="edit-btn" bindtap="onEditProfile" hover-class="press">{{i18n.t('修改', lang)}}</view>
     </view>
     <view class="hero-foot">
-      <text>{{user.joinedText}}</text>
+      <text>{{lang === 'ko' ? user.joinedTextKo : user.joinedText}}</text>
       <text class="hero-sep">·</text>
       <text>新源村情通 V{{version}}</text>
     </view>
@@ -163,15 +164,15 @@
         <text class="stat-value">{{item.value}}</text>
         <view class="stat-icon" style="background:{{item.tint}};color:{{item.color}};">{{item.icon}}</view>
       </view>
-      <view class="stat-label">{{item.label}}</view>
+      <view class="stat-label">{{lang === 'ko' && item.labelKo ? item.labelKo : item.label}}</view>
       <view class="stat-tag" wx:if="{{item.badge}}">{{item.badge}}</view>
     </view>
   </view>
 
   <view class="admin-entry" wx:if="{{user.isAdmin}}" bindtap="onAdminWorkbench" hover-class="press">
     <view class="admin-entry-main">
-      <view class="admin-entry-title">管理员工作台</view>
-      <view class="admin-entry-desc">通知发布 · 诉求受理 · 户籍统计</view>
+      <view class="admin-entry-title">{{i18n.t('管理员工作台', lang)}}</view>
+      <view class="admin-entry-desc">{{i18n.t('通知发布 · 诉求受理 · 户籍统计', lang)}}</view>
     </view>
     <view class="admin-entry-arrow">›</view>
   </view>
@@ -180,11 +181,11 @@
     <view class="grid-head">
       <view class="grid-title">
         <image class="pin-icon" src="/assets/icons/icon-pin.png" mode="aspectFit"></image>
-        <text>我的网格</text>
+        <text>{{i18n.t('我的网格', lang)}}</text>
       </view>
       <view class="grid-verified">
         <view class="dot"></view>
-        <text>已认证</text>
+        <text>{{i18n.t('已认证', lang)}}</text>
       </view>
     </view>
 
@@ -198,20 +199,20 @@
     <view class="worker-row" wx:if="{{user.gridWorker}}">
       <view class="worker-avatar">{{user.gridWorker.initial}}</view>
       <view class="worker-main">
-        <view class="worker-name">网格员 {{user.gridWorker.name}}</view>
+        <view class="worker-name">{{lang === 'ko' ? '그리드 담당자' : '网格员'}} {{user.gridWorker.name}}</view>
         <view class="worker-desc">{{user.gridWorker.phoneDisplay}} · {{user.gridWorker.duty}}</view>
       </view>
       <view class="worker-call" bindtap="onCallWorker" hover-class="press">
         <image class="phone-icon" src="/assets/icons/icon-phone.png" mode="aspectFit"></image>
-        <text>拨打</text>
+        <text>{{i18n.t('拨打', lang)}}</text>
       </view>
     </view>
 
-    <view class="grid-foot">有困难找网格员，行动不便可预约上门代办</view>
+    <view class="grid-foot">{{i18n.t('有困难找网格员，行动不便可预约上门代办', lang)}}</view>
   </view>
 
   <view class="menu-group card" wx:for="{{menuGroups}}" wx:key="title" wx:for-item="group">
-    <view class="group-title">{{group.title}}</view>
+    <view class="group-title">{{lang === 'ko' && group.titleKo ? group.titleKo : group.title}}</view>
     <view
       class="menu-row"
       wx:for="{{group.items}}"
@@ -227,20 +228,20 @@
       <view class="menu-icon" style="background:{{row.tint}};color:{{row.color}};">{{row.icon}}</view>
       <view class="menu-main">
         <view class="menu-name">
-          <text>{{row.name}}</text>
+          <text>{{lang === 'ko' && row.nameKo ? row.nameKo : row.name}}</text>
           <text class="menu-badge {{row.badgeType}}" wx:if="{{row.badge}}">{{row.badge}}</text>
         </view>
-        <view class="menu-desc">{{row.desc}}</view>
+        <view class="menu-desc">{{lang === 'ko' && row.descKo ? row.descKo : row.desc}}</view>
       </view>
       <view class="arrow"></view>
     </view>
   </view>
 
-  <view class="logout-btn" bindtap="onLogout" wx:if="{{loggedIn}}">退出登录</view>
+  <view class="logout-btn" bindtap="onLogout" wx:if="{{loggedIn}}">{{i18n.t('退出登录', lang)}}</view>
 
   <view class="profile-footer">
     <view class="footer-seal">★</view>
-    <view class="footer-name">新源村情通</view>
+    <view class="footer-name">{{i18n.t('新源村情通', lang)}}</view>
     <view class="footer-version">V{{version}} · 村级政务服务演示版本</view>
   </view>
 
@@ -248,10 +249,13 @@
     <view class="sheet" catchtap="noop">
       <view class="sheet-bar"></view>
       <view class="sheet-seal">★</view>
-      <view class="sheet-title">新源村情通</view>
+      <view class="sheet-title">{{i18n.t('新源村情通', lang)}}</view>
       <view class="sheet-version">V{{version}} · 村级事务服务平台</view>
-      <view class="sheet-desc">当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘、线上奶茶会和家庭成员；管理员账号可进入工作台处理通知、诉求和户籍统计。</view>
-      <view class="sheet-btn" bindtap="closeAbout" hover-class="press">知道了</view>
+      <view class="sheet-desc">{{i18n.t('当前已开放村情资讯、AI 网格员、政务在线申报、诉求建议、服务黄页、招聘、线上奶茶会和家庭成员；管理员账号可进入工作台处理通知、诉求和户籍统计。', lang)}}</view>
+      <view class="sheet-btn" bindtap="closeAbout" hover-class="press">{{i18n.t('知道了', lang)}}</view>
     </view>
   </view>
 </view>
+
+
+

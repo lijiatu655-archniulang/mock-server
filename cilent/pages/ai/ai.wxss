@@ -121,6 +121,60 @@
   line-height: 54rpx;
 }
 
+/* 右上角声音开关 */
+.tts-btn {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  margin-left: 8rpx;
+  border: 1rpx solid #EFE2DC;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(94, 42, 37, 0.04);
+  line-height: 1;
+}
+
+.tts-btn.on {
+  border-color: rgba(196, 22, 28, 0.3);
+  background: #FBEBEB;
+}
+
+.tts-btn.speaking {
+  border-color: #C4161C;
+  background: #C4161C;
+  box-shadow: 0 0 0 6rpx rgba(196, 22, 28, 0.12);
+}
+
+.tts-icon {
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+.tts-btn.speaking .tts-icon {
+  animation: ttsPulse 1s ease-in-out infinite;
+}
+
+@keyframes ttsPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.82;
+  }
+}
+
+.tool-chip.reading {
+  border-color: #C4161C;
+  background: #C4161C;
+  color: #FFFFFF;
+}
+
 .head-promise {
   display: flex;
   align-items: center;

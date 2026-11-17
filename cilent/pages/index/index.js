@@ -24,6 +24,40 @@ const COLUMN_IMAGES = {
   c4: '/assets/images/home/news-medical.jpg'
 }
 
+const COLUMN_KO = {
+  c1: '마을 소식',
+  c2: '삼무 공개',
+  c3: '향풍 기록',
+  c4: '정책 속보'
+}
+
+const MODULE_KO = {
+  consult: { name: '상담·대행', desc: '무엇이든 말씀하세요' },
+  appeal: { name: '요구·건의', desc: '건마다 답변' },
+  tea_meeting: { name: '온라인 간담회', desc: '마을 일 논의' },
+  directory: { name: '서비스 전화번호부', desc: '수도·전기·가스 전화' },
+  gov: { name: '정무 관리', desc: '4개 분야 민원' },
+  jobs: { name: '취업 채용', desc: '집 근처 일자리' }
+}
+
+function decorateColumns(list) {
+  return (list || []).map(function (item) {
+    return Object.assign({}, item, {
+      nameKo: COLUMN_KO[item.id] || item.name
+    })
+  })
+}
+
+function decorateModules(list) {
+  return (list || []).map(function (item) {
+    const ko = MODULE_KO[item.code] || {}
+    return Object.assign({}, item, {
+      nameKo: ko.name || item.name,
+      descKo: ko.desc || item.desc
+    })
+  })
+}
+
 function decorateArticles(list) {
   return (list || []).map(function (item) {
     return Object.assign({}, item, {
@@ -89,8 +123,11 @@ Page({
       hotline: '0432-64216888'
     },
     slogan: '听民意 · 解民忧 · 暖民心',
+    sloganKo: '민의를 듣고 · 민의 근심을 풀고 · 민심을 따뜻하게',
     newsTitle: '最新动态',
+    newsTitleKo: '최신 소식',
     newsSub: '村里的事，及时看',
+    newsSubKo: '마을 소식, 바로 확인',
     listLoading: false
   },
 
@@ -123,13 +160,15 @@ Page({
         region: res.region || DEFAULT_REGION,
         notice: res.notice,
         banner: res.banner,
-        columns: res.columns || [],
+        columns: decorateColumns(res.columns),
         articles: decorateArticles(res.articles),
-        modules: unifyModules(res.modules),
+        modules: decorateModules(unifyModules(res.modules)),
         regions: res.regions || [],
         footer: res.footer || self.data.footer,
         newsTitle: '最新动态',
-        newsSub: '村里的事，及时看'
+        newsTitleKo: '최신 소식',
+        newsSub: '村里的事，及时看',
+        newsSubKo: '마을 소식, 바로 확인'
       })
       app.globalData.region = res.region || null
       app.globalData.appConfig = app.globalData.appConfig || {}
@@ -157,7 +196,9 @@ Page({
     this.setData({
       activeColumn: next,
       newsTitle: column ? column.name : '最新动态',
+      newsTitleKo: column ? (column.nameKo || column.name) : '최신 소식',
       newsSub: column ? column.description : '村里的事，及时看',
+      newsSubKo: column ? (column.descriptionKo || column.description) : '마을 소식, 바로 확인',
       listLoading: true
     })
     this.loadColumnArticles(next)
@@ -216,7 +257,9 @@ Page({
       this.setData({
         activeColumn: '',
         newsTitle: '最新动态',
+        newsTitleKo: '최신 소식',
         newsSub: '村里的事，及时看',
+        newsSubKo: '마을 소식, 바로 확인',
         listLoading: true
       })
       this.loadColumnArticles('')

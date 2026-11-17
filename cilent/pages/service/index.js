@@ -5,19 +5,25 @@ const TABS = [{
   name: '服务黄页',
   title: '服务黄页',
   icon: '电',
-  sub: '水电气暖'
+  sub: '水电气暖',
+  nameKo: '서비스 전화번호부',
+  subKo: '수도·전기·가스·난방'
 }, {
   key: 'jobs',
   name: '就业招聘',
   title: '就业招聘',
   icon: '岗',
-  sub: '家门口的工作'
+  sub: '家门口的工作',
+  nameKo: '취업 채용',
+  subKo: '집 근처 일자리'
 }, {
   key: 'tea',
   name: '线上奶茶会',
   title: '线上奶茶会',
   icon: '茶',
-  sub: '议村里的事'
+  sub: '议村里的事',
+  nameKo: '온라인 간담회',
+  subKo: '마을 의제 논의'
 }]
 
 const TEA_LOCAL = {

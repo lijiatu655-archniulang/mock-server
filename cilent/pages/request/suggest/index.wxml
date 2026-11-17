@@ -1,0 +1,2 @@
+<wxs module="i18n" src="../../../utils/i18n.wxs"></wxs>
+<include src="../form.wxml"/>

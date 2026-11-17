@@ -1,18 +1,19 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="wb-page">
   <view class="wb-head">
     <view class="wb-head-top">
       <view class="wb-back" bindtap="onBack" hover-class="press">‹</view>
       <view class="wb-head-main">
-        <view class="wb-title">管理员工作台</view>
+        <view class="wb-title">{{i18n.t('管理员工作台', lang)}}</view>
         <view class="wb-sub">{{user.name}} · 新源村 · {{user.gridName}}</view>
       </view>
-      <view class="wb-refresh" bindtap="onRefresh" hover-class="press">刷新</view>
+      <view class="wb-refresh" bindtap="onRefresh" hover-class="press">{{i18n.t('刷新', lang)}}</view>
     </view>
     <view class="wb-tabs">
-      <view class="wb-tab {{tab === 'overview' ? 'active' : ''}}" data-tab="overview" bindtap="onTab">概览</view>
-      <view class="wb-tab {{tab === 'notices' ? 'active' : ''}}" data-tab="notices" bindtap="onTab">通知</view>
-      <view class="wb-tab {{tab === 'requests' ? 'active' : ''}}" data-tab="requests" bindtap="onTab">诉求</view>
-      <view class="wb-tab {{tab === 'stats' ? 'active' : ''}}" data-tab="stats" bindtap="onTab">户籍</view>
+      <view class="wb-tab {{tab === 'overview' ? 'active' : ''}}" data-tab="overview" bindtap="onTab">{{i18n.t('概览', lang)}}</view>
+      <view class="wb-tab {{tab === 'notices' ? 'active' : ''}}" data-tab="notices" bindtap="onTab">{{i18n.t('通知', lang)}}</view>
+      <view class="wb-tab {{tab === 'requests' ? 'active' : ''}}" data-tab="requests" bindtap="onTab">{{i18n.t('诉求', lang)}}</view>
+      <view class="wb-tab {{tab === 'stats' ? 'active' : ''}}" data-tab="stats" bindtap="onTab">{{i18n.t('户籍', lang)}}</view>
     </view>
   </view>
 
@@ -21,57 +22,57 @@
   <block wx:if="{{tab === 'overview'}}">
     <view class="wb-section">
       <view class="wb-greeting">
-        <view class="wb-greeting-title">今日村务</view>
-        <view class="wb-greeting-desc">及时处理群众诉求，通知发布后居民首页即时可见。</view>
+        <view class="wb-greeting-title">{{i18n.t('今日村务', lang)}}</view>
+        <view class="wb-greeting-desc">{{i18n.t('及时处理群众诉求，通知发布后居民首页即时可见。', lang)}}</view>
       </view>
       <view class="summary-grid">
         <view class="summary-card urgent">
           <view class="summary-value">{{summary.pendingRequests}}</view>
-          <view class="summary-label">待受理诉求</view>
+          <view class="summary-label">{{i18n.t('待受理诉求', lang)}}</view>
         </view>
         <view class="summary-card">
           <view class="summary-value">{{summary.todayRequests}}</view>
-          <view class="summary-label">今日新增</view>
+          <view class="summary-label">{{i18n.t('今日新增', lang)}}</view>
         </view>
         <view class="summary-card">
           <view class="summary-value">{{summary.households}}</view>
-          <view class="summary-label">户籍户数</view>
+          <view class="summary-label">{{i18n.t('户籍户数', lang)}}</view>
         </view>
         <view class="summary-card">
           <view class="summary-value">{{summary.population}}</view>
-          <view class="summary-label">户籍人口</view>
+          <view class="summary-label">{{i18n.t('户籍人口', lang)}}</view>
         </view>
         <view class="summary-card">
           <view class="summary-value">{{summary.notices}}</view>
-          <view class="summary-label">在展通知</view>
+          <view class="summary-label">{{i18n.t('在展通知', lang)}}</view>
         </view>
       </view>
     </view>
 
     <view class="wb-section">
-      <view class="section-title">快捷处理</view>
+      <view class="section-title">{{i18n.t('快捷处理', lang)}}</view>
       <view class="quick-list">
         <view class="quick-item" bindtap="goRequests" hover-class="press">
-          <view class="quick-icon red">诉</view>
+          <view class="quick-icon red">{{i18n.t('诉', lang)}}</view>
           <view class="quick-main">
-            <view class="quick-name">诉求受理</view>
-            <view class="quick-desc">查看待受理、回复、办结</view>
+            <view class="quick-name">{{i18n.t('诉求受理', lang)}}</view>
+            <view class="quick-desc">{{i18n.t('查看待受理、回复、办结', lang)}}</view>
           </view>
           <view class="quick-arrow">›</view>
         </view>
         <view class="quick-item" bindtap="goNotices" hover-class="press">
-          <view class="quick-icon gold">通</view>
+          <view class="quick-icon gold">{{i18n.t('通', lang)}}</view>
           <view class="quick-main">
-            <view class="quick-name">发布通知</view>
-            <view class="quick-desc">首页通知条增删改查</view>
+            <view class="quick-name">{{i18n.t('发布通知', lang)}}</view>
+            <view class="quick-desc">{{i18n.t('首页通知条增删改查', lang)}}</view>
           </view>
           <view class="quick-arrow">›</view>
         </view>
         <view class="quick-item" bindtap="goStats" hover-class="press">
-          <view class="quick-icon green">户</view>
+          <view class="quick-icon green">{{i18n.t('户', lang)}}</view>
           <view class="quick-main">
-            <view class="quick-name">户籍统计</view>
-            <view class="quick-desc">网格、性别、年龄段分布</view>
+            <view class="quick-name">{{i18n.t('户籍统计', lang)}}</view>
+            <view class="quick-desc">{{i18n.t('网格、性别、年龄段分布', lang)}}</view>
           </view>
           <view class="quick-arrow">›</view>
         </view>
@@ -83,21 +84,21 @@
     <view class="wb-section">
       <view class="section-head">
         <view>
-          <view class="section-title">首页通知条</view>
-          <view class="section-sub">发布后居民首页立即展示</view>
+          <view class="section-title">{{i18n.t('首页通知条', lang)}}</view>
+          <view class="section-sub">{{i18n.t('发布后居民首页立即展示', lang)}}</view>
         </view>
-        <view class="section-action" bindtap="openNotice" hover-class="press">＋ 发布</view>
+        <view class="section-action" bindtap="openNotice" hover-class="press">{{i18n.t('＋ 发布', lang)}}</view>
       </view>
-      <view class="empty" wx:if="{{!notices.length}}">暂无在展通知</view>
+      <view class="empty" wx:if="{{!notices.length}}">{{i18n.t('暂无在展通知', lang)}}</view>
       <view class="notice-card" wx:for="{{notices}}" wx:key="id">
         <view class="notice-top">
-          <view class="notice-type {{item.type === 'urgent' ? 'urgent' : ''}}">{{item.type === 'urgent' ? '紧急' : '普通'}}</view>
+          <view class="notice-type {{item.type === 'urgent' ? 'urgent' : ''}}">{{item.type === 'urgent' ? i18n.t('紧急', lang) : i18n.t('普通', lang)}}</view>
           <view class="notice-time">{{item.createdAt}}</view>
         </view>
         <view class="notice-text">{{item.text}}</view>
         <view class="notice-actions">
-          <view class="notice-btn" data-id="{{item.id}}" bindtap="openNotice">编辑</view>
-          <view class="notice-btn danger" data-id="{{item.id}}" bindtap="deleteNotice">下架</view>
+          <view class="notice-btn" data-id="{{item.id}}" bindtap="openNotice">{{i18n.t('编辑', lang)}}</view>
+          <view class="notice-btn danger" data-id="{{item.id}}" bindtap="deleteNotice">{{i18n.t('下架', lang)}}</view>
         </view>
       </view>
     </view>
@@ -107,7 +108,7 @@
     <view class="wb-section">
       <view class="section-head">
         <view>
-          <view class="section-title">全村诉求</view>
+          <view class="section-title">{{i18n.t('全村诉求', lang)}}</view>
           <view class="section-sub">共 {{requestTotal}} 条 · 点开处理</view>
         </view>
       </view>
@@ -121,17 +122,17 @@
         >{{item.label}}</view>
       </scroll-view>
 
-      <view class="empty" wx:if="{{!requestLoading && !requests.length}}">这个分类暂无诉求</view>
+      <view class="empty" wx:if="{{!requestLoading && !requests.length}}">{{i18n.t('这个分类暂无诉求', lang)}}</view>
       <view class="request-card" wx:for="{{requests}}" wx:key="id" data-id="{{item.id}}" bindtap="openRequest" hover-class="press">
         <view class="request-top">
-          <view class="request-type">{{item.typeLabel || '诉求'}}</view>
+          <view class="request-type">{{item.typeLabel || i18n.t('诉求', lang)}}</view>
           <view class="request-status {{item.status}}">{{item.statusLabel || item.status}}</view>
         </view>
         <view class="request-title line-2">{{item.title}}</view>
-        <view class="request-meta">{{item.userName || '村民'}} · {{item.createdAt}}</view>
+        <view class="request-meta">{{item.userName || i18n.t('村民', lang)}} · {{item.createdAt}}</view>
         <view class="request-foot">
           <text class="request-no">{{item.requestNo}}</text>
-          <text class="request-arrow">处理 ›</text>
+          <text class="request-arrow">{{i18n.t('处理 ›', lang)}}</text>
         </view>
       </view>
     </view>
@@ -139,22 +140,22 @@
 
   <block wx:else>
     <view class="wb-section" wx:if="{{stats}}">
-      <view class="section-title">户籍统计</view>
-      <view class="section-sub">数据按当前村户籍库统计</view>
+      <view class="section-title">{{i18n.t('户籍统计', lang)}}</view>
+      <view class="section-sub">{{i18n.t('数据按当前村户籍库统计', lang)}}</view>
       <view class="stats-hero">
         <view class="stats-big">
           <view class="stats-big-value">{{stats.households}}</view>
-          <view class="stats-big-label">户数</view>
+          <view class="stats-big-label">{{i18n.t('户数', lang)}}</view>
         </view>
         <view class="stats-divider"></view>
         <view class="stats-big">
           <view class="stats-big-value">{{stats.population}}</view>
-          <view class="stats-big-label">人口</view>
+          <view class="stats-big-label">{{i18n.t('人口', lang)}}</view>
         </view>
       </view>
 
       <view class="stats-block">
-        <view class="stats-block-title">按网格</view>
+        <view class="stats-block-title">{{i18n.t('按网格', lang)}}</view>
         <view class="grid-stat" wx:for="{{stats.grids}}" wx:key="gridName">
           <view class="grid-stat-name">{{item.gridName}}</view>
           <view class="grid-stat-bar">
@@ -165,7 +166,7 @@
       </view>
 
       <view class="stats-block">
-        <view class="stats-block-title">性别</view>
+        <view class="stats-block-title">{{i18n.t('性别', lang)}}</view>
         <view class="gender-row">
           <view class="gender-item"><text class="gender-dot male"></text>男 {{stats.gender.male}} 人</view>
           <view class="gender-item"><text class="gender-dot female"></text>女 {{stats.gender.female}} 人</view>
@@ -173,7 +174,7 @@
       </view>
 
       <view class="stats-block">
-        <view class="stats-block-title">年龄段</view>
+        <view class="stats-block-title">{{i18n.t('年龄段', lang)}}</view>
         <view class="age-row">
           <view class="age-item" wx:for="{{stats.ageBuckets}}" wx:key="label">
             <view class="age-count">{{item.count}}</view>
@@ -183,31 +184,31 @@
       </view>
 
       <view class="stats-block">
-        <view class="stats-block-title">户类别</view>
+        <view class="stats-block-title">{{i18n.t('户类别', lang)}}</view>
         <view class="category-row">
           <view class="category-item" wx:for="{{stats.categories}}" wx:key="label">{{item.label}} {{item.count}} 户</view>
         </view>
       </view>
     </view>
-    <view class="empty" wx:else>暂无户籍统计</view>
+    <view class="empty" wx:else>{{i18n.t('暂无户籍统计', lang)}}</view>
   </block>
 
   <view class="notice-mask" wx:if="{{noticeOpen}}" bindtap="closeNotice">
     <view class="notice-sheet" catchtap="noop">
-      <view class="notice-sheet-title">{{noticeForm.id ? '编辑通知' : '发布通知'}}</view>
+      <view class="notice-sheet-title">{{noticeForm.id ? i18n.t('编辑通知', lang) : i18n.t('发布通知', lang)}}</view>
       <textarea
         class="notice-textarea"
         value="{{noticeForm.text}}"
         maxlength="120"
-        placeholder="例如：2026 年度医保集中缴费到 12 月 31 日，请尽快办理"
+        placeholder="{{i18n.t('例如：2026 年度医保集中缴费到 12 月 31 日，请尽快办理', lang)}}"
         placeholder-class="notice-placeholder"
         bindinput="onNoticeText"
       ></textarea>
       <view class="notice-count">{{noticeForm.text.length}}/120</view>
       <view class="image-block">
         <view class="image-label">
-          <text>配图</text>
-          <text class="image-reserved">预留位 · 后端暂未接收</text>
+          <text>{{i18n.t('配图', lang)}}</text>
+          <text class="image-reserved">{{i18n.t('预留位 · 后端暂未接收', lang)}}</text>
         </view>
         <view class="image-grid">
           <view class="image-item" wx:for="{{noticeImages}}" wx:key="*this">
@@ -216,17 +217,17 @@
           </view>
           <view class="image-add" wx:if="{{noticeImages.length < 3}}" bindtap="chooseNoticeImages" hover-class="press">
             <text class="image-add-plus">＋</text>
-            <text class="image-add-text">添加图片</text>
+            <text class="image-add-text">{{i18n.t('添加图片', lang)}}</text>
           </view>
         </view>
       </view>
       <view class="notice-type-row">
-        <view class="notice-type-btn {{noticeForm.type === 'normal' ? 'active' : ''}}" data-type="normal" bindtap="setNoticeType">普通</view>
-        <view class="notice-type-btn {{noticeForm.type === 'urgent' ? 'active urgent' : ''}}" data-type="urgent" bindtap="setNoticeType">紧急</view>
+        <view class="notice-type-btn {{noticeForm.type === 'normal' ? 'active' : ''}}" data-type="normal" bindtap="setNoticeType">{{i18n.t('普通', lang)}}</view>
+        <view class="notice-type-btn {{noticeForm.type === 'urgent' ? 'active urgent' : ''}}" data-type="urgent" bindtap="setNoticeType">{{i18n.t('紧急', lang)}}</view>
       </view>
       <view class="notice-sheet-actions">
-        <view class="sheet-cancel" bindtap="closeNotice">取消</view>
-        <view class="sheet-save {{noticeSaving ? 'loading' : ''}}" bindtap="saveNotice">{{noticeSaving ? '保存中…' : '保存'}}</view>
+        <view class="sheet-cancel" bindtap="closeNotice">{{i18n.t('取消', lang)}}</view>
+        <view class="sheet-save {{noticeSaving ? 'loading' : ''}}" bindtap="saveNotice">{{noticeSaving ? i18n.t('保存中…', lang) : i18n.t('保存', lang)}}</view>
       </view>
     </view>
   </view>

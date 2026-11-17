@@ -1,3 +1,4 @@
+<wxs module="i18n" src="../../utils/i18n.wxs"></wxs>
 <view class="page home-page">
   <view class="status-fill" style="height:{{statusBarHeight}}px;"></view>
   <!-- 政务红头部（信任视觉） -->
@@ -11,8 +12,8 @@
       <view class="brand">
         <view class="brand-seal">★</view>
         <view class="brand-copy">
-          <text class="brand-name">新源村情通</text>
-          <text class="brand-sub">村级事务服务平台</text>
+          <text class="brand-name">{{i18n.t('新源村情通', lang)}}</text>
+          <text class="brand-sub">{{i18n.t('村级事务服务平台', lang)}}</text>
         </view>
       </view>
     </view>
@@ -24,28 +25,28 @@
           <view class="village-grid">{{region.gridName}}</view>
         </view>
         <view class="switch-btn">
-          <text>切换村庄</text>
+          <text>{{i18n.t('切换村庄', lang)}}</text>
           <view class="switch-arrow"></view>
         </view>
       </view>
 
-      <view class="hero-slogan">{{slogan}}</view>
+      <view class="hero-slogan">{{lang === 'ko' ? sloganKo : slogan}}</view>
       <view class="hero-trust">
         <view class="trust-dot"></view>
-        <text>村务公开 · 在线办事</text>
+        <text>{{i18n.t('村务公开 · 在线办事', lang)}}</text>
         <text class="hero-sep">/</text>
         <text>{{region.households}} 户 {{region.population}} 人</text>
       </view>
     </view>
 
     <view class="notice" wx:if="{{notice}}" bindtap="onNotice" hover-class="press">
-      <view class="notice-label">通知</view>
+      <view class="notice-label">{{i18n.t('通知', lang)}}</view>
       <text class="notice-text line-1">{{notice.text}}</text>
       <view class="notice-arrow"></view>
     </view>
     <view class="notice notice-loading" wx:else>
-      <view class="notice-label">通知</view>
-      <text class="notice-text line-1">正在获取最新通知…</text>
+      <view class="notice-label">{{i18n.t('通知', lang)}}</view>
+      <text class="notice-text line-1">{{i18n.t('正在获取最新通知…', lang)}}</text>
     </view>
   </view>
 
@@ -62,7 +63,7 @@
           hover-class="press"
         >
           <view class="pill-dot" style="background:{{activeColumn === item.id ? '#FFFFFF' : item.color}}"></view>
-          <text>{{item.name}}</text>
+          <text>{{lang === 'ko' ? item.nameKo : item.name}}</text>
         </view>
         <view class="column-pill column-loading" wx:if="{{loading && !columns.length}}">
           <view class="sk-block" style="width:120rpx;height:28rpx;"></view>
@@ -90,9 +91,9 @@
       <view class="error-box card" wx:if="{{error}}">
         <view class="state-box">
           <view class="state-emoji">!</view>
-          <view class="state-title">首页暂时没有加载出来</view>
+          <view class="state-title">{{i18n.t('首页暂时没有加载出来', lang)}}</view>
           <view class="state-desc">{{error}}</view>
-          <view class="state-action" bindtap="retry">重新加载</view>
+          <view class="state-action" bindtap="retry">{{i18n.t('重新加载', lang)}}</view>
         </view>
       </view>
 
@@ -121,7 +122,7 @@
             <view class="art-ring ring-2"></view>
             <view class="art-price">
               <text class="art-num">380</text>
-              <text class="art-unit">元/人·年</text>
+              <text class="art-unit">{{i18n.t('元/人·年', lang)}}</text>
             </view>
           </view>
         </view>
@@ -131,7 +132,7 @@
           <view class="section-head">
             <view class="section-title">
               村里掠影
-              <text class="section-sub">图库示意</text>
+              <text class="section-sub">{{i18n.t('图库示意', lang)}}</text>
             </view>
           </view>
           <scroll-view class="gallery-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
@@ -151,11 +152,11 @@
         <view class="news-section">
           <view class="section-head">
             <view class="section-title">
-              {{newsTitle}}
-              <text class="section-sub">{{newsSub}}</text>
+              {{lang === 'ko' ? newsTitleKo : newsTitle}}
+              <text class="section-sub">{{lang === 'ko' ? newsSubKo : newsSub}}</text>
             </view>
             <view class="section-more" bindtap="onMoreArticles" hover-class="press">
-              <text>更多</text>
+              <text>{{i18n.t('更多', lang)}}</text>
               <view class="arrow"></view>
             </view>
           </view>
@@ -171,7 +172,7 @@
             >
               <view class="news-main">
                 <view class="news-title">
-                  <view class="top-tag" wx:if="{{item.isTop}}">置顶</view>
+                  <view class="top-tag" wx:if="{{item.isTop}}">{{i18n.t('置顶', lang)}}</view>
                   <text class="line-2">{{item.title}}</text>
                 </view>
                 <view class="news-meta">
@@ -196,10 +197,10 @@
 
           <view class="news-card card" wx:if="{{!listLoading && !articles.length}}">
             <view class="state-box">
-              <view class="state-emoji">空</view>
-              <view class="state-title">这个栏目还没有更新</view>
-              <view class="state-desc">村里有新内容会第一时间发布，先看看其他栏目吧。</view>
-              <view class="state-action" bindtap="onEmptyAction">查看全部</view>
+              <view class="state-emoji">{{i18n.t('空', lang)}}</view>
+              <view class="state-title">{{i18n.t('这个栏目还没有更新', lang)}}</view>
+              <view class="state-desc">{{i18n.t('村里有新内容会第一时间发布，先看看其他栏目吧。', lang)}}</view>
+              <view class="state-action" bindtap="onEmptyAction">{{i18n.t('查看全部', lang)}}</view>
             </view>
           </view>
         </view>
@@ -209,7 +210,7 @@
           <view class="section-head">
             <view class="section-title">
               便民服务
-              <text class="section-sub">一个入口，办身边事</text>
+              <text class="section-sub">{{i18n.t('一个入口，办身边事', lang)}}</text>
             </view>
           </view>
           <view class="service-grid">
@@ -230,14 +231,14 @@
               >
                 <image class="service-icon-img" src="{{item.icon}}" mode="aspectFit"></image>
               </view>
-              <text class="service-name">{{item.name}}</text>
-              <text class="service-desc">{{item.desc}}</text>
+              <text class="service-name">{{lang === 'ko' ? item.nameKo : item.name}}</text>
+              <text class="service-desc">{{lang === 'ko' ? item.descKo : item.desc}}</text>
               <view class="service-badge {{item.highlight ? 'badge-light' : ''}}" wx:if="{{item.badge}}">{{item.badge}}</view>
             </view>
           </view>
           <view class="service-tip" bindtap="onModuleTap" data-name="政务管理" data-status="online" data-route="/pages/gov/index">
             <view class="tip-icon">✓</view>
-            <text>医保、养老、高龄补贴、独生子女证等事项，可直接在线申报</text>
+            <text>{{i18n.t('医保、养老、高龄补贴、独生子女证等事项，可直接在线申报', lang)}}</text>
             <view class="arrow arrow-red"></view>
           </view>
         </view>

@@ -132,7 +132,7 @@ Page({
   },
 
   onAgain() {
-    wx.navigateTo({ url: '/pages/request/create?type=appeal' })
+    wx.navigateTo({ url: '/pages/request/appeal/index' })
   },
 
   retry() {

@@ -2,6 +2,22 @@ const auth = require('./api/auth')
 const userApi = require('./api/user')
 const config = require('./utils/config')
 const storage = require('./utils/storage')
+const i18n = require('./utils/i18n')
+
+// 所有页面自动注入 lang；语言切换后 reLaunch 会重新取当前语言
+const rawPage = Page
+Page = function (options) {
+  options.data = Object.assign({ lang: i18n.getLang() }, options.data || {})
+  const rawOnShow = options.onShow
+  options.onShow = function () {
+    const lang = i18n.getLang()
+    if (this.data.lang !== lang) this.setData({ lang: lang })
+    i18n.applyTabBar(lang)
+    i18n.applyNavTitle(this.route)
+    if (rawOnShow) return rawOnShow.apply(this, arguments)
+  }
+  return rawPage(options)
+}
 
 App({
   globalData: {
@@ -11,11 +27,14 @@ App({
     user: null,
     region: null,
     unread: 0,
-    appConfig: null
+    appConfig: null,
+    lang: i18n.getLang()
   },
 
   onLaunch() {
     this.globalData.skipAutoLogin = false
+    this.globalData.lang = i18n.getLang()
+    i18n.applyTabBar(this.globalData.lang)
     try {
       const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
       this.globalData.statusBarHeight = info.statusBarHeight || 20

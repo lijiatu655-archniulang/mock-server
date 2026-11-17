@@ -1,0 +1,115 @@
+<view class="page request-create-page">
+  <view class="create-head">
+    <view class="head-title">{{lang === 'ko' ? headTitleKo : headTitle}}</view>
+    <view class="head-sub">{{lang === 'ko' ? headSubKo : headSub}}</view>
+  </view>
+
+  <view class="type-banner type-banner-{{type}}">
+    <view class="type-banner-icon">{{typeIcon}}</view>
+    <view class="type-banner-main">
+      <view class="type-banner-name">{{lang === 'ko' ? typeNameKo : typeName}}</view>
+      <view class="type-banner-desc">{{lang === 'ko' ? typeDescKo : typeDesc}}</view>
+    </view>
+  </view>
+
+  <view class="form-card card">
+    <view class="form-error" wx:if="{{error}}">{{error}}</view>
+
+    <view class="field">
+      <view class="field-label">
+        <text>{{i18n.t('标题', lang)}}</text>
+        <text class="required">*</text>
+        <text class="field-count">{{title.length}}/40</text>
+      </view>
+      <input
+        class="field-input"
+        value="{{title}}"
+        data-field="title"
+        bindinput="onInput"
+        maxlength="40"
+        placeholder="{{i18n.t('一句话说清是什么事', lang)}}"
+        placeholder-class="field-placeholder"
+      />
+    </view>
+
+    <view class="field">
+      <view class="field-label">
+        <text>{{i18n.t('具体情况', lang)}}</text>
+        <text class="required">*</text>
+        <text class="field-count">{{content.length}}/300</text>
+      </view>
+      <textarea
+        class="field-textarea"
+        value="{{content}}"
+        data-field="content"
+        bindinput="onInput"
+        maxlength="300"
+        auto-height
+        placeholder="{{lang === 'ko' ? contentPlaceholderKo : contentPlaceholder}}"
+        placeholder-class="field-placeholder"
+      ></textarea>
+    </view>
+
+    <view class="field">
+      <view class="field-label">
+        <text>{{i18n.t('地点', lang)}}</text>
+        <text class="field-optional">{{i18n.t('选填', lang)}}</text>
+      </view>
+      <input
+        class="field-input"
+        value="{{location}}"
+        data-field="location"
+        bindinput="onInput"
+        maxlength="50"
+        placeholder="{{i18n.t('如：三组 26 号东侧', lang)}}"
+        placeholder-class="field-placeholder"
+      />
+    </view>
+
+    <view class="field">
+      <view class="field-label">
+        <text>{{i18n.t('联系电话', lang)}}</text>
+        <text class="field-optional">{{i18n.t('选填，便于回电', lang)}}</text>
+      </view>
+      <input
+        class="field-input"
+        value="{{contactPhone}}"
+        data-field="contactPhone"
+        bindinput="onInput"
+        type="number"
+        maxlength="11"
+        placeholder="{{i18n.t('不会填可留空，网格员会通过微信联系您', lang)}}"
+        placeholder-class="field-placeholder"
+      />
+    </view>
+
+    <view class="field field-last">
+      <view class="field-label">
+        <text>{{i18n.t('现场照片', lang)}}</text>
+        <text class="field-optional">{{i18n.t('选填，最多 3 张', lang)}}</text>
+      </view>
+      <view class="photo-row">
+        <view class="photo-item" wx:for="{{photos}}" wx:key="*this">
+          <image class="photo-img" src="{{item}}" mode="aspectFill"></image>
+          <view class="photo-del" data-index="{{index}}" bindtap="onRemovePhoto">×</view>
+        </view>
+        <view class="photo-add" wx:if="{{photos.length < 3}}" bindtap="onChoosePhoto" hover-class="press">
+          <view class="photo-plus">＋</view>
+          <text>{{i18n.t('添加照片', lang)}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="privacy-tip">
+    <view class="privacy-dot"></view>
+    <text>{{i18n.t('您的信息仅用于本次办理，不会公开；如需匿名，可在内容中说明。', lang)}}</text>
+  </view>
+
+  <view class="create-footer">
+    <view class="footer-note">{{i18n.t('提交后可在「我的诉求」查看办理进度', lang)}}</view>
+    <view class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" hover-class="press">
+      {{submitting ? i18n.t('正在提交…', lang) : (lang === 'ko' ? submitTextKo : submitText)}}
+    </view>
+  </view>
+</view>

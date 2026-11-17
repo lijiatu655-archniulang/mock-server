@@ -1,5 +1,6 @@
 const config = require('./config')
 const storage = require('./storage')
+const i18n = require('./i18n')
 
 /**
  * 文件上传：真实环境走 POST /files（multipart），Mock 环境直接用本地临时路径
@@ -23,7 +24,9 @@ function uploadFile(filePath, bizType, name) {
       formData: {
         bizType: bizType || 'avatar'
       },
-      header: token ? { Authorization: 'Bearer ' + token } : {},
+      header: Object.assign({
+        'X-Lang': i18n.getLang()
+      }, token ? { Authorization: 'Bearer ' + token } : {}),
       success: function (res) {
         try {
           const body = JSON.parse(res.data || '{}')
